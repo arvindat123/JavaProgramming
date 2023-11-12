@@ -32,5 +32,6 @@ public class SerializationExamples2 {
 		// com.rithus.serialization.Wall
 		objectStream.writeObject(house);
 		objectStream.close();
+
 	}
 }

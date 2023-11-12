@@ -60,5 +60,7 @@ public class MaximumSalaryExample {
 		} else {
 			System.out.println("No employees found in " + targetDepartment + " department.");
 		}
+
+
 	}
 }

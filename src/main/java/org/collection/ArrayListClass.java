@@ -20,6 +20,7 @@ public class ArrayListClass {
 		System.out.println(integer);
 		
 		Hashtable<Integer,Integer> p = new Hashtable<>();
+		//p.put(123,123);
 		
 		System.out.println("-----------------------");
 		integer.add(2,100);

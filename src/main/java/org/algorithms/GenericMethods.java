@@ -17,9 +17,13 @@ public class GenericMethods {
     }
 
     public static void main(String[] args) {
-        List<Character> charList = arrayToList(charArray, new ArrayList<>());
+        List<Integer> charList = arrayToList(charArray, new ArrayList<>());
         List<Boolean> boolList = arrayToList(boolArray, new ArrayList<>());
         List<Integer> intList = arrayToList(intArray, new ArrayList<>());
+
+        System.out.println(charList);
+        System.out.println(boolList);
+        System.out.println(intList);
     }
 
 }

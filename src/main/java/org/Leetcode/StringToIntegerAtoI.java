@@ -5,7 +5,7 @@ public class StringToIntegerAtoI {
 	
 	public static void main(String[] args) {
 		char c = '0', b = '9', d = '5';
-		System.out.println(d>b?true:false);
+		System.out.println(d>b?true:"d is greater than b");
 		
 		System.out.println(Integer.MAX_VALUE);
 		System.out.println(Integer.MIN_VALUE);

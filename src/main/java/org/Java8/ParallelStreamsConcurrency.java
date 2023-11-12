@@ -2,6 +2,7 @@ package org.Java8;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ParallelStreamsConcurrency {
 	public static void main(String[] args) {
@@ -12,6 +13,17 @@ public class ParallelStreamsConcurrency {
 		
 		int parallelSum = numbers.stream().parallel().mapToInt(n -> n).sum();
 		System.out.println("Parallel sum ->" + parallelSum);
+
+		System.out.println(numbers.parallelStream().mapToInt(n -> n).sum());
+
+		numbers.parallelStream().forEach(System.out::println); // Order is not maintained
+
+		System.out.println("------------------------------------------------");
+
+		numbers.parallelStream().forEachOrdered(System.out::println);// Order is maintained
+
+
+
 	}
 
 }

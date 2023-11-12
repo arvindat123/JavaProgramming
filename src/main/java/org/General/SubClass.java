@@ -3,8 +3,13 @@ package org.General;
 public class SubClass extends SuperClass{
 	
 	public SubClass() {
-		//super();
+
 		System.out.println("Inside SubClass");
+		//super.print("arvind");
+	}
+
+	void display(){
+		super.print("arvind - display");
 	}
 	
 	
@@ -12,7 +17,8 @@ public class SubClass extends SuperClass{
 	
 	public static void main(String[] args) {
 		SubClass sub = new SubClass();
-		//SuperClass su = new SuperClass();
+		sub.display();
+		SuperClass su = new SuperClass();
 	}
 
 }

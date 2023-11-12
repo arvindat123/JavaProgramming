@@ -1,6 +1,6 @@
 package org.exceptionhandling;
 
-//A class that represent user defined exception
+//A class that represent user defined  exception
 
 class MyException extends Exception {
 	MyException(String str){
@@ -10,7 +10,7 @@ class MyException extends Exception {
 }
 
 //Class that uses above exception : MyException
-public class CustomException {
+public class CustomCheckedException {
 
 	public static void main(String[] args) {
 		try {
@@ -20,6 +20,10 @@ public class CustomException {
 			System.out.println("In Catch");
 			System.out.println("Exception message : " + e.getMessage());
 		}
+		catch(Exception e){
+			System.out.println("within Exception " + e.getMessage());
+		}
+
 	}
 
 }

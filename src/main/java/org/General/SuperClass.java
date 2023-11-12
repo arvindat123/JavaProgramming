@@ -3,10 +3,14 @@ package org.General;
 public class SuperClass {
  public SuperClass() {
 	 System.out.println("Inside SuperClass");
+     this.print("again arvind");
  }
  public SuperClass(String str) {
-	 System.out.println("Inside SuperClass"+str);
+	 System.out.println("Inside SuperClass arg const"+str);
  }
+    public void print(String str) {
+        System.out.println("Inside SuperClass"+str);
+    }
 }
 
 

@@ -28,6 +28,8 @@ public class WithoutSynchronizedKeword {
 		Thread t1 = new Thread(new Runnable() {
 			public void run() {
 				SingletonClassOne a = SingletonClassOne.getInstance();
+				System.out.println(a.hashCode());
+				//System.out.println(123);
 			}
 		});
 
@@ -41,5 +43,46 @@ public class WithoutSynchronizedKeword {
 		// Start both the Threads
 		t1.start();
 		t2.start();
+
+		Thread t3 = new Thread(() -> {
+			for (int i = 0; i<5;i++){
+				System.out.println("Value of i==>"+i);
+				Thread.yield();
+			}
+		});
+		t3.start();
+		try {
+
+			t3.join();
+
+
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		}
+		Thread t4 = new Thread( () -> {
+			for (int i = 0; i <100; i++) {
+				System.out.println("Thread t4 is executing");
+			}
+		});
+
+		Thread t5 = new Thread( () -> {
+			for (int i = 0; i <100; i++) {
+				System.out.println("Thread t5 is executing");
+			}
+		});
+
+
+		try {
+
+			t5.start();
+			t5.join();
+			t4.start();
+			t4.join();
+
+
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		}
+
 	}
 }

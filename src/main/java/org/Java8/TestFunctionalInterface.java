@@ -6,4 +6,8 @@ interface GfG2{
 	   }
 	   
 	}
+
+	public  class TestFunctionalInterface implements GfG2{
+
+	}
 	 

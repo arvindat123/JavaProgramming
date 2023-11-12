@@ -18,6 +18,7 @@ public class CricketerScorer {
 		System.out.println(scorer.score);
 		int score = scorer.getScore();
 		scorer.setScore(8);
+		System.out.println(score);
 		
 		System.out.println(scorer.getScore());
 	}

@@ -91,6 +91,21 @@ public class LinkedListReversal {
         secondLast.next = null;
     }
 
+    public void reverse() {
+        Node prevNode = null;
+        Node currentNode = head;
+        Node nextNode;
+
+        while (currentNode != null) {
+            nextNode = currentNode.next; // Save the next node
+            currentNode.next = prevNode; // Reverse the link
+            prevNode = currentNode;      // Move prev to the current node
+            currentNode = nextNode;      // Move current to the next node
+        }
+
+        head = prevNode; // Update the head to the last node (which is now the first)
+    }
+
     //get the size of list
     public int getSize(){
         return size;
@@ -103,12 +118,14 @@ public class LinkedListReversal {
         obj.firstAdd("java");
         obj.lastAdd("Created by Arvind");
         obj.printList();
-
-
-        obj.deleteFirst();
-        obj.deleteLast();
+        obj.reverse();
         obj.printList();
-        System.out.println(obj.getSize());
+
+
+       // obj.deleteFirst();
+      //  obj.deleteLast();
+      //  obj.printList();
+      //  System.out.println(obj.getSize());
 
     }
 }

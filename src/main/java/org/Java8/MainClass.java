@@ -1,4 +1,4 @@
-package org.algorithms;
+package org.Java8;
 
 import java.util.*;
 public class MainClass {

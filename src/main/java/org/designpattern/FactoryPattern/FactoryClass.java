@@ -70,6 +70,7 @@ public class FactoryClass {
 	public static void main(String[] args) {
 		SimpleVehicleFactory carFactory = new CarFactory();
 		Vehicle car = carFactory.createVehicle();
+
 		car.start();
 		car.accelerate();
 		car.stop();

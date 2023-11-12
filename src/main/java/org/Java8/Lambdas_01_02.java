@@ -1,7 +1,7 @@
 /*
  * This program explains the syntax of using lambda expressions in Java
  */
-package org.algorithms;
+package org.Java8;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;
@@ -12,7 +12,6 @@ import java.util.function.Consumer;
  * @author MFisher
  */
 public class Lambdas_01_02 {
-
     /**
      * @param args the command line arguments
      */
