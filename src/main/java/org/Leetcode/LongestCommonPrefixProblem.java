@@ -25,6 +25,7 @@ public class LongestCommonPrefixProblem {
 			  }
 			  prefix.concat(c+"");
 		  }
+
 	  
 		  return prefix;
 	    }

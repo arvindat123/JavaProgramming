@@ -11,7 +11,7 @@ public class C implements B,A {
 	}
 	public void print(){
 		B.super.print();
-		return ;
+		return;
 	}
 
 
@@ -30,7 +30,7 @@ public class C implements B,A {
 		System.out.println("number return :" +map.get(a));
 		map.put(null,null);
 		System.out.println(map.get(null));
-		//map.put(null, "Arvind");
+		map.put(null, 8);
 		System.out.println(map.get(null));
 	}
 

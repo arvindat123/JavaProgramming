@@ -1,6 +1,9 @@
 package org.General;
 
 public class SuperClass {
+
+    final int print(){ return 1;}
+
  public SuperClass() {
 	 System.out.println("Inside SuperClass");
      this.print("again arvind");

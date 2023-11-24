@@ -8,9 +8,9 @@ public class ThreadSafetyExample implements Runnable{
 	private List<Integer> list = new ArrayList<>();
 	
 	public ThreadSafetyExample() {
-		for(int i = 0;i < 100000; i++) {
+		for(int i = 0;i < 2; i++) {
 			list.add(i);
-			//System.out.println("Hi "+i);
+			System.out.println("Hi "+i);
 		}
 	}
 	
