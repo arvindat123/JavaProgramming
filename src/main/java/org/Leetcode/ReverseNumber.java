@@ -1,4 +1,4 @@
-package org.AbstractClass;
+package org.Leetcode;
 
 public class ReverseNumber {
     public static void main(String[] args) {

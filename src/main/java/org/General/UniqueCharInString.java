@@ -7,7 +7,9 @@ public class UniqueCharInString {
 		boolean[] bol_charSet = new boolean[128];
 		for(int i = 0;i<str.length(); i++) {
 			int val = str.charAt(i);
-			if(bol_charSet[val]) return false;
+			if(bol_charSet[val]) {
+				return false;
+			}
 			bol_charSet[val] = true;
 		}	
 		return true;

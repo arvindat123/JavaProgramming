@@ -1,6 +1,9 @@
 package org.Interface;
 
-//@FunctionalInterface
+@FunctionalInterface
 public interface ChildFunctionalInterface extends ParentFunctionalInterface {
-	public int childMethod(); 
+
+	default int childMethod(){
+		return 0;
+	}
 }

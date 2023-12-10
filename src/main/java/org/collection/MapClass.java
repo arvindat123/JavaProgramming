@@ -1,55 +1,65 @@
 package org.collection;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MapClass {
-	public static void main(String... args) {
-		
+    public static void main(String... args) {
+
 //		There are four ways to traverse Map collections
 //		1) for with keySet();
 //		2) for with entrySet();
 //		3) iterate with keySet();
 //		4) iterate with entrySet();
-		
-		Map<String, String> map = new HashMap<>();
-		map.put("Robert C. Martin", "Clean Code");
-		map.put("Joshua Bloch", "Effective Java");
+//		5) iterate using Stream
 
+        Map<String, Integer> map = new HashMap<>();
+        map.put("arvind", 100);
+        map.put("prabha", 50);
+        map.put("aarabh", 150);
+        map.put("michael", 200);
+        map.put("mark", 151);
+        map.put("rodney", 123);
+        map.put("rae", 134);
+        map.put("anna", 153);
 
-		for (String key : map.keySet()) {
-			System.out.println("Key : " + key + "--Value : " + map.get(key));
-		}
+        //Iterate map using Lambdas
+        map.forEach((key, value) -> System.out.println(key + " , " + value));
 
-		for (Map.Entry<String, String> mapped : map.entrySet()) {
-			System.out.println("Key : " + mapped.getKey() + "=========value : " + mapped.getValue());
-		}
-		
-		Set<String> keyList = map.keySet();
-		Iterator itr = keyList.iterator();
-		while(itr.hasNext()) {
-			String str = (String) itr.next();
-			System.out.println("Iterator KeySet() : "+ str+" "+map.get(str));
-		}
-		
-		Set<Map.Entry<String, String>> entrySet = map.entrySet();
-		Iterator itr2 = entrySet.iterator();
-		while(itr2.hasNext()) {
-			Map.Entry<String, String> singleEntry = (Map.Entry<String, String>)itr2.next();
-			System.out.println("Iterator map EntrySet ="+ singleEntry.getKey()+" -- "+singleEntry.getValue());
-		}
-		
-		Map<Integer, Integer> map1 = new HashMap<>();
-		map1.put(1, 1);
-		 ConcurrentHashMap<Integer, String> m
-         = new ConcurrentHashMap<>();
+        //Get the keys and print it
+        for (String key : map.keySet()) {
+            System.out.println("Key : " + key + "--Value : " + map.get(key));
+        }
 
-     // Insert mappings using
-     // put method
+        //Get key and values
+        for (Map.Entry<String, Integer> mapped : map.entrySet()) {
+            System.out.println("Key : " + mapped.getKey() + "=========value : " + mapped.getValue());
+        }
+
+        Set<String> keyList = map.keySet();
+        System.out.println("printing set=================" + keyList);
+        StringJoiner s = new StringJoiner(",");
+        s.add("arvind").add("gudiya");
+        System.out.println(s);
+        Iterator itr = keyList.iterator();
+        while (itr.hasNext()) {
+            String str = (String) itr.next();
+            System.out.println("Iterator KeySet() : " + str + " " + map.get(str));
+        }
+
+        Set<Map.Entry<String, Integer>> entrySet = map.entrySet();
+        Iterator itr2 = entrySet.iterator();
+        while (itr2.hasNext()) {
+            Map.Entry<String, Integer> singleEntry = (Map.Entry<String, Integer>) itr2.next();
+            System.out.println("Iterator map EntrySet =" + singleEntry.getKey() + " -- " + singleEntry.getValue());
+        }
+
+        Map<Integer, Integer> map1 = new HashMap<>();
+        map1.put(1, 1);
+        ConcurrentHashMap<Integer, String> m = new ConcurrentHashMap<>();
+
+        // Insert mappings using
+        // put method
 //     m.put(100, "Hello");
 //     m.put(101, "Geeks");
 //     m.put(102, "Geeks");
@@ -59,25 +69,22 @@ public class MapClass {
 //     String s2 = new String("java");
 //     String s3 = "java";
 //     System.out.println(s1.equals(s2));
-		 Map<String, String> hMap 
-         = new HashMap<String, String>(); 
-     
-     // add elements into the Map 
-     hMap.put("1", "Welcome"); 
-     hMap.put("2", "To"); 
-     hMap.put("3", "Geeks"); 
-     hMap.put("4", "For"); 
-     hMap.put(null, null); 
-     
-     System.out.println("Map : " + hMap); 
-     
-     // Synchronizing the map 
-     Map<String, String> sMap 
-         = Collections.synchronizedMap(hMap); 
+        Map<String, String> hMap = new HashMap<String, String>();
 
-     // printing the Collection 
-     System.out.println("Synchronized map is : "
-                        + sMap);
-	}
+        // add elements into the Map
+        hMap.put("1", "Welcome");
+        hMap.put("2", "To");
+        hMap.put("3", "Geeks");
+        hMap.put("4", "For");
+        hMap.put(null, null);
+
+        System.out.println("Map : " + hMap);
+
+        // Synchronizing the map
+        Map<String, String> sMap = Collections.synchronizedMap(hMap);
+
+        // printing the Collection
+        System.out.println("Synchronized map is : " + sMap);
+    }
 
 }

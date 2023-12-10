@@ -2,12 +2,13 @@ package org.Java8;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class SecondHighestElementExample {
     public static void main(String[] args) {
-        int[] array = {10};
+        int[] array = {10,2,7,4,55,1,23,45,67,43};
 		/*
 		 * int[] a = new int[] {1,2,3}; 
 		 * int[] a2 = new int[3];
@@ -21,8 +22,8 @@ public class SecondHighestElementExample {
     private static int findSecondHighest(int[] array) {
 		Optional<Integer> a =  Arrays.stream(array)
 				.distinct()
-				.boxed()  // Convert to Integer stream to use reverseOrder
-				.sorted(Collections.reverseOrder())
+				.boxed()  // Convert int stream to Integer stream to use reverseOrder
+				.sorted(Comparator.reverseOrder()) //.sorted(Collections.reverseOrder())
 				.skip(1)   // Skip the first element (highest)
 				.findFirst();
 			if(a.isPresent()) {
