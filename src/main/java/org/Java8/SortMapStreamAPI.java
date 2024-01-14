@@ -30,21 +30,22 @@ public class SortMapStreamAPI {
 
         Map<String,Integer> sortedMapKey = unsortMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(p-> p.getKey(), p-> p.getValue(),(oldVal,newVal) -> oldVal, LinkedHashMap::new));
+
        // System.out.println(sortedMapKey);
 
         // Not Recommend, but it works.
         //Alternative way to sort a Map by keys, and put it into the "result" map
-        Map<String, Integer> mapppp = new LinkedHashMap<>();
-       // unsortMap.entrySet().stream().sorted(Map.Entry.comparingByKey().reversed())
         Map<String, Integer> result2 = new LinkedHashMap<>();
         unsortMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder())) //sort in descending order
+                //.sorted(Map.Entry.<String, Integer>comparingByKey().reversed()) //sort in descending order
+                //OR
+                .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
                 .forEachOrdered(x -> result2.put(x.getKey(), x.getValue()));
 
-        System.out.println("Sorted...by Keys");
+        System.out.println("===================Sorted...by Keys===============");
         System.out.println(sortedMapKey);
         System.out.println(result2);
-        System.out.println("Sorted...by Values");
+        System.out.println("===============Sorted...by Values================");
         Map<String,Integer> result3 = unsortMap.entrySet().stream().sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(p-> p.getKey(),p->p.getValue(),(oldVal,newVal) ->oldVal,LinkedHashMap::new));
         System.out.println(result3);
@@ -72,5 +73,6 @@ public class SortMapStreamAPI {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         collect.forEach((k, v) -> System.out.println(k + ":" + v));
+        System.out.println(UUID.randomUUID().toString());//683cd088-fa2e-41ba-b8cb-9a1c23e13e6d   a string
     }
 }

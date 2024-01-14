@@ -65,6 +65,9 @@ public class StaticMethodReference {
 		// sort array by name
 		Collections.sort(personList, StaticMethodReference::compareByName);
 
+		//same as above
+		//personList.sort(StaticMethodReference::compareByName);
+
 		// Display message only
 		System.out.println("Sort by name :");
 

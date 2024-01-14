@@ -23,6 +23,7 @@ public class SecondHighestElementExample {
 		Optional<Integer> a =  Arrays.stream(array)
 				.distinct()
 				.boxed()  // Convert int stream to Integer stream to use reverseOrder
+				//.sorted((aa,b) ->b.compareTo(aa))
 				.sorted(Comparator.reverseOrder()) //.sorted(Collections.reverseOrder())
 				.skip(1)   // Skip the first element (highest)
 				.findFirst();

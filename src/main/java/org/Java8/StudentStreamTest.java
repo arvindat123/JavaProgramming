@@ -13,16 +13,12 @@ import java.util.stream.Stream;
 public class StudentStreamTest {
 	public static void main(String[] args) {
 
-		Student student1 = new Student("Jayesh", 20, new Addressaas("1234"),
-				Arrays.asList(new MobileNumber("1233"), new MobileNumber("1234")));
-
-		Student student2 = new Student("Khyati", 20, new Addressaas("1235"),
-				Arrays.asList(new MobileNumber("1111"), new MobileNumber("3333"), new MobileNumber("1233")));
-
-		Student student3 = new Student("Jason", 20, new Addressaas("1236"),
-				Arrays.asList(new MobileNumber("3333"), new MobileNumber("4444")));
+		Student student1 = new Student("Jayesh", 20, new Addressaas("1234"),Arrays.asList(new MobileNumber("1233"), new MobileNumber("1234")));
+		Student student2 = new Student("Khyati", 20, new Addressaas("1235"),Arrays.asList(new MobileNumber("1111"), new MobileNumber("3333"), new MobileNumber("1233")));
+		Student student3 = new Student("Jason", 20, new Addressaas("1236"),Arrays.asList(new MobileNumber("3333"), new MobileNumber("4444")));
 
 		List<Student> students = Arrays.asList(student1, student2, student3);
+		Stream<String> stream = students.stream().filter(obj -> obj.getAge()>30).map(obj->obj.getName());
 
 		/*****************************************************
 		 * Get student with exact match name "jayesh"

@@ -19,14 +19,14 @@ public class BillPughImplementation {
             @Override
             public void run() {
                 SingletonClass1 obj1 = SingletonClass1.getInstance();
-             //   System.out.println(obj1.hashCode());
+                System.out.println(obj1.hashCode());
             }
         });
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
                 SingletonClass1 obj2 = SingletonClass1.getInstance();
-              //  System.out.println(obj2.hashCode());
+               System.out.println(obj2.hashCode());
             }
         });
         t1.start();

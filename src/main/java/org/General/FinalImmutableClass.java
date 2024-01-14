@@ -1,15 +1,15 @@
 package org.General;
 
-public final class FinalImmutableClass {
+public class FinalImmutableClass {
     private final String name;
     private final int age;
 
     // Constructor initializes all fields
-    public FinalImmutableClass(String name, int age) {
+    private FinalImmutableClass(String name, int age) {
         this.name = name;
         this.age = age;
     }
-
+    //There must not be any setter/mutator method in the class
     // Accessor methods for all fields (no mutators)
     public String getName() {
         return name;

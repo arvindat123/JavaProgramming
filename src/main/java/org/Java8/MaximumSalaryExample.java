@@ -11,13 +11,29 @@ import java.util.Optional;
 public class MaximumSalaryExample {
     public static void main(String[] args) {
         // Sample list of employees
-        List<Employee> employees = Arrays.asList(new Employee("Alice", 50000, "HR"), new Employee("Bob", 60000, "IT"), new Employee("Charlie", 75000, "Finance"), new Employee("David", 70000, "IT"));
+        List<Employee> employees = Arrays.asList(new Employee(null, 50000, "HR"), new Employee("Bob", 60000, "IT"), new Employee("Charlie", 75000, "Finance"), new Employee("David", 70000, "IT"));
 
+        //Summing
+        /*
+        list.stream().collect(Collectors.groupingBy(foo -> foo.id, Collectors.summingInt(foo->foo.targetCost))).forEach((id,sumTargetCost)->System.out.println(id+"\t"+sumTargetCost));
+
+         list.stream().collect(groupingBy(Function.identity(),
+  ()->new TreeMap<>(
+    // we are effectively grouping by [id, actualCost]
+    Comparator.<Foo,Integer>comparing(foo->foo.id).thenComparing(foo->foo.actualCost)
+  ), // and aggregating/ summing targetCost
+  Collectors.summingInt(foo->foo.targetCost)))
+.forEach((group,targetCostSum) ->
+    // take the id and actualCost from the group and actualCost from aggregation
+    System.out.println(group.id+"\t"+group.actualCost+"\t"+targetCostSum));
+         */
         // Specify the department for which you want to find the maximum salary
         String targetDepartment = "IT";
 
         // Use Stream API to filter employees by department and find the max salary
-        Optional<Double> maxSalary = employees.stream().filter(employee -> employee.getDepartment().equals(targetDepartment)).map(Employee::getSalary).max(Double::compare);
+        Optional<Double> maxSalary = employees.stream().filter(emp->emp.getName() != null && emp.getName().equals("Bob")).filter(employee -> employee.getDepartment().equals(targetDepartment)).map(Employee::getSalary).max(Double::compare);
+        //Below will throw null pointer exception because there getName() will be null and equals cannot be applied on null
+        // Optional<Double> maxSalary = employees.stream().filter(emp->emp.getName().equals("Bob")).filter(employee -> employee.getDepartment().equals(targetDepartment)).map(Employee::getSalary).max(Double::compare);
 
         // Print the result
         if (maxSalary.isPresent()) {

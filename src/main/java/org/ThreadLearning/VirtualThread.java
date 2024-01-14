@@ -6,7 +6,7 @@ public class VirtualThread {
    // The main difference between virtual threads and the traditional threads—which we've come to call platform threads—is
     //that we can easily have a great many active virtual threads, even millions, running in the same Java process.
         public static void main(String[] args) {
-            for (int i = 0; i < 5; i++) {
+          /*  for (int i = 0; i < 5; i++) {
                 Thread virtualThread = Thread.ofVirtual().start(() -> {
                     System.out.println("Virtual Thread: " + Thread.currentThread().getName());
                 });
@@ -16,8 +16,8 @@ public class VirtualThread {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-            }
+            }*/
 
-            System.out.println("Main program exiting");
+           // System.out.println("Main program exiting");
         }
 }

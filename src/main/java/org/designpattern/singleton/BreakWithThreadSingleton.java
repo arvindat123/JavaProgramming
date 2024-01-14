@@ -5,7 +5,7 @@ class SingletonPattern {
     private static SingletonPattern instance;
 
     private SingletonPattern(){
-        System.out.println("Object made");
+     //   System.out.println("Object made");
     }
 
     public static SingletonPattern getInstance(){

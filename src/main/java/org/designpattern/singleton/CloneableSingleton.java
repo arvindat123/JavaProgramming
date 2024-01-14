@@ -22,7 +22,8 @@ class SingletonClone extends SuperClass {
 		// private constructor
 	}
 
-	// To prevent cloneable
+
+// To prevent cloneable - solution
 
 //	@Override
 //	protected Object clone() throws CloneNotSupportedException {

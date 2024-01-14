@@ -3,6 +3,7 @@ package org.General;
 public class Factorial {
 
 	//head recursion, it needs stack
+	//1, 1, 2, 3, 5, 8, 13, 21
 	public static int headRecursionFactorial(int n) {
 		if(n==0) {
 			return 1;

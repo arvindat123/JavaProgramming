@@ -2,7 +2,7 @@ package org.designpattern.singleton;
 
 import java.lang.reflect.Constructor;
 
-class SingletonClass{
+/*class SingletonClass{
 	
 	//  instance initialized when loading the class
 	public static SingletonClass instance = new SingletonClass();
@@ -11,11 +11,9 @@ class SingletonClass{
 		
 	}
 	
-}
+}*/
 
-/*
- * enum SingletonClass { instance; }
- */
+ enum SingletonClass { instance; }
 
 public class ReflectionBreakingSingleton {
 	public static void main(String[] args) {

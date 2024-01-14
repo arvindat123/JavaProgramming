@@ -39,7 +39,7 @@ public class FlatMap {
             LongStream.iterate(0, t -> t + 1).limit(10).forEach(System.out::println);
             System.out.println("------------");
 
-            IntStream numStream = IntStream.range(10, 15); //Exclusive end boundary
+            IntStream numStream = IntStream.range(10, 15); //Exclusive end boundary like 15 will be excluded
             numStream.forEach(System.out::println);
 
 
@@ -49,6 +49,7 @@ public class FlatMap {
             numStreamInclusive.forEach(System.out::println); //Inclusive both boundary value
 
             String listOfName = "Arvinda Prabha Aarabhdf"; //return the largest string and then count the number of character in that string
+            Arrays.stream(listOfName.split(" ")).sorted((a,b) -> b.length()-a.length()).forEach(System.out::println);
             Stream.of(listOfName).map(m -> m.split(" ")).flatMap(Arrays::stream).sorted((a, b) -> b.compareTo(a)).forEach(System.out::println);
             Optional<Integer> largestString = Stream.of(listOfName).map(m -> m.split(" ")).flatMap(Arrays::stream).map(i -> i.length()).sorted((i, j) -> j - i).findFirst();
             if (largestString.isPresent()) {

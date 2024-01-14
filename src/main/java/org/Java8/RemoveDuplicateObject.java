@@ -29,7 +29,7 @@ class EmployeeClass {
         return Objects.hash(id, name);
     }
 
-    public String toString() {
+   public String toString() {
         return id + "---" + name;
     }
 
@@ -45,6 +45,7 @@ public class RemoveDuplicateObject {
         employeesWithDuplicates.add(new EmployeeClass(2, "Jane")); // Duplicate
 
         employeesWithDuplicates.stream().distinct().toList().forEach(System.out::println);
+        System.out.println("--------------------------------------------------------");
         employeesWithDuplicates.stream().distinct().collect(Collectors.toList()).forEach(System.out::println);
     }
 }

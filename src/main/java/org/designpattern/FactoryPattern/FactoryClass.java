@@ -1,7 +1,7 @@
 package org.designpattern.FactoryPattern;
 
 //an interface Vehicle:
-interface Vehicle {
+ interface Vehicle {
 	void start();
 
 	void accelerate();
