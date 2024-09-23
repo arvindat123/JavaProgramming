@@ -4,7 +4,7 @@ public abstract class AbstractClassOne {
 	public void firstMethod() {
 		System.out.println("Hi");
 	}
-
+//hi
 	public AbstractClassOne(){
 
 	}
