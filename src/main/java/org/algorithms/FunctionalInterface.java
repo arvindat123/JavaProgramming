@@ -10,7 +10,7 @@ public class FunctionalInterface {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //using the test method of Predicate
+        //using the test method of Predicate, take one argument and return boolean
         Predicate<String> stringLen  = (s)-> s.length() < 10;
         System.out.println(stringLen.test("Apples") + " - Apples is less than 10");
 

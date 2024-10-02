@@ -11,7 +11,10 @@ public class GenericsExample1 {
         names.add("Kelly");
         String name = (String) names.get(0); // type casting is required for each element
         System.out.println("First name: " + name);
-        //names.add(7);
+        names.add(7);
+        names.add(true);
+        System.out.println(names.get(2));
+
 
 
         // Example with Generics

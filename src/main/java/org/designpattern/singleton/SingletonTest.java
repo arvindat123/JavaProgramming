@@ -22,6 +22,7 @@ class Singleton {
 
 public class SingletonTest {
 	public static void main(String[] args) {
+		//Singleton abc = new Singleton();
 		Singleton object1 = Singleton.getInstance();
 		Singleton object2 = Singleton.getInstance();
 
