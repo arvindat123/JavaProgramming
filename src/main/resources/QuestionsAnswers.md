@@ -112,6 +112,137 @@ Here are some advanced Java multithreading interview questions and answers, typi
    - **Answer**:
      - **Synchronized method**: Locks the entire method; when one thread is executing a synchronized method, the other thread has to wait.
      - **Synchronized block**: Allows you to lock only a section of the method, allowing other parts of the method to execute simultaneously, which improves performance when there is less contention.
+     - In Java, the `synchronized` keyword is used to ensure that only one thread can access a block of code or method at a time, preventing race conditions. It can be applied at two levels:
+
+1. **Synchronized Block**: Locks only a specific section of code.
+2. **Synchronized Method**: Locks the entire method.
+
+### 1. **Synchronized Block Example**
+
+A synchronized block allows you to lock a particular object, meaning that only one thread can execute the code inside the block for that object at a time. Other threads trying to access the same block for the same object will be blocked until the first thread exits the block.
+
+#### Example: Synchronized Block
+
+```java
+class Counter {
+    private int count = 0;
+    private final Object lock = new Object(); // Lock object
+
+    public void increment() {
+        // Synchronizing on a specific object
+        synchronized (lock) {
+            count++; // Critical section
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        // Create two threads that try to increment the counter
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        // Wait for both threads to finish
+        t1.join();
+        t2.join();
+
+        // Output the counter value
+        System.out.println("Final Count: " + counter.getCount());
+    }
+}
+```
+
+**Explanation:**
+- Here, `increment()` method increments the `count`. A `synchronized` block is used to ensure that only one thread increments the counter at a time.
+- The `lock` object is used to synchronize the block. Only one thread can enter the block at a time, thus preventing concurrent access to the `count` variable.
+
+### 2. **Synchronized Method Example**
+
+A synchronized method locks the entire method, ensuring that only one thread can execute that method on the same object at a time.
+
+#### Example: Synchronized Method
+
+```java
+class Counter {
+    private int count = 0;
+
+    // Synchronized method
+    public synchronized void increment() {
+        count++; // Critical section
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        // Create two threads that try to increment the counter
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        // Wait for both threads to finish
+        t1.join();
+        t2.join();
+
+        // Output the counter value
+        System.out.println("Final Count: " + counter.getCount());
+    }
+}
+```
+
+**Explanation:**
+- The `increment()` method is synchronized, which ensures that only one thread can execute this method at a time on the same object.
+- In this example, both `t1` and `t2` try to increment the counter 1000 times each. The use of `synchronized` ensures that the final count will be 2000 without race conditions.
+
+### Key Differences:
+
+- **Synchronized Block**:
+  - You can lock on any object (e.g., `this`, a lock object, or other objects).
+  - It allows you to lock only part of the method (critical section), which can reduce the scope of synchronization and improve performance.
+  
+- **Synchronized Method**:
+  - Locks the entire method, making it simpler but potentially less efficient.
+  - Implicitly locks the object the method belongs to (i.e., `this`).
+
+### Use Cases:
+- **Synchronized Block**: When you need finer control over what code should be synchronized or when only part of a method is critical for synchronization.
+- **Synchronized Method**: When the entire method should be synchronized to avoid concurrency issues. It's a simpler approach but locks more code. 
+
+Both approaches help ensure that shared resources are safely accessed by multiple threads in a multithreaded environment.
 
 ### 3. **What are different states of a thread in Java?**
    - **Answer**: A thread in Java can be in one of the following states:
