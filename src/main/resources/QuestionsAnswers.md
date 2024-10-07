@@ -228,7 +228,7 @@ public class Main {
 - The `increment()` method is synchronized, which ensures that only one thread can execute this method at a time on the same object.
 - In this example, both `t1` and `t2` try to increment the counter 1000 times each. The use of `synchronized` ensures that the final count will be 2000 without race conditions.
 
-### Key Differences:
+#### Key Differences:
 
 - **Synchronized Block**:
   - You can lock on any object (e.g., `this`, a lock object, or other objects).
@@ -238,19 +238,101 @@ public class Main {
   - Locks the entire method, making it simpler but potentially less efficient.
   - Implicitly locks the object the method belongs to (i.e., `this`).
 
-### Use Cases:
+#### Use Cases:
 - **Synchronized Block**: When you need finer control over what code should be synchronized or when only part of a method is critical for synchronization.
 - **Synchronized Method**: When the entire method should be synchronized to avoid concurrency issues. It's a simpler approach but locks more code. 
 
 Both approaches help ensure that shared resources are safely accessed by multiple threads in a multithreaded environment.
 
 ### 3. **What are different states of a thread in Java?**
-   - **Answer**: A thread in Java can be in one of the following states:
-     1. **New**: Thread is created but not yet started.
-     2. **Runnable**: After calling `start()`, the thread is ready for execution and can run when CPU time is available.
-     3. **Blocked/Waiting**: Thread is waiting for a resource (like I/O) or another thread to finish execution.
-     4. **Timed Waiting**: Thread waits for a specified amount of time.
-     5. **Terminated**: The thread has finished execution.
+   Java threads can exist in several states during their lifecycle. The main states are:
+
+1. **NEW**: When a thread is created but not yet started.
+2. **RUNNABLE**: When a thread is ready to run or is running.
+3. **BLOCKED**: When a thread is blocked waiting for a monitor lock.
+4. **WAITING**: When a thread is waiting indefinitely for another thread to perform a specific action.
+5. **TIMED_WAITING**: When a thread is waiting for a specified amount of time.
+6. **TERMINATED**: When a thread has completed execution.
+
+#### Example: Demonstrating Different Thread States
+
+```java
+class MyThread implements Runnable {
+    @Override
+    public void run() {
+        try {
+            // The thread will move to TIMED_WAITING state
+            Thread.sleep(1000); // Sleep for 1 second
+            System.out.println(Thread.currentThread().getName() + " is in TIMED_WAITING state");
+            
+            synchronized (this) {
+                // The thread will move to WAITING state
+                wait(); // Waiting indefinitely
+                System.out.println(Thread.currentThread().getName() + " is in WAITING state");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class ThreadStateDemo {
+    public static void main(String[] args) throws InterruptedException {
+        MyThread myRunnable = new MyThread();
+        Thread thread = new Thread(myRunnable);
+
+        // NEW state
+        System.out.println("Thread state after creation: " + thread.getState());
+
+        // Start the thread (RUNNABLE state)
+        thread.start();
+        System.out.println("Thread state after start: " + thread.getState());
+
+        // Give time for the thread to move into TIMED_WAITING state
+        Thread.sleep(500);
+        System.out.println("Thread state during sleep: " + thread.getState());
+
+        // Wait for the thread to enter WAITING state (wait is called inside run method)
+        synchronized (myRunnable) {
+            // Notify the thread to move it out of WAITING state
+            Thread.sleep(1500); // Ensure thread has moved to WAITING state
+            System.out.println("Thread state after moving to WAITING: " + thread.getState());
+            myRunnable.notify();
+        }
+
+        // Wait for the thread to complete (TERMINATED state)
+        thread.join();
+        System.out.println("Thread state after termination: " + thread.getState());
+    }
+}
+```
+
+#### Explanation:
+
+1. **NEW**: Initially, when the thread is created using `Thread thread = new Thread(myRunnable);`, the thread is in the `NEW` state.
+2. **RUNNABLE**: When you call `thread.start();`, the thread enters the `RUNNABLE` state, meaning it is ready to run or is already running.
+3. **TIMED_WAITING**: Inside the `run()` method, the thread calls `Thread.sleep(1000);`, which causes the thread to enter the `TIMED_WAITING` state, where it waits for a specified amount of time (1 second in this case).
+4. **WAITING**: After waking up from `sleep()`, the thread calls `wait();` inside a synchronized block. This moves the thread into the `WAITING` state, where it waits indefinitely until notified.
+5. **NOTIFY**: The main thread then calls `myRunnable.notify();` to bring the waiting thread back to the runnable state.
+6. **TERMINATED**: After completing the `run()` method, the thread enters the `TERMINATED` state, meaning it has finished execution.
+
+#### Sample Output:
+```bash
+Thread state after creation: NEW
+Thread state after start: RUNNABLE
+Thread state during sleep: TIMED_WAITING
+Thread state after moving to WAITING: WAITING
+Thread state after termination: TERMINATED
+```
+
+#### Key Thread Methods:
+
+- `sleep(long millis)`: Causes the thread to sleep for a specified time and moves it to the `TIMED_WAITING` state.
+- `wait()`: Causes the thread to wait indefinitely until it is notified, moving it to the `WAITING` state.
+- `notify()`: Wakes up a thread that is waiting on the object's monitor.
+- `join()`: Causes the current thread to wait for another thread to finish execution (enter the `TERMINATED` state). 
+
+This program demonstrates the core thread states and how a thread transitions between them.
 
 ### 4. **What is thread-safety, and how do you ensure it?**
    - **Answer**: 
@@ -313,6 +395,105 @@ Both approaches help ensure that shared resources are safely accessed by multipl
 
 ### 14. **What is the `ReentrantLock` in Java?**
    - **Answer**: `ReentrantLock` is a lock provided by the `java.util.concurrent.locks` package, which allows the same thread to acquire the lock multiple times without causing a deadlock. It offers more flexibility than the `synchronized` keyword, as it allows tryLock, lockInterruptibly, and fair lock mechanisms.
+   - In Java, the `Lock` interface (from the `java.util.concurrent.locks` package) provides more extensive locking operations than those available using the `synchronized` keyword. The `Lock` interface allows more flexible control over locking, including lock acquisition and release, the ability to check whether a lock is available, and interruptible lock acquisition.
+
+#### Example: Using `ReentrantLock`
+
+A commonly used implementation of the `Lock` interface is `ReentrantLock`, which provides the ability to lock and unlock explicitly. Below is an example demonstrating the use of `ReentrantLock` to ensure thread-safe access to shared resources.
+
+#### Java Program: Lock Example Using `ReentrantLock`
+
+```java
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class SharedResource {
+    private int counter = 0;
+    private final Lock lock = new ReentrantLock();  // Create a ReentrantLock
+
+    public void increment() {
+        lock.lock();  // Acquire the lock
+        try {
+            counter++;  // Critical section
+            System.out.println(Thread.currentThread().getName() + " incremented counter to: " + counter);
+        } finally {
+            lock.unlock();  // Release the lock in the finally block to ensure it is always released
+        }
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+}
+
+public class LockExample {
+    public static void main(String[] args) throws InterruptedException {
+        SharedResource sharedResource = new SharedResource();
+
+        // Create two threads that access the shared resource
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                sharedResource.increment();
+            }
+        }, "Thread-1");
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                sharedResource.increment();
+            }
+        }, "Thread-2");
+
+        // Start both threads
+        t1.start();
+        t2.start();
+
+        // Wait for both threads to finish
+        t1.join();
+        t2.join();
+
+        // Output the final counter value
+        System.out.println("Final Counter: " + sharedResource.getCounter());
+    }
+}
+```
+
+#### Explanation:
+
+1. **ReentrantLock**: 
+   - We use the `ReentrantLock` to explicitly lock and unlock the critical section in the `increment()` method.
+   - Unlike `synchronized`, you must manually lock and unlock the critical section.
+   
+2. **Lock Acquisition**:
+   - The method `lock()` acquires the lock. If the lock is not available, the calling thread is blocked until the lock is available.
+   - We place `lock()` before entering the critical section to ensure that only one thread can modify the `counter` at a time.
+
+3. **Finally Block**:
+   - We place `unlock()` inside a `finally` block to ensure that the lock is always released, even if an exception occurs in the critical section. This is essential to avoid potential deadlocks where a thread acquires the lock but never releases it.
+
+4. **Thread Safety**:
+   - The `ReentrantLock` ensures that both threads increment the `counter` safely without interfering with each other. It guarantees that only one thread at a time can execute the critical section.
+
+#### Output:
+```bash
+Thread-1 incremented counter to: 1
+Thread-2 incremented counter to: 2
+Thread-1 incremented counter to: 3
+Thread-2 incremented counter to: 4
+Thread-1 incremented counter to: 5
+Thread-2 incremented counter to: 6
+Thread-1 incremented counter to: 7
+Thread-2 incremented counter to: 8
+Thread-1 incremented counter to: 9
+Thread-2 incremented counter to: 10
+Final Counter: 10
+```
+
+#### Key Points About `ReentrantLock`:
+- **Flexibility**: Unlike the `synchronized` block, `ReentrantLock` provides more control, such as the ability to interrupt the lock acquisition (`lockInterruptibly()`), attempt to acquire the lock (`tryLock()`), or check if the lock is held by the current thread (`isHeldByCurrentThread()`).
+- **Reentrancy**: `ReentrantLock` allows a thread to acquire the lock multiple times. If a thread already holds the lock, it can acquire it again without blocking.
+- **Manual Locking and Unlocking**: Unlike `synchronized`, where the lock is automatically released when the method or block is exited, with `Lock`, you need to manually unlock the critical section after the work is done.
+
+This is how you can use locks in Java to ensure thread safety with more fine-grained control than the `synchronized` keyword.
 
 ### 15. **What is the difference between `ConcurrentHashMap` and `HashMap`?**
    - **Answer**:
