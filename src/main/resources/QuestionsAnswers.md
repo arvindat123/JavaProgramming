@@ -519,3 +519,219 @@ This is how you can use locks in Java to ensure thread safety with more fine-gra
 
 ### 20. **What is `LiveLock` in Java?**
    - **Answer**: LiveLock is a situation where two or more threads continuously change their state in response to the state of other threads but are unable to make progress. The
+     
+---
+
+### 1. **What is a constructor in Java?**
+   - **Answer**: A constructor is a special type of method in Java used to initialize objects. It is called when an instance of a class is created. Constructors have the same name as the class and do not have a return type.
+   - **Example**:
+     ```java
+     class Car {
+         String model;
+         int year;
+
+         // Constructor
+         Car(String model, int year) {
+             this.model = model;
+             this.year = year;
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car = new Car("Toyota", 2020);  // Constructor is called here
+         }
+     }
+     ```
+
+### 2. **Can you have more than one constructor in a class (Constructor Overloading)?**
+   - **Answer**: Yes, you can have more than one constructor in a class, known as **constructor overloading**. The constructors must have different parameter lists (number, type, or order).
+   - **Example**:
+     ```java
+     class Car {
+         String model;
+         int year;
+
+         // Constructor 1
+         Car(String model) {
+             this.model = model;
+             this.year = 2022;  // default year
+         }
+
+         // Constructor 2
+         Car(String model, int year) {
+             this.model = model;
+             this.year = year;
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car1 = new Car("Toyota");         // Calls first constructor
+             Car car2 = new Car("Ford", 2020);     // Calls second constructor
+         }
+     }
+     ```
+
+### 3. **What is a default constructor in Java?**
+   - **Answer**: A default constructor is a constructor with no parameters. If no constructor is explicitly defined, the compiler automatically provides a default constructor that initializes the object with default values.
+   - **Example**:
+     ```java
+     class Car {
+         String model;
+         int year;
+
+         // Default Constructor
+         Car() {
+             this.model = "Unknown";
+             this.year = 2022;
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car = new Car();  // Default constructor is called
+         }
+     }
+     ```
+
+### 4. **What happens if you don’t define any constructor in a class?**
+   - **Answer**: If you don’t define any constructor, the Java compiler provides a **default constructor** automatically, which initializes the object’s fields to their default values.
+   - **Example**:
+     ```java
+     class Car {
+         String model;   // null by default
+         int year;       // 0 by default
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car = new Car();  // Default constructor provided by the compiler
+             System.out.println(car.model); // Output: null
+             System.out.println(car.year);  // Output: 0
+         }
+     }
+     ```
+
+### 5. **What is the use of the `this()` keyword in constructors?**
+   - **Answer**: The `this()` keyword is used to call another constructor from within the same class. It helps reduce code duplication.
+   - **Example**:
+     ```java
+     class Car {
+         String model;
+         int year;
+
+         // Constructor 1
+         Car() {
+             this("Unknown", 2022); // Calls constructor 2
+         }
+
+         // Constructor 2
+         Car(String model, int year) {
+             this.model = model;
+             this.year = year;
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car = new Car();  // Calls the first constructor which then calls the second
+         }
+     }
+     ```
+
+### 6. **Can a constructor be private in Java?**
+   - **Answer**: Yes, a constructor can be private. This is usually done in the **Singleton pattern** where you want to restrict the instantiation of a class to one object.
+   - **Example**:
+     ```java
+     class Singleton {
+         private static Singleton instance;
+
+         // Private constructor
+         private Singleton() {
+         }
+
+         public static Singleton getInstance() {
+             if (instance == null) {
+                 instance = new Singleton();
+             }
+             return instance;
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Singleton obj1 = Singleton.getInstance();
+             Singleton obj2 = Singleton.getInstance();
+
+             System.out.println(obj1 == obj2);  // Output: true
+         }
+     }
+     ```
+
+### 7. **Can a constructor call a method in Java?**
+   - **Answer**: Yes, a constructor can call a method. However, be cautious when calling overridden methods in a constructor, as they may not behave as expected during the initialization phase.
+   - **Example**:
+     ```java
+     class Car {
+         String model;
+         int year;
+
+         Car(String model, int year) {
+             this.model = model;
+             this.year = year;
+             printDetails();  // Calling method from constructor
+         }
+
+         void printDetails() {
+             System.out.println("Model: " + model + ", Year: " + year);
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car = new Car("Toyota", 2020);  // Constructor calls printDetails
+         }
+     }
+     ```
+
+### 8. **What is constructor chaining in Java?**
+   - **Answer**: Constructor chaining occurs when one constructor calls another constructor from the same class or the parent class using `this()` or `super()`.
+   - **Example**:
+     ```java
+     class Vehicle {
+         String type;
+
+         // Parent class constructor
+         Vehicle(String type) {
+             this.type = type;
+         }
+     }
+
+     class Car extends Vehicle {
+         String model;
+         int year;
+
+         // Child class constructor chaining
+         Car(String type, String model, int year) {
+             super(type);  // Calls Vehicle constructor
+             this.model = model;
+             this.year = year;
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             Car car = new Car("Sedan", "Toyota", 2020);  // Constructor chaining
+         }
+     }
+     ```
+
+### 9. **Can you inherit constructors in Java?**
+   - **Answer**: Constructors are not inherited. However, a subclass can call the constructor of its parent class using the `super()` keyword. 
+
+### 10. **What happens if a constructor throws an exception?**
+   - **Answer**: If a constructor throws an exception, the object creation is incomplete, and the object will not be created. You can throw checked or unchecked exceptions from a constructor.
+
+---
+
