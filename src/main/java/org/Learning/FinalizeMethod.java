@@ -13,7 +13,7 @@ public class FinalizeMethod {
 	 
 	        // Requesting JVM to call Garbage Collector method
 	        System.gc();
-	        System.out.println("Main Completes");
+	        System.out.println("SynchronizedMethodDemo Completes");
 	    }
 	 
 	    // Here overriding finalize method

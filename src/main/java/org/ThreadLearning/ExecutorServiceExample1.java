@@ -8,10 +8,11 @@ public class ExecutorServiceExample1 {
 	//create the pool
 	public static void main(String[] args) {
 		ExecutorService service = Executors.newFixedThreadPool(10);
-		ExecutorService executor = Executors.newCachedThreadPool();
+		ExecutorService executor = Executors.newCachedThreadPool();//Creates a thread pool that creates new threads as needed
+		ExecutorService executor4 = Executors.newWorkStealingPool();
 		ExecutorService executor2 = Executors.newSingleThreadExecutor();
 		ScheduledExecutorService executor3 = Executors.newScheduledThreadPool(3);
-		ExecutorService executor4 = Executors.newWorkStealingPool();
+
 
 		
 		//submit/Execute tasks for execution

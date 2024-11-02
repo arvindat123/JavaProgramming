@@ -9,7 +9,8 @@ public class ArraysJava8 {
     public static int secondHighestElement(int[] arr) {
 
         int secondHighest = Arrays.stream(arr).boxed()
-                .sorted((a,b) -> b.compareTo(a)).skip(1).findFirst().orElseThrow(() -> new IllegalArgumentException("There is no 2nd smallest element"));
+                .sorted((a,b) -> b.compareTo(a)).skip(1).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("There is no 2nd smallest element"));
         return secondHighest;
 
     }

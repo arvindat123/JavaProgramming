@@ -98,9 +98,9 @@ public class ReadFile {
 
 /*
         Files.lines, return a Stream (Java 8)
+        Files.readAllLines, returns a List<String> (Java 8)
         Files.readString, returns a String (Java 11), max file size 2G.
         Files.readAllBytes, returns a byte[] (Java 7), max file size 2G.
-        Files.readAllLines, returns a List<String> (Java 8)
         BufferedReader, a classic old friend (Java 1.1 -> forever)
         Scanner (Java 1.5)
 

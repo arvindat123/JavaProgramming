@@ -29,7 +29,7 @@ class Person {
 }
 
 // Class 2
-// Main class
+// SynchronizedMethodDemo class
 public class StaticMethodReference {
 
 	// Method 1
@@ -47,7 +47,7 @@ public class StaticMethodReference {
 	}
 
 	// Method 3
-	// Main driver method
+	// SynchronizedMethodDemo driver method
 	public static void main(String[] args)
 	{
 

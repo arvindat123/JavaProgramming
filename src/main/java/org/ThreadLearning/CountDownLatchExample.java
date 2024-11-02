@@ -17,7 +17,7 @@ public class CountDownLatchExample {
         new Thread(worker3).start();
 
         try {
-            // Main thread waits for all worker threads to finish
+            // SynchronizedMethodDemo thread waits for all worker threads to finish
             latch.await();
             System.out.println("All workers have completed their tasks.");
         } catch (InterruptedException e) {

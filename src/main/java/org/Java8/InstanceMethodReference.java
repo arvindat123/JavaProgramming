@@ -55,10 +55,10 @@ class ComparisonProvider {
 }
 
 // Class 3
-// Main class
+// SynchronizedMethodDemo class
 public class InstanceMethodReference {
 
-	// Main driver method
+	// SynchronizedMethodDemo driver method
 	public static void main(String[] args) {
 		// Creating an empty ArrayList of user-defined type
 		// List of person

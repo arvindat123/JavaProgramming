@@ -23,9 +23,9 @@ public class StaticBlock {
 
         public static void main(String[] args) {
 
-            // Main method
+            // SynchronizedMethodDemo method
             StaticBlock obj = new StaticBlock();
-            System.out.println("Main method called.");
+            System.out.println("SynchronizedMethodDemo method called.");
 
             // Accessing the static variable
             System.out.println("Value of x: " + x);

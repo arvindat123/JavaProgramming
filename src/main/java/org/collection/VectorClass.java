@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class VectorClass {
 
-    // Main driver method
+    // SynchronizedMethodDemo driver method
     public static void main(String[] args)
     {
         // Size of the Vector

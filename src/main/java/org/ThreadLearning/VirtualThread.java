@@ -18,6 +18,6 @@ public class VirtualThread {
                 }
             }*/
 
-           // System.out.println("Main program exiting");
+           // System.out.println("SynchronizedMethodDemo program exiting");
         }
 }

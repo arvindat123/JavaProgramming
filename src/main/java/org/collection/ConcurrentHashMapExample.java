@@ -10,7 +10,12 @@ public class ConcurrentHashMapExample {
 		map.put("A",1);
 		map.put("B",2);
 		map.put("C",3);
-		
+		/*
+		map.put(null, null); //NullPointerException
+		map.put("E", null); //NullPointerException
+		map.put(null, 5); // NullPointerException
+		*/
+
 		System.out.println("Map size = "+ map.size());
 		
 		//Getting value from map
