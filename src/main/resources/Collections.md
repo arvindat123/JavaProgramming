@@ -57,3 +57,74 @@ Here are some advanced Java collections interview questions along with answers t
       - `LinkedHashMap` maintains insertion order or access order, depending on its configuration. Internally, it uses a doubly linked list alongside a hash table to keep track of insertion order. The access order can be enabled with a special constructor flag, which makes the map reorder entries when accessed, useful for implementing caches (such as LRU caches) by removing the oldest accessed items first.
 
 These questions explore how different Java Collections work internally, their performance, and usage scenarios which are essential for experienced professionals in Java.
+
+---
+Memory leakage in Java refers to a situation where memory that is no longer needed by a program is not released, causing the application to consume more and more memory over time. In languages with manual memory management, memory leaks happen when the developer forgets to free unused memory. However, Java has automatic memory management via the **Garbage Collector (GC)**, which usually helps prevent memory leaks. But, even with garbage collection, memory leaks can still occur if references to unused objects are maintained, preventing the GC from reclaiming that memory.
+
+### Causes of Memory Leaks in Java
+
+1. **Unintentional Object References**:
+   - If a program unintentionally holds references to objects that are no longer needed, the GC cannot collect them, resulting in memory not being freed.
+
+2. **Static References**:
+   - Static fields live for the entire duration of the application, so any object referenced by a static field will not be garbage collected until the application terminates. If large objects or collections are assigned to static fields and not cleared when done, they can cause memory leaks.
+
+3. **Listeners and Callbacks**:
+   - Sometimes objects register themselves as listeners or callbacks but are not deregistered when they are no longer needed. This prevents the GC from reclaiming their memory because the listener holds a reference to the object.
+
+4. **Incorrect Use of Collections**:
+   - Keeping unused objects in collections (like `ArrayList`, `HashMap`, etc.) can cause memory leaks. For example, if you store objects in a map but never remove them after they’re no longer needed, they’ll consume memory indefinitely.
+
+5. **Inner Classes and Anonymous Classes**:
+   - Non-static inner classes and anonymous classes hold a reference to their outer class instance. If the outer instance is no longer used but is still referenced by an inner class, it prevents GC from collecting it.
+
+### Example of Memory Leak in Java
+
+Here's a simple example demonstrating how a memory leak might occur by keeping references to objects that are no longer needed.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakExample {
+
+    private List<String> list = new ArrayList<>();
+
+    public void addData() {
+        // Continuously add data to the list, but never remove it
+        for (int i = 0; i < 1000; i++) {
+            list.add("Data " + i);
+        }
+    }
+
+    public static void main(String[] args) {
+        MemoryLeakExample example = new MemoryLeakExample();
+
+        // Simulate a memory leak by repeatedly adding data without removing it
+        for (int i = 0; i < 1000; i++) {
+            example.addData();
+        }
+
+        System.out.println("Finished adding data. The application is holding onto a lot of memory!");
+    }
+}
+```
+
+In this example, data is continuously added to the `list` without clearing or removing it. The `list` object holds onto many `String` objects that may no longer be needed, which could eventually lead to an **OutOfMemoryError** if this continues for a long time.
+
+### Identifying Memory Leaks in Java
+
+1. **Memory Profilers**: Tools like VisualVM, Eclipse MAT (Memory Analyzer Tool), and YourKit can help detect memory leaks by showing which objects are consuming memory and which references are preventing garbage collection.
+  
+2. **Heap Dumps**: A heap dump is a snapshot of memory at a specific point. Analyzing heap dumps can help identify objects that are retained in memory longer than expected.
+  
+3. **JConsole and JVisualVM**: Both tools, included with the JDK, monitor memory usage, including the number of live objects and their memory allocation. These tools can highlight increasing memory usage trends, which may indicate a memory leak.
+
+### Preventing Memory Leaks in Java
+
+- **Clear Unused References**: Explicitly set large objects or collections to `null` if they are no longer needed, especially in long-running applications.
+- **Use Weak References**: Use `WeakReference` or `SoftReference` for objects that are large and may not need to persist. This allows the GC to collect them if memory becomes constrained.
+- **Deregister Listeners**: Always remove listeners, callbacks, and event handlers when they are no longer needed.
+- **Be Careful with Static Fields**: Use static fields judiciously, especially for large data structures or objects.
+  
+Memory leaks in Java applications can degrade performance and eventually lead to application crashes. Proper memory management practices and tools can help identify and prevent these issues.
