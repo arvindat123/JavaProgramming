@@ -22,68 +22,110 @@ Here are some commonly asked Docker interview questions for experienced professi
    **Answer**: Docker Compose is a tool for defining and running multi-container Docker applications using a YAML file (`docker-compose.yml`). It allows you to define all services (containers) an application requires, along with configurations like networking and volumes. 
    - **Usage**: Docker Compose simplifies managing complex applications by enabling `docker-compose up` and `docker-compose down` to bring up or take down the entire environment in a single command.
    - **Example Use Case**: For a microservices architecture with multiple interdependent services, Docker Compose orchestrates container creation, networking, and volume sharing.
-   - Here’s an example of a `docker-compose.yml` file that defines a multi-container application using Docker Compose. This example includes a web application (using Node.js) and a database (MySQL).
+   Here’s an example `docker-compose.yml` file to build and deploy a Spring Boot application with a MySQL database using Docker Compose. This file configures both the Spring Boot app and MySQL service, handling database connectivity through environment variables.
 
-### Example `docker-compose.yml` file
+### Example `docker-compose.yml` file for a Java Application with MySQL
 
 ```yaml
-version: '3.8'  # Specify the Compose file version
+version: '3.8'
 
 services:
-  web:
-    image: node:14  # Use the Node.js image for the web service
-    container_name: web-app  # Optional: name the container
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Specify the Dockerfile to build the Java application
+    container_name: springboot-app  # Optional: name the container
     ports:
-      - "3000:3000"  # Map port 3000 on the host to port 3000 in the container
-    volumes:
-      - ./app:/usr/src/app  # Mount the host directory to the container for live code updates
-    working_dir: /usr/src/app  # Set the working directory in the container
-    command: npm start  # Start the application using npm
+      - "8080:8080"  # Map port 8080 on the host to port 8080 in the container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydatabase  # MySQL connection URL
+      SPRING_DATASOURCE_USERNAME: user  # Database user for the Spring Boot app
+      SPRING_DATASOURCE_PASSWORD: password  # Database password for the Spring Boot app
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update  # Set Hibernate DDL auto update (optional)
     depends_on:
-      - db  # Specify dependency on the db service
+      - db  # Ensure db service starts before app
 
   db:
-    image: mysql:5.7  # Use the MySQL image for the db service
+    image: mysql:8.0  # Use MySQL 8.0 image
     container_name: mysql-db  # Optional: name the container
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword  # Set the MySQL root password
-      MYSQL_DATABASE: mydatabase  # Create a database on startup
-      MYSQL_USER: user  # Set the database user
-      MYSQL_PASSWORD: userpassword  # Set the user password
+      MYSQL_ROOT_PASSWORD: rootpassword  # MySQL root password
+      MYSQL_DATABASE: mydatabase  # Initial database name
+      MYSQL_USER: user  # Database user
+      MYSQL_PASSWORD: password  # Database password
     ports:
-      - "3306:3306"  # Map port 3306 on the host to port 3306 in the container
+      - "3306:3306"  # Expose MySQL port 3306
     volumes:
-      - db-data:/var/lib/mysql  # Mount a named volume for persistent data storage
+      - db-data:/var/lib/mysql  # Use a named volume for persistent data storage
 
 volumes:
-  db-data:  # Define the named volume for database persistence
+  db-data:  # Define a named volume for MySQL data persistence
 ```
 
-### Explanation:
+### Explanation
 
-- **version**: Specifies the version of Docker Compose syntax being used.
-- **services**: Defines the services in this application, in this case, `web` and `db`.
-- **web service**:
-  - Uses the `node:14` image.
-  - Maps host port `3000` to container port `3000` to expose the application.
-  - Mounts a local directory (`./app`) to `/usr/src/app` in the container, allowing for code changes to be reflected immediately.
-  - Runs `npm start` to start the Node.js app.
-  - Depends on the `db` service, ensuring the database starts before this service.
-- **db service**:
-  - Uses the `mysql:5.7` image.
-  - Sets environment variables for MySQL configuration, including root and user passwords, and the database name.
-  - Maps port `3306` for database access.
-  - Mounts a named volume (`db-data`) to store database data persistently.
-- **volumes**: Defines the `db-data` named volume for the MySQL database to ensure data persists across container restarts.
+- **version**: Specifies the Docker Compose version.
+- **services**: Defines the `app` (Java Spring Boot application) and `db` (MySQL database) services.
 
-### Running the Docker Compose file
-To start this multi-container application, use the following command in the same directory as your `docker-compose.yml` file:
+#### `app` service (Spring Boot application)
+  - **build**: Specifies the build context (`.` refers to the current directory) and the Dockerfile to use.
+  - **container_name**: Sets an optional container name `springboot-app`.
+  - **ports**: Maps port `8080` on the host to port `8080` in the container, exposing the Spring Boot app.
+  - **environment**: Sets environment variables for connecting to the MySQL database:
+    - `SPRING_DATASOURCE_URL`: Defines the database connection URL for MySQL (`db` is the service name, which Docker Compose resolves to the IP of the MySQL container).
+    - `SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`: Credentials for connecting to the MySQL database.
+    - `SPRING_JPA_HIBERNATE_DDL_AUTO`: (Optional) Allows Hibernate to auto-update the schema; `update` is typically used in development.
+  - **depends_on**: Ensures the `db` service starts before `app`.
 
-```bash
-docker-compose up -d
+#### `db` service (MySQL database)
+  - **image**: Uses the official MySQL 8.0 image.
+  - **container_name**: Optionally names the container `mysql-db`.
+  - **environment**: Sets environment variables to initialize MySQL:
+    - `MYSQL_ROOT_PASSWORD`: Root password for MySQL.
+    - `MYSQL_DATABASE`: Creates a database on startup.
+    - `MYSQL_USER` and `MYSQL_PASSWORD`: Configures a non-root user for the application.
+  - **ports**: Maps the default MySQL port (`3306`) for host access.
+  - **volumes**: Uses a named volume (`db-data`) for MySQL data persistence.
+
+#### volumes
+  - **db-data**: Defines a named volume to store MySQL data across container restarts.
+
+---
+
+### Dockerfile for the Spring Boot Application
+
+In the same directory, include a `Dockerfile` to build the Spring Boot application:
+
+```dockerfile
+# Start with an OpenJDK base image
+FROM openjdk:11-jre-slim
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the JAR file from the host machine into the container
+COPY target/myapp.jar myapp.jar
+
+# Expose the application port
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "myapp.jar"]
 ```
 
-This command runs the services in detached mode (`-d`) in the background.
+### Steps to Run
+
+1. Ensure that the Spring Boot application is built and the JAR file (`myapp.jar`) is located in the `target` folder. If using Maven, run:
+   ```bash
+   mvn clean package
+   ```
+
+2. Run Docker Compose in the directory containing your `docker-compose.yml` file:
+   ```bash
+   docker-compose up -d
+   ```
+
+This command will build and start both the Spring Boot application and MySQL database. The Spring Boot app will connect to the MySQL database using the specified environment variables.
 
 ---
 
