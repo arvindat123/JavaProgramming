@@ -128,3 +128,129 @@ In this example, data is continuously added to the `list` without clearing or re
 - **Be Careful with Static Fields**: Use static fields judiciously, especially for large data structures or objects.
   
 Memory leaks in Java applications can degrade performance and eventually lead to application crashes. Proper memory management practices and tools can help identify and prevent these issues.
+
+---
+To stop memory leaks in Java code, you can follow best practices that help manage memory effectively and ensure that unused objects are eligible for garbage collection. Here are practical steps and techniques to prevent memory leaks in Java applications:
+
+### 1. **Avoid Unnecessary Object References**
+   - Once an object is no longer needed, set its reference to `null`. This removes the reference and makes it eligible for garbage collection.
+   - **Example**:
+     ```java
+     MyClass myObject = new MyClass();
+     // Use myObject
+     myObject = null;  // Eligible for GC now
+     ```
+
+### 2. **Use Local Variables Instead of Class-Level Variables**
+   - Prefer local variables over instance or static fields where possible. Local variables are eligible for garbage collection after the method exits, whereas instance/static variables may persist and occupy memory longer than necessary.
+
+### 3. **Be Cautious with Static Variables**
+   - Static variables live for the entire lifetime of the application, which can cause a memory leak if large objects or collections are assigned to them and not cleared.
+   - **Solution**: Use static variables judiciously, and avoid keeping references to large objects or collections unless necessary.
+
+### 4. **Clear Collection Objects When Done**
+   - If you’re using collections like `ArrayList`, `HashMap`, or `HashSet`, remove items from the collection when they are no longer needed. Accumulating objects in collections without removing them prevents garbage collection.
+   - **Example**:
+     ```java
+     List<Object> list = new ArrayList<>();
+     list.add(new Object());
+     list.clear();  // Clears all items in the list, making them eligible for GC
+     ```
+
+### 5. **Deregister Event Listeners and Callbacks**
+   - If an object registers itself as an event listener or callback but is not deregistered when no longer needed, it remains in memory.
+   - **Solution**: Explicitly remove or deregister listeners and callbacks when the object is done being used.
+   - **Example**:
+     ```java
+     button.addActionListener(myListener);
+     // Later, when the listener is no longer needed
+     button.removeActionListener(myListener);
+     ```
+
+### 6. **Use Weak References for Caches or Large Objects**
+   - `WeakReference` and `SoftReference` allow objects to be garbage collected if they are no longer strongly referenced. This is especially useful for caches where you want objects to be available but not prevent garbage collection.
+   - **Example**:
+     ```java
+     WeakReference<MyClass> weakReference = new WeakReference<>(new MyClass());
+     MyClass myClass = weakReference.get();  // May return null if GC collected it
+     ```
+
+### 7. **Avoid Inner Classes that Hold References to Outer Classes**
+   - Non-static inner classes hold an implicit reference to their outer class instance, which can prevent the outer instance from being collected if the inner class instance is retained.
+   - **Solution**: Make inner classes `static` if they don’t need access to the outer class instance, or use `WeakReference` to the outer class.
+
+### 8. **Use Try-with-Resources for Auto-Closeable Resources**
+   - Use `try-with-resources` to ensure that resources like files, network connections, or database connections are closed after use, freeing associated memory.
+   - **Example**:
+     ```java
+     try (BufferedReader reader = new BufferedReader(new FileReader("file.txt"))) {
+         // Read file
+     }  // Reader is automatically closed here
+     ```
+
+### 9. **Implement Proper `equals()` and `hashCode()` for Objects in Collections**
+   - Objects in collections like `HashSet` or `HashMap` that don’t properly implement `equals()` and `hashCode()` can lead to “phantom” objects that cannot be removed from the collection, causing memory leaks.
+   - **Solution**: Override `equals()` and `hashCode()` in classes used as keys in collections.
+
+### 10. **Avoid Using Large Object Graphs When Possible**
+   - Large object graphs (complex chains of object references) can lead to memory leaks if any part of the graph is inadvertently retained. Break down large structures and nullify references when they’re no longer needed.
+
+### 11. **Monitor and Test Regularly for Memory Leaks**
+   - Use tools like **VisualVM**, **Eclipse MAT (Memory Analyzer Tool)**, **JProfiler**, or **YourKit** to monitor memory usage and detect memory leaks. Analyze heap dumps to identify objects that are taking up memory and verify they’re meant to persist.
+
+### Example Code with Best Practices
+
+Here's an example demonstrating some of these techniques:
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.lang.ref.WeakReference;
+
+public class MemoryLeakPrevention {
+
+    private List<Object> cache = new ArrayList<>();
+
+    public void useWeakReferences() {
+        WeakReference<Object> weakObject = new WeakReference<>(new Object());
+        if (weakObject.get() != null) {
+            // Use object if still in memory
+        } else {
+            // Object has been garbage collected
+        }
+    }
+
+    public void avoidStaticCollections() {
+        List<Object> tempList = new ArrayList<>();
+        // Populate and use tempList
+        tempList.clear();  // Clear after use to avoid memory leak
+    }
+
+    public void clearEventListeners() {
+        MyButton button = new MyButton();
+        MyListener listener = new MyListener();
+        button.addListener(listener);
+
+        // Later, when button is no longer used
+        button.removeListener(listener);  // Avoid memory leak
+    }
+    
+    // Inner class without reference to outer class instance
+    private static class MyListener {}
+
+    // Dummy class for demonstration
+    private static class MyButton {
+        private List<MyListener> listeners = new ArrayList<>();
+
+        public void addListener(MyListener listener) {
+            listeners.add(listener);
+        }
+
+        public void removeListener(MyListener listener) {
+            listeners.remove(listener);
+        }
+    }
+}
+```
+
+Following these practices will help reduce or eliminate memory leaks in Java, leading to more efficient memory usage and more reliable applications. Regular monitoring and profiling are key to ensuring that memory is managed effectively in long-running applications.
