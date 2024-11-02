@@ -22,6 +22,68 @@ Here are some commonly asked Docker interview questions for experienced professi
    **Answer**: Docker Compose is a tool for defining and running multi-container Docker applications using a YAML file (`docker-compose.yml`). It allows you to define all services (containers) an application requires, along with configurations like networking and volumes. 
    - **Usage**: Docker Compose simplifies managing complex applications by enabling `docker-compose up` and `docker-compose down` to bring up or take down the entire environment in a single command.
    - **Example Use Case**: For a microservices architecture with multiple interdependent services, Docker Compose orchestrates container creation, networking, and volume sharing.
+   - Here’s an example of a `docker-compose.yml` file that defines a multi-container application using Docker Compose. This example includes a web application (using Node.js) and a database (MySQL).
+
+### Example `docker-compose.yml` file
+
+```yaml
+version: '3.8'  # Specify the Compose file version
+
+services:
+  web:
+    image: node:14  # Use the Node.js image for the web service
+    container_name: web-app  # Optional: name the container
+    ports:
+      - "3000:3000"  # Map port 3000 on the host to port 3000 in the container
+    volumes:
+      - ./app:/usr/src/app  # Mount the host directory to the container for live code updates
+    working_dir: /usr/src/app  # Set the working directory in the container
+    command: npm start  # Start the application using npm
+    depends_on:
+      - db  # Specify dependency on the db service
+
+  db:
+    image: mysql:5.7  # Use the MySQL image for the db service
+    container_name: mysql-db  # Optional: name the container
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Set the MySQL root password
+      MYSQL_DATABASE: mydatabase  # Create a database on startup
+      MYSQL_USER: user  # Set the database user
+      MYSQL_PASSWORD: userpassword  # Set the user password
+    ports:
+      - "3306:3306"  # Map port 3306 on the host to port 3306 in the container
+    volumes:
+      - db-data:/var/lib/mysql  # Mount a named volume for persistent data storage
+
+volumes:
+  db-data:  # Define the named volume for database persistence
+```
+
+### Explanation:
+
+- **version**: Specifies the version of Docker Compose syntax being used.
+- **services**: Defines the services in this application, in this case, `web` and `db`.
+- **web service**:
+  - Uses the `node:14` image.
+  - Maps host port `3000` to container port `3000` to expose the application.
+  - Mounts a local directory (`./app`) to `/usr/src/app` in the container, allowing for code changes to be reflected immediately.
+  - Runs `npm start` to start the Node.js app.
+  - Depends on the `db` service, ensuring the database starts before this service.
+- **db service**:
+  - Uses the `mysql:5.7` image.
+  - Sets environment variables for MySQL configuration, including root and user passwords, and the database name.
+  - Maps port `3306` for database access.
+  - Mounts a named volume (`db-data`) to store database data persistently.
+- **volumes**: Defines the `db-data` named volume for the MySQL database to ensure data persists across container restarts.
+
+### Running the Docker Compose file
+To start this multi-container application, use the following command in the same directory as your `docker-compose.yml` file:
+
+```bash
+docker-compose up -d
+```
+
+This command runs the services in detached mode (`-d`) in the background.
 
 ---
 
