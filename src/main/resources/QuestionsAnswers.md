@@ -98,6 +98,77 @@ Here are some common **REST API interview questions** and their answers that can
    **Answer:**
    Pagination refers to breaking down a large set of data into smaller chunks (pages) to limit the data returned by the server in a single request. REST APIs typically use query parameters like `page` and `limit` to implement pagination (e.g., `/users?page=2&limit=50`).
 
+   Content negotiation is a mechanism used in HTTP and RESTful APIs that enables a client (such as a web browser or mobile app) to request data in a format that it can process. The server, based on these preferences, decides the best format to send the data, which can be JSON, XML, HTML, plain text, etc. 
+
+Content negotiation typically works through HTTP headers, specifically `Accept` headers sent by the client, which indicate the preferred media types. The server checks the `Accept` headers and responds with data in the format requested (if supported) or in a default format if there’s no match.
+
+### How Content Negotiation Works
+
+1. **Client Request with `Accept` Header**: When a client sends a request to the server, it includes an `Accept` header indicating the desired response format. For example:
+   ```http
+   Accept: application/json
+   ```
+   or for XML:
+   ```http
+   Accept: application/xml
+   ```
+
+2. **Server Response Based on Header**: The server processes this request, and if it supports the requested format, it responds with data in that format. If the server cannot provide the requested format, it may either send a response in a default format or return a `406 Not Acceptable` status.
+
+3. **Priority and Multiple Formats**: The client can also list multiple acceptable formats with priority. For example:
+   ```http
+   Accept: application/json, application/xml;q=0.9, text/html;q=0.8
+   ```
+   This specifies that the client prefers `JSON` but will also accept `XML` or `HTML` if JSON isn’t available.
+
+### Example in REST API
+
+Consider a REST API that provides user data. Depending on the client’s `Accept` header, the response format might differ.
+
+**Client Request (for JSON format):**
+```http
+GET /users/123 HTTP/1.1
+Accept: application/json
+```
+
+**Server Response:**
+```json
+{
+  "id": 123,
+  "name": "John Doe",
+  "email": "johndoe@example.com"
+}
+```
+
+**Client Request (for XML format):**
+```http
+GET /users/123 HTTP/1.1
+Accept: application/xml
+```
+
+**Server Response:**
+```xml
+<user>
+  <id>123</id>
+  <name>John Doe</name>
+  <email>johndoe@example.com</email>
+</user>
+```
+
+### Benefits of Content Negotiation
+
+- **Flexibility**: Clients can specify the format they prefer, making it easy to integrate with various systems and applications.
+- **Efficiency**: Content is provided in the most usable format for the client, reducing the need for additional parsing or conversion.
+- **User Experience**: For web services, it allows different clients (e.g., web browsers vs. mobile apps) to access data in optimal formats.
+
+### Types of Content Negotiation
+
+1. **Server-Driven Negotiation**: The server selects the response format based on the client's `Accept` headers.
+2. **Client-Driven Negotiation**: The client uses query parameters or other mechanisms to explicitly request a specific format.
+3. **Agent-Driven Negotiation**: Intermediary agents, like proxies, help negotiate the content, though this is less common. 
+
+Content negotiation is essential for APIs and web services, as it allows for a smooth, interoperable interaction between different systems, adapting responses based on client needs.
+
 ---
 
 Here are some advanced Java multithreading interview questions and answers, typically asked for experienced professionals:
