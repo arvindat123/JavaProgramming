@@ -98,6 +98,7 @@ Here are some common **REST API interview questions** and their answers that can
    **Answer:**
    Pagination refers to breaking down a large set of data into smaller chunks (pages) to limit the data returned by the server in a single request. REST APIs typically use query parameters like `page` and `limit` to implement pagination (e.g., `/users?page=2&limit=50`).
 
+### 18. **What is content negotiation?**   
    Content negotiation is a mechanism used in HTTP and RESTful APIs that enables a client (such as a web browser or mobile app) to request data in a format that it can process. The server, based on these preferences, decides the best format to send the data, which can be JSON, XML, HTML, plain text, etc. 
 
 Content negotiation typically works through HTTP headers, specifically `Accept` headers sent by the client, which indicate the preferred media types. The server checks the `Accept` headers and responds with data in the format requested (if supported) or in a default format if there’s no match.
