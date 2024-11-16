@@ -2,10 +2,13 @@ Setting up microservices using Java and Spring Boot involves a structured proces
 
 ### Step 1: Initial Setup and Project Structure
 1. **Create a Parent Project**:
+
+2. ![image](https://github.com/user-attachments/assets/ba2a892d-ff48-4083-a0e0-5b1a72dc29d5)
+
    - Use a tool like **Spring Initializr** to create a Maven or Gradle project.
    - Choose dependencies like **Spring Boot DevTools**, **Spring Web**, **Spring Data JPA**, and **Spring Cloud Config**.
 
-2. **Subdivide into Modules**:
+3. **Subdivide into Modules**:
    - Create individual modules within your parent project for different microservices.
    - For example, create modules like `user-service`, `order-service`, `inventory-service`.
 
