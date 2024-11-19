@@ -157,3 +157,38 @@ public class StackExample {
 
 ### Conclusion
 The heap is ideal for storing objects that need to exist beyond the life of the method call and that might be shared across multiple parts of the application. The stack is ideal for storing temporary variables that are local to methods. Understanding the differences between these memory areas helps in writing memory-efficient and optimized Java programs while avoiding issues like `OutOfMemoryError` and `StackOverflowError`.
+
+---
+**Concurrency** refers to the ability of a system to handle multiple tasks or processes at the same time. In the context of programming, it means managing the execution of multiple threads or processes that can run independently or interact with each other to perform tasks simultaneously.
+
+### Key Points of Concurrency:
+1. **Parallel Execution**: Concurrency enables parts of a program to run in parallel, which can improve the performance of applications, especially on multi-core processors.
+2. **Thread Management**: In Java, concurrency is often managed through threads. Each thread represents a separate path of execution within a program.
+3. **Task Coordination**: Concurrency involves coordinating tasks so they share resources effectively without interference or data corruption.
+4. **Challenges**:
+   - **Race Conditions**: Occur when two or more threads access shared data simultaneously and at least one modifies it, leading to unpredictable behavior.
+   - **Deadlocks**: Happen when two or more threads are waiting for each other to release resources, causing a standstill.
+   - **Thread Safety**: Ensures that shared data is modified in a safe manner when accessed by multiple threads.
+
+### Example in Java:
+Java provides several mechanisms to implement concurrency:
+- **Threads and the `Thread` class**.
+- **The `Runnable` interface**.
+- **The `ExecutorService` framework** for more advanced control.
+- **Concurrency utilities** like `CountDownLatch`, `Semaphore`, and `ConcurrentHashMap`.
+
+**Example**:
+```java
+public class ConcurrencyExample {
+    public static void main(String[] args) {
+        Runnable task = () -> {
+            System.out.println("Running in thread: " + Thread.currentThread().getName());
+        };
+
+        Thread thread = new Thread(task);
+        thread.start(); // Starts the thread and runs the task concurrently
+    }
+}
+```
+
+In this example, `thread.start()` initiates a new thread that runs the task concurrently with the main program.
