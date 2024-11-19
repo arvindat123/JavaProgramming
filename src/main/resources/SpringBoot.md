@@ -393,3 +393,243 @@ public void complexTransactionMethod() {
 ```
 
 These questions and detailed examples cover a variety of critical concepts in Spring, demonstrating the expertise needed for experienced professionals in a Spring-based environment.
+---
+
+Here are some advanced interview questions about Spring and Spring Boot annotations, along with detailed examples to help experienced professionals prepare:
+
+### 1. **What is the difference between `@Component`, `@Service`, `@Repository`, and `@Controller` in Spring?**
+**Answer**:
+- **`@Component`**: A generic stereotype annotation for any Spring-managed component. It tells Spring to create a bean for this class and manage it in the application context.
+- **`@Service`**: A specialization of `@Component`, used for classes that contain business logic. It makes the code more readable and indicates that the class performs service tasks.
+- **`@Repository`**: A specialization of `@Component` used to indicate that a class is a Data Access Object (DAO). It provides additional support for exception translation to convert database exceptions into Spring’s `DataAccessException`.
+- **`@Controller`**: A specialization of `@Component` for web controllers in Spring MVC. It is used to create REST endpoints or handle web requests.
+
+**Example**:
+```java
+@Component
+public class GeneralComponent {
+    // Generic functionality
+}
+
+@Service
+public class UserService {
+    // Business logic methods
+}
+
+@Repository
+public class UserRepository {
+    // Data access methods
+}
+
+@Controller
+public class UserController {
+    @GetMapping("/users")
+    public String getUsers() {
+        return "userList";
+    }
+}
+```
+
+### 2. **Explain the use of `@Autowired` and its different modes.**
+**Answer**:
+`@Autowired` is used for dependency injection in Spring. It automatically wires dependencies by type. It can be used on constructors, fields, or setter methods.
+
+**Modes**:
+- **Default (required=true)**: If Spring cannot find a bean to inject, it throws an exception.
+- **`@Autowired(required=false)`**: If a bean is not found, Spring will not inject and will not throw an exception.
+
+**Example**:
+```java
+@Component
+public class Car {
+    private Engine engine;
+
+    // Constructor Injection
+    @Autowired
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    // Field Injection
+    @Autowired
+    private Transmission transmission;
+
+    // Setter Injection
+    @Autowired(required = false)
+    public void setWheels(Wheels wheels) {
+        this.wheels = wheels;
+    }
+}
+```
+
+### 3. **What is `@Qualifier` and when is it used?**
+**Answer**:
+`@Qualifier` is used with `@Autowired` to resolve the ambiguity when multiple beans of the same type are available in the application context. It specifies the exact bean to be injected.
+
+**Example**:
+```java
+@Component("v8Engine")
+public class V8Engine implements Engine {
+    // V8 engine specifics
+}
+
+@Component("v6Engine")
+public class V6Engine implements Engine {
+    // V6 engine specifics
+}
+
+@Component
+public class Car {
+    private Engine engine;
+
+    @Autowired
+    @Qualifier("v8Engine")
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+}
+```
+
+### 4. **Explain the `@Primary` annotation and its use case.**
+**Answer**:
+`@Primary` is used to indicate that a bean should be given preference when multiple candidates are qualified to be autowired. It is helpful in scenarios where a default bean is needed without using `@Qualifier`.
+
+**Example**:
+```java
+@Component
+@Primary
+public class V8Engine implements Engine {
+    // V8 engine specifics
+}
+
+@Component
+public class V6Engine implements Engine {
+    // V6 engine specifics
+}
+
+@Component
+public class Car {
+    @Autowired
+    private Engine engine;  // V8Engine will be autowired due to @Primary
+}
+```
+
+### 5. **What is `@Configuration` and how does it work?**
+**Answer**:
+`@Configuration` is used to indicate that a class declares one or more `@Bean` methods and may be processed by the Spring container to generate bean definitions and service requests.
+
+**Example**:
+```java
+@Configuration
+public class AppConfig {
+    @Bean
+    public Car car() {
+        return new Car(engine());
+    }
+
+    @Bean
+    public Engine engine() {
+        return new V8Engine();
+    }
+}
+```
+In this example, `AppConfig` acts as a configuration class that defines beans for the Spring container.
+
+### 6. **What is `@Bean` and how is it different from `@Component`?**
+**Answer**:
+`@Bean` is used to declare a method that returns a bean to be managed by the Spring container. Unlike `@Component`, which is used at the class level, `@Bean` is used within `@Configuration` classes.
+
+**Example**:
+```java
+@Configuration
+public class AppConfig {
+    @Bean
+    public Engine engine() {
+        return new V6Engine();
+    }
+}
+```
+**Difference**:
+- `@Component` is used for class-level bean registration, while `@Bean` is for method-level bean definition.
+- `@Bean` allows more control over bean initialization logic.
+
+### 7. **What is `@RestController` in Spring Boot and how does it differ from `@Controller`?**
+**Answer**:
+`@RestController` is a specialized version of `@Controller` used to create RESTful web services. It combines `@Controller` and `@ResponseBody`, meaning that all methods return JSON or XML data directly, without needing `@ResponseBody` on each method.
+
+**Example**:
+```java
+@RestController
+@RequestMapping("/api")
+public class UserRestController {
+    @GetMapping("/users")
+    public List<User> getUsers() {
+        return userService.getAllUsers();
+    }
+}
+```
+**Difference**:
+- **`@Controller`**: Typically used to render views.
+- **`@RestController`**: Used for RESTful web services, returning data directly as JSON or XML.
+
+### 8. **What is `@SpringBootApplication` and what does it do?**
+**Answer**:
+`@SpringBootApplication` is a convenience annotation that combines:
+- `@Configuration`: Denotes the class as a source of bean definitions.
+- `@EnableAutoConfiguration`: Enables Spring Boot’s auto-configuration mechanism.
+- `@ComponentScan`: Scans for `@Component`, `@Controller`, `@Service`, and other annotated classes within the package.
+
+**Example**:
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+This annotation makes it easier to set up and run Spring Boot applications with minimal configuration.
+
+### 9. **What is `@PathVariable` and `@RequestParam`?**
+**Answer**:
+- **`@PathVariable`**: Used to extract values from the URI template.
+- **`@RequestParam`**: Used to extract query parameters from the request URL.
+
+**Example**:
+```java
+@RestController
+@RequestMapping("/api")
+public class ProductController {
+
+    @GetMapping("/products/{id}")
+    public Product getProductById(@PathVariable("id") Long productId) {
+        return productService.getProductById(productId);
+    }
+
+    @GetMapping("/products")
+    public List<Product> getProductsByCategory(@RequestParam("category") String category) {
+        return productService.getProductsByCategory(category);
+    }
+}
+```
+
+### 10. **What is `@Value` and how do you use it in Spring?**
+**Answer**:
+`@Value` is used to inject values from properties files or environment variables into fields, methods, or constructor parameters.
+
+**Example**:
+```java
+@Component
+public class AppConfig {
+    @Value("${app.name}")
+    private String appName;
+
+    @Value("${app.version:1.0}")  // Default value if not found
+    private String appVersion;
+
+    // Getter methods
+}
+```
+In this example, the values for `appName` and `appVersion` are read from `application.properties` or set with default values if not found.
+
+These questions and detailed examples cover a variety of key Spring and Spring Boot annotations, showcasing expertise for experienced professionals in real-world application development.
