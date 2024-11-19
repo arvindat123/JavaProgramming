@@ -172,4 +172,224 @@ These questions test both conceptual understanding and hands-on knowledge, helpi
 
 ---
 
+Here are some advanced Spring interview questions and answers with detailed examples, suitable for experienced professionals:
 
+### 1. **What are the main features of the Spring Framework?**
+**Answer**:
+The main features of the Spring Framework include:
+- **Dependency Injection (DI)**: Simplifies the development by managing object dependencies.
+- **Aspect-Oriented Programming (AOP)**: Enables modularizing cross-cutting concerns such as logging and transaction management.
+- **Transaction Management**: Provides an abstraction layer for managing transactions.
+- **Data Access Framework**: Simplifies data access using JDBC and integrates seamlessly with ORM tools like Hibernate.
+- **Spring MVC**: Provides a web framework for building RESTful services and web applications.
+- **Spring Boot**: Offers auto-configuration to simplify the creation of production-ready applications.
+- **Integration Support**: Provides integration with popular technologies like JPA, JMS, and JMX.
+
+### 2. **Explain Dependency Injection (DI) and how it is implemented in Spring.**
+**Answer**:
+Dependency Injection (DI) is a design pattern where the control of object creation and dependency management is shifted from the object itself to an external entity (the Spring container). DI promotes loose coupling between components.
+
+**Example**:
+**Constructor Injection**:
+```java
+@Component
+public class Car {
+    private Engine engine;
+
+    @Autowired
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+}
+```
+
+**Setter Injection**:
+```java
+@Component
+public class Car {
+    private Engine engine;
+
+    @Autowired
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+}
+```
+
+**XML-based Configuration**:
+```xml
+<bean id="car" class="com.example.Car">
+    <constructor-arg ref="engine" />
+</bean>
+
+<bean id="engine" class="com.example.Engine" />
+```
+
+### 3. **What is Spring Bean Lifecycle and what are the different stages involved?**
+**Answer**:
+The lifecycle of a Spring bean involves several stages:
+1. **Instantiation**: The bean is created by the Spring container.
+2. **Populating Properties**: Dependencies are injected.
+3. **`setBeanName()`**: The `BeanNameAware` interface method is called, passing the bean's name.
+4. **`setBeanFactory()`**: The `BeanFactoryAware` interface method is called.
+5. **`setApplicationContext()`**: The `ApplicationContextAware` interface method is called.
+6. **Pre-Initialization (`postProcessBeforeInitialization()`)**: Called by `BeanPostProcessor` before initialization methods.
+7. **Initialization**: `@PostConstruct` or `afterPropertiesSet()` (from `InitializingBean` interface) or a custom `init` method.
+8. **Post-Initialization (`postProcessAfterInitialization()`)**: Called by `BeanPostProcessor` after initialization.
+9. **Bean Ready to Use**: The bean is fully initialized.
+10. **Destruction**: `@PreDestroy` or `destroy()` (from `DisposableBean` interface) or a custom `destroy` method.
+
+**Example**:
+```java
+@Component
+public class MyBean implements InitializingBean, DisposableBean {
+    @PostConstruct
+    public void postConstruct() {
+        System.out.println("PostConstruct method called");
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        System.out.println("InitializingBean's afterPropertiesSet method called");
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        System.out.println("PreDestroy method called");
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("DisposableBean's destroy method called");
+    }
+}
+```
+
+### 4. **What is the difference between `@Component`, `@Repository`, `@Service`, and `@Controller` in Spring?**
+**Answer**:
+All these annotations are specialized forms of `@Component` and are used for different types of classes:
+- **`@Component`**: A generic stereotype for any Spring-managed component.
+- **`@Repository`**: Indicates that a class is a Data Access Object (DAO). It also provides exception translation, converting database-related exceptions into Spring's `DataAccessException`.
+- **`@Service`**: Used to indicate that a class holds business logic.
+- **`@Controller`**: Used for web controllers in the Spring MVC framework. It defines a class as a controller capable of handling HTTP requests.
+
+**Example**:
+```java
+@Repository
+public class UserRepository {
+    // Database access logic
+}
+
+@Service
+public class UserService {
+    // Business logic
+}
+
+@Controller
+public class UserController {
+    @GetMapping("/users")
+    public String getUsers() {
+        return "userList";
+    }
+}
+```
+
+### 5. **What are Spring Profiles and how do you use them?**
+**Answer**:
+Spring Profiles allow you to define separate configurations for different environments (e.g., development, testing, production). You can activate or switch between profiles using the `spring.profiles.active` property.
+
+**Example**:
+**Profile Configuration in `application.properties`**:
+```properties
+# application-dev.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/dev_db
+spring.datasource.username=dev_user
+
+# application-prod.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/prod_db
+spring.datasource.username=prod_user
+```
+
+**Using `@Profile` Annotation**:
+```java
+@Configuration
+@Profile("dev")
+public class DevConfig {
+    @Bean
+    public DataSource devDataSource() {
+        // return data source for development
+    }
+}
+
+@Configuration
+@Profile("prod")
+public class ProdConfig {
+    @Bean
+    public DataSource prodDataSource() {
+        // return data source for production
+    }
+}
+```
+
+**Activating a Profile**:
+- Via command line: `java -jar myapp.jar --spring.profiles.active=dev`
+- In `application.properties`: `spring.profiles.active=dev`
+
+### 6. **What is Spring AOP and how is it used?**
+**Answer**:
+Spring AOP (Aspect-Oriented Programming) allows you to separate cross-cutting concerns (like logging, transaction management) from the main business logic. It is used to implement aspects that can be applied to various join points (e.g., method executions).
+
+**Example**:
+**Aspect Class**:
+```java
+@Aspect
+@Component
+public class LoggingAspect {
+
+    @Before("execution(* com.example.service.*.*(..))")
+    public void logBeforeMethod(JoinPoint joinPoint) {
+        System.out.println("Executing method: " + joinPoint.getSignature().getName());
+    }
+}
+```
+
+**Enable AOP**:
+```java
+@Configuration
+@EnableAspectJAutoProxy
+public class AppConfig {
+}
+```
+
+### 7. **Explain the `@Transactional` annotation and its usage.**
+**Answer**:
+The `@Transactional` annotation in Spring is used to define the transactional behavior of methods or classes. It ensures that a method runs within a transaction, providing rollback capabilities and managing commits.
+
+**Example**:
+```java
+@Service
+public class PaymentService {
+
+    @Transactional
+    public void processPayment(Order order) {
+        // Logic for processing payment
+        // Any RuntimeException will trigger a rollback
+    }
+}
+```
+
+**Key Attributes**:
+- **`propagation`**: Defines the transaction propagation type (e.g., `REQUIRED`, `REQUIRES_NEW`).
+- **`isolation`**: Defines the transaction isolation level (e.g., `READ_COMMITTED`).
+- **`timeout`**: Specifies the time limit for a transaction.
+- **`readOnly`**: Marks the transaction as read-only.
+
+**Example with attributes**:
+```java
+@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE, timeout = 5, readOnly = false)
+public void complexTransactionMethod() {
+    // Critical transactional logic
+}
+```
+
+These questions and detailed examples cover a variety of critical concepts in Spring, demonstrating the expertise needed for experienced professionals in a Spring-based environment.
