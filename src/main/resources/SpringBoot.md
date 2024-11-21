@@ -238,6 +238,7 @@ The lifecycle of a Spring bean involves several stages:
 8. **Post-Initialization (`postProcessAfterInitialization()`)**: Called by `BeanPostProcessor` after initialization.
 9. **Bean Ready to Use**: The bean is fully initialized.
 10. **Destruction**: `@PreDestroy` or `destroy()` (from `DisposableBean` interface) or a custom `destroy` method.
+![image](https://github.com/user-attachments/assets/f38c289d-94aa-4463-aea6-57ac16894fca)
 
 **Example**:
 ```java
