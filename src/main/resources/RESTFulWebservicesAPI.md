@@ -67,3 +67,214 @@ API design principles are best practices for creating Application Programming In
    - **Explanation**: JSON is preferred for its simplicity, readability, and compatibility with JavaScript, making it easier for web applications to consume.
 
 By following these **API design principles**, developers can create APIs that are robust, maintainable, and user-friendly, ensuring that the services meet both technical and business requirements.
+
+---
+
+Here are **API development and RESTful web services interview questions and answers** for experienced professionals, along with detailed examples to demonstrate your expertise:
+
+---
+
+### **General Questions**
+
+#### **1. What is a RESTful Web Service?**
+**Answer**:  
+RESTful web services follow the **REST (Representational State Transfer)** architectural style. They use standard HTTP methods and are stateless, enabling scalability, simplicity, and ease of integration.
+
+**Example**:  
+A RESTful web service to fetch a list of employees:
+- **HTTP Method**: GET  
+- **Endpoint**: `/api/employees`  
+- **Response**:  
+  ```json
+  [
+    { "id": 1, "name": "John Doe", "position": "Developer" },
+    { "id": 2, "name": "Jane Smith", "position": "Tester" }
+  ]
+  ```
+
+---
+
+#### **2. How is REST different from SOAP?**
+**Answer**:
+| Feature              | REST                     | SOAP                   |
+|----------------------|--------------------------|------------------------|
+| Protocol             | HTTP                     | Protocol-independent   |
+| Message Format       | JSON, XML, plain text    | XML                    |
+| State                | Stateless                | Can be stateful        |
+| Complexity           | Simpler to implement     | More complex           |
+| Performance          | Faster                   | Slower due to overhead |
+
+**Example**:  
+REST uses HTTP `GET` for retrieval, while SOAP requires a WSDL file and operations.
+
+---
+
+### **Technical Questions**
+
+#### **3. Explain the different HTTP methods and their use in RESTful APIs.**
+**Answer**:  
+- **GET**: Retrieve data.
+- **POST**: Create a resource.
+- **PUT**: Update a resource (complete).
+- **PATCH**: Update a resource (partial).
+- **DELETE**: Remove a resource.
+
+**Example**:  
+Updating a user's email with **PATCH**:
+- **Request**: `PATCH /api/users/123`  
+  ```json
+  { "email": "newemail@example.com" }
+  ```
+
+---
+
+#### **4. How do you handle versioning in REST APIs?**
+**Answer**:  
+- **URI versioning**: `/v1/employees`
+- **Header versioning**: `Accept: application/vnd.company.v1+json`
+- **Query parameter**: `/employees?version=1`
+
+**Example**:  
+Version 2 adds a `department` field:  
+- `/v2/employees`
+
+Response:
+```json
+{ "id": 1, "name": "John", "department": "Engineering" }
+```
+
+---
+
+#### **5. How do you secure REST APIs?**
+**Answer**:
+1. **Authentication & Authorization**: OAuth2, JWT, API keys.
+2. **Rate Limiting**: Prevent abuse.
+3. **Encryption**: Use HTTPS.
+4. **Input Validation**: Avoid injection attacks.
+
+**Example**:  
+Secure an API with JWT:
+- Add a token in the header:  
+  `Authorization: Bearer <token>`
+
+---
+
+#### **6. How do you implement pagination in RESTful services?**
+**Answer**:  
+Use query parameters:
+- `/employees?page=1&size=10`
+
+**Example**:  
+Response for page 1:
+```json
+{
+  "content": [{ "id": 1, "name": "John" }, { "id": 2, "name": "Jane" }],
+  "page": 1,
+  "size": 10,
+  "total": 100
+}
+```
+
+---
+
+#### **7. How do you design error handling in REST APIs?**
+**Answer**:  
+Use HTTP status codes and descriptive error messages.
+- **400**: Bad Request
+- **404**: Not Found
+- **500**: Internal Server Error
+
+**Example**:  
+Invalid request:  
+- Response:
+  ```json
+  { "error": "Invalid employee ID", "status": 400 }
+  ```
+
+---
+
+### **Scenario-Based Questions**
+
+#### **8. How would you design a REST API for a file upload and download service?**
+**Answer**:  
+1. **Upload**:  
+   - **POST** `/files/upload`  
+   - Request:
+     ```json
+     { "fileName": "example.txt", "content": "..." }
+     ```
+
+2. **Download**:  
+   - **GET** `/files/{fileId}`  
+   - Response: File binary with appropriate headers.
+
+---
+
+#### **9. How would you implement caching in REST APIs?**
+**Answer**:
+1. **Client-Side Caching**: Use `Cache-Control` headers.
+   - Example: `Cache-Control: max-age=3600`
+
+2. **Server-Side Caching**: Implement in-memory caches like Redis.
+
+---
+
+### **Advanced Questions**
+
+#### **10. What are idempotency and its importance in REST APIs?**
+**Answer**:  
+- **Idempotency** ensures that multiple identical requests have the same effect.
+- **Important for**: PUT, DELETE.
+
+**Example**:  
+Calling `DELETE /employees/123` multiple times will always delete employee 123 without errors.
+
+---
+
+#### **11. How would you design a microservice to handle high traffic RESTful API?**
+**Answer**:
+- **Load Balancer**: Distribute traffic.
+- **Scalability**: Horizontal scaling with containers.
+- **Resilience**: Circuit breakers using Hystrix.
+- **Monitoring**: ELK stack for logs.
+
+**Example**:  
+Designing an e-commerce API:
+- Split services: `OrderService`, `PaymentService`.
+
+---
+
+### **Practical Coding Example**
+
+#### **12. Write a simple Spring Boot REST API to fetch user details.**
+
+```java
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable int id) {
+        User user = new User(id, "John Doe", "john.doe@example.com");
+        return ResponseEntity.ok(user);
+    }
+}
+
+class User {
+    private int id;
+    private String name;
+    private String email;
+
+    // Constructor, Getters, Setters
+}
+```
+
+- **GET** `/api/users/1`  
+  **Response**:  
+  ```json
+  { "id": 1, "name": "John Doe", "email": "john.doe@example.com" }
+  ```
+
+---
+
+These answers demonstrate hands-on knowledge and strategic thinking, which are critical for experienced professionals. Let me know if you'd like more examples or deeper dives!
