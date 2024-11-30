@@ -53,6 +53,7 @@ Without overriding, cloning cannot be performed because `Object`'s `clone()` met
 `Cloneable` is a **marker interface** because it signals the **intent** to allow cloning, but the responsibility for providing a working `clone()` implementation lies with the developer. 
 
 In contrast, `Serializable` is a marker interface whose functionality is completely automated by the JVM, hence no methods need to be implemented. This distinction highlights why the two interfaces behave differently despite both being marker interfaces.
+
 ---
 Without implementing serializable interface, can we serialize or deserialize object in java?
 
