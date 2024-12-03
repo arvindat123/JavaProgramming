@@ -534,3 +534,69 @@ https://javatechonline.com/java-features-after-java-8/
 
 These features make Java 8 a major step forward for functional programming, concurrency, and developer productivity.
 
+---
+
+A **functional interface** in Java is an interface that contains exactly **one abstract method**. However, it **can have** any number of:
+
+### 1. **Static Methods**:
+- There is **no restriction** on the number of static methods in a functional interface.
+- Static methods belong to the interface itself and do not affect its functional interface nature.
+
+### 2. **Default Methods**:
+- A functional interface **can have multiple default methods**.
+- Default methods have a body and are not abstract, so they don't conflict with the "single abstract method" requirement of functional interfaces.
+
+### Key Rule:
+The functional interface remains valid as long as it has only one **abstract method**. The presence of static or default methods does not violate its functional interface property.
+
+### Example:
+```java
+@FunctionalInterface
+interface MyFunctionalInterface {
+    // Single abstract method
+    void execute();
+
+    // Multiple static methods
+    static void staticMethod1() {
+        System.out.println("Static Method 1");
+    }
+
+    static void staticMethod2() {
+        System.out.println("Static Method 2");
+    }
+
+    // Multiple default methods
+    default void defaultMethod1() {
+        System.out.println("Default Method 1");
+    }
+
+    default void defaultMethod2() {
+        System.out.println("Default Method 2");
+    }
+}
+
+public class TestFunctionalInterface {
+    public static void main(String[] args) {
+        MyFunctionalInterface instance = () -> System.out.println("Executing abstract method!");
+        instance.execute();
+        instance.defaultMethod1();
+        instance.defaultMethod2();
+        MyFunctionalInterface.staticMethod1();
+        MyFunctionalInterface.staticMethod2();
+    }
+}
+```
+
+### Output:
+```
+Executing abstract method!
+Default Method 1
+Default Method 2
+Static Method 1
+Static Method 2
+```
+
+### Summary:
+- **Static Methods**: Unlimited
+- **Default Methods**: Unlimited
+- **Abstract Methods**: Exactly **one** for a functional interface.
