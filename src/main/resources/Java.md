@@ -319,3 +319,218 @@ These methods provide flexibility depending on the use case:
 - Use **dynamic loops** or `Arrays.fill` for repetitive initialization.
 - Use **streams** for functional-style initialization.
 - Use **multi-dimensional arrays** for structured data.
+
+---
+
+Java 8 introduced several significant features that have reshaped Java programming. Here’s an overview of the major ones, along with examples:
+
+---
+
+### 1. **Lambda Expressions**
+Lambda expressions enable functional programming by allowing you to pass functions as arguments and simplify the syntax for anonymous classes.
+
+**Example:**
+```java
+// Without Lambda
+List<String> names = Arrays.asList("John", "Jane", "Jack");
+Collections.sort(names, new Comparator<String>() {
+    @Override
+    public int compare(String s1, String s2) {
+        return s1.compareTo(s2);
+    }
+});
+
+// With Lambda
+Collections.sort(names, (s1, s2) -> s1.compareTo(s2));
+```
+
+---
+
+### 2. **Functional Interfaces**
+A functional interface is an interface with a single abstract method. Examples include `Runnable`, `Callable`, `Comparator`, and `Function`.
+
+**Example:**
+```java
+@FunctionalInterface
+interface Greeting {
+    void sayHello(String name);
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Greeting greet = name -> System.out.println("Hello, " + name);
+        greet.sayHello("Alice");
+    }
+}
+```
+
+---
+
+### 3. **Streams API**
+The Streams API simplifies operations on collections like filtering, mapping, and reducing data.
+
+**Example:**
+```java
+List<String> names = Arrays.asList("John", "Jane", "Jack", "Jill");
+names.stream()
+     .filter(name -> name.startsWith("J"))
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+```
+
+---
+
+### 4. **Default and Static Methods in Interfaces**
+Interfaces can now have methods with default implementations or static utility methods.
+
+**Example:**
+```java
+interface Vehicle {
+    default void start() {
+        System.out.println("Starting vehicle...");
+    }
+    static void service() {
+        System.out.println("Servicing vehicle...");
+    }
+}
+
+public class Car implements Vehicle {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.start();
+        Vehicle.service();
+    }
+}
+```
+
+---
+
+### 5. **Optional**
+`Optional` is a container to handle null values gracefully and avoid `NullPointerException`.
+
+**Example:**
+```java
+Optional<String> optionalName = Optional.ofNullable(null);
+System.out.println(optionalName.orElse("Default Name"));
+
+optionalName = Optional.of("Alice");
+optionalName.ifPresent(name -> System.out.println("Name is " + name));
+```
+
+---
+
+### 6. **Date and Time API (java.time package)**
+The new `java.time` package replaces the old `Date` and `Calendar` APIs with more powerful and intuitive classes.
+
+**Example:**
+```java
+LocalDate today = LocalDate.now();
+LocalDate birthday = LocalDate.of(1995, Month.MAY, 23);
+
+Period age = Period.between(birthday, today);
+System.out.println("You are " + age.getYears() + " years old.");
+```
+
+---
+
+### 7. **Nashorn JavaScript Engine**
+Java 8 introduced Nashorn, a JavaScript engine that allows you to execute JavaScript code within Java applications.
+
+**Example:**
+```java
+import javax.script.*;
+
+public class Main {
+    public static void main(String[] args) throws ScriptException {
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        engine.eval("print('Hello from JavaScript');");
+    }
+}
+```
+
+---
+
+### 8. **Method References**
+Method references simplify lambda expressions by referring to existing methods by name.
+
+**Example:**
+```java
+List<String> names = Arrays.asList("John", "Jane", "Jack");
+names.forEach(System.out::println); // Equivalent to names.forEach(name -> System.out.println(name));
+```
+
+---
+
+### 9. **New Collectors in Streams**
+The `Collectors` utility provides methods like `toList()`, `toSet()`, and `joining()` for stream data aggregation.
+
+**Example:**
+```java
+List<String> names = Arrays.asList("John", "Jane", "Jack");
+String joinedNames = names.stream().collect(Collectors.joining(", "));
+System.out.println(joinedNames); // Output: John, Jane, Jack
+```
+
+---
+
+### 10. **Parallel Streams**
+Parallel streams leverage multiple threads to perform operations in parallel.
+
+**Example:**
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+numbers.parallelStream().forEach(System.out::println); // Output may vary due to parallel execution
+```
+```
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+int sum = numbers.parallelStream().mapToInt(Integer::intValue).sum();
+System.out.println(sum);  // Output: 15
+```
+### 11. **CompletableFuture API**
+The `CompletableFuture` class provides a way to handle asynchronous programming, enabling you to write non-blocking code.
+
+**Example:**
+```java
+CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+    return 10;
+});
+
+future.thenApplyAsync(value -> value * 2)
+      .thenAccept(result -> System.out.println("Result: " + result));  // Output: Result: 20
+```
+Java 8 : Why Java 8
+Java 8 improves overall application performance 
+Lambda expressions, the Streams API, and new methods added to existing classes improve productivity.
+Java 8 Optional type gives developers flexibility when dealing with null values, reducing the likelihood of NullPointerExceptions
+Easy to Parallelize: JVM splits any operation into separate jobs and uses fork/join to run them on multiple cores with simple API additions.
+Code is more concise and readable
+Code is more reusable
+Code is more testable and maintainable
+Code is now both highly concurrent and scalable
+Users can write parallel code
+Users can write database-like operations
+Applications now perform better
+Code is far more productive
+Java 8 : What are feature of Java 8
+Key features introduced in Java 8 include:
+1. Lambdas and Functional Interfaces: Java 8 introduced lambda expressions, which are anonymous functions that allow you to treat functions as method arguments. This made it easier to write more concise and expressive code. Alongside lambdas, functional interfaces were introduced to define a single abstract method, which can be implemented using lambda expressions.
+2. Stream API: The Stream API introduced functional-style operations to process sequences of elements, such as collections, arrays, or I/O channels. Streams provide a more declarative way to work with data and allow for parallel processing without the need for explicit multithreading.
+3. Default Methods: Interfaces in Java 8 can have method implementations. This feature, known as default methods, allows adding new methods to interfaces without breaking the existing implementations of classes that implement those interfaces.
+4. Static Methods in Interfaces: Interfaces can now include static methods as well. These methods are associated with the interface itself, not with implementing classes.
+5. Method References: Method references provide a shorthand syntax for referring to methods or constructors without invoking them. They can make code more readable when using lambda expressions.
+6. Functional Interfaces: Java 8 introduced a few new built-in functional interfaces in the `java.util.function` package, such as `Predicate`, `Function`, `Consumer`, and `Supplier`, which are used to work with functional programming concepts.
+7. Date and Time API: The new `java.time` package provides an improved date and time API that addresses the shortcomings of the older `java.util.Date` and `java.util.Calendar` classes. It offers better date and time manipulation, formatting, and parsing capabilities.
+8. Optional: The `Optional` class is used to represent an optional value that can be either present or absent. It helps to avoid null pointer exceptions and encourages more robust handling of nullable values.
+9. Nashorn JavaScript Engine: Java 8 included the Nashorn JavaScript engine, which allows developers to embed JavaScript code within Java applications and perform seamless interoperation between the two languages. Nashorn, a high-performance Java-based engine integrated to JDK used to evaluate and execute JavaScript code
+Type Annotations: Type annotations can be applied to various elements in Java, such as classes, methods, and variables, to provide additional type information. This is particularly useful for tools that perform static analysis, like finding bugs or performing code analysis.
+PermGen Removal: In previous versions of Java, the PermGen space was used to store metadata about classes and class loaders. Java 8 introduced the removal of PermGen and replaced it with the more flexible Metaspace, which is allocated from the native memory.
+PermGen removal
+10. New APIs and Libraries: Java 8 introduced various new APIs and libraries, including the `CompletableFuture` class for asynchronous programming, the `java.util.concurrent` package for concurrent programming, and improvements to the Collections framework.
+These features collectively aimed to make Java code more expressive, efficient, and modern, while also enabling better support for functional programming paradigms.
+
+https://javatechonline.com/java-features-after-java-8/
+
+---
+
+These features make Java 8 a major step forward for functional programming, concurrency, and developer productivity.
+
