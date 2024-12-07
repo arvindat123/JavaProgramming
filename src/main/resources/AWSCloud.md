@@ -726,3 +726,35 @@ ARNs provide a consistent and reliable way to reference AWS resources, ensuring 
 - **Load Balancing**: ELB for distributing traffic.
   
 These are core examples of **Infrastructure as a Service** in AWS, offering the flexibility to build and scale infrastructure in the cloud without worrying about the underlying physical hardware.
+
+---
+
+AWS EC2 (Elastic Compute Cloud) and AWS Lambda are both services for running applications in the AWS cloud, but they differ significantly in their purpose, pricing model, and how they are managed. Here’s a detailed comparison:
+
+| **Aspect**            | **AWS EC2**                                                                                  | **AWS Lambda**                                                                          |
+|-----------------------|---------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| **Purpose**           | Virtual servers for hosting applications. Provides complete control over the server.         | Serverless compute service for running code in response to events.                    |
+| **Infrastructure**    | Requires users to manage the operating system, updates, and scaling.                         | Abstracts all infrastructure; AWS manages servers, scaling, and maintenance.          |
+| **Usage Model**       | Ideal for applications that require consistent, long-running compute resources.               | Best for event-driven, short-duration tasks or microservices.                         |
+| **Billing**           | Pay for the uptime of the instance (hourly or per second, depending on the instance type).    | Pay per request and execution duration (measured in milliseconds).                    |
+| **Scaling**           | Requires manual setup or use of services like Auto Scaling to handle demand changes.          | Automatically scales up or down based on incoming requests.                           |
+| **Customization**     | Full control over the operating system, software stack, and configurations.                   | Limited to the runtime environment and resource settings (e.g., memory and timeout).   |
+| **Startup Time**      | Instance startup time is relatively high (minutes for full setup).                           | Starts almost instantly in milliseconds.                                              |
+| **Use Cases**         | - Hosting web applications or databases<br>- Running legacy software<br>- Custom environments | - Serverless APIs<br>- Data processing tasks<br>- Automation scripts<br>- Lightweight services |
+| **Programming Languages** | No restrictions; you install and configure your environment.                                | Supports specific runtimes (Node.js, Python, Java, .NET, Go, Ruby, etc.).             |
+| **Maintenance**       | User is responsible for OS updates, patches, and server health monitoring.                   | AWS handles maintenance, monitoring, and backend infrastructure.                      |
+
+### **Key Considerations**
+- **Choose EC2** if:
+  - You need full control over the OS and environment.
+  - Your application requires consistent high performance and long-running processes.
+  - You need to run custom software that doesn’t fit into Lambda's runtime model.
+
+- **Choose Lambda** if:
+  - Your application is event-driven with unpredictable traffic.
+  - You want to minimize management overhead.
+  - You want to pay only for compute time when your code is running.
+
+By understanding the key differences, you can decide which service best fits your application needs and cost-efficiency goals.
+
+
