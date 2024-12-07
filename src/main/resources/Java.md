@@ -600,3 +600,58 @@ Static Method 2
 - **Static Methods**: Unlimited
 - **Default Methods**: Unlimited
 - **Abstract Methods**: Exactly **one** for a functional interface.
+
+---------------------------------------------------------
+Yes, **`StringBuilder`** can technically be used as a key in a **`HashMap`**, but it is not recommended because **`StringBuilder`** is mutable. Using mutable objects as keys in a **`HashMap`** can lead to unpredictable behavior and bugs.
+
+### Why StringBuilder Can Be a Problematic Key
+
+1. **Mutable Nature of StringBuilder**:
+   - **`StringBuilder`** objects can be modified after they are used as keys in the **`HashMap`**. 
+   - The **`hashCode()`** and **`equals()`** of the key are used by the **`HashMap`** to locate entries. If the content of a **`StringBuilder`** changes, the **`hashCode()`** changes, and the **`HashMap`** can no longer locate the key or its corresponding value correctly.
+
+2. **Impact on HashMap Behavior**:
+   - After a key's **`StringBuilder`** value is modified, the **`HashMap`** may not find the value for the updated key.
+   - This leads to inconsistencies, such as `null` being returned for a valid key that was just modified.
+
+---
+
+### Example of the Problem:
+
+```java
+import java.util.HashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<StringBuilder, String> map = new HashMap<>();
+        
+        StringBuilder key = new StringBuilder("key1");
+        map.put(key, "value1");
+
+        System.out.println("Before modifying key: " + map.get(key)); // Output: value1
+
+        // Modify the key
+        key.append("Modified");
+
+        // Attempt to retrieve the value
+        System.out.println("After modifying key: " + map.get(key)); // Output: null
+    }
+}
+```
+
+### Output:
+```
+Before modifying key: value1
+After modifying key: null
+```
+
+---
+
+### Why String is Preferred as a Key:
+- **`String`** is immutable, meaning its state cannot change after it is created.
+- **`HashCode()`** and **`equals()`** remain consistent for the lifetime of the object, ensuring reliable behavior in a **`HashMap`**.
+
+---
+
+### Conclusion:
+While **`StringBuilder`** can technically be used as a key in a **`HashMap`**, doing so is risky because of its mutable nature. It is strongly recommended to use immutable objects like **`String`** as keys to ensure consistent and reliable behavior of the **`HashMap`**. If you must use a **`StringBuilder`**, ensure it is not modified after being used as a key.
