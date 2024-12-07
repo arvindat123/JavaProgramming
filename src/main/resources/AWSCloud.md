@@ -33,6 +33,7 @@ Here’s a list of commonly asked AWS interview questions with detailed answers,
      - **Durability and Availability**: Offers 99.999999999% (11 nines) durability.
      - **Data Management**: Allows features like versioning, lifecycle policies, and cross-region replication.
      - **Storage Classes**: Different storage classes such as S3 Standard, S3 Standard-IA, S3 Glacier, etc., tailored to various data storage needs and access patterns.
+     - You can protect the data in your Amazon S3 bucket by enabling either Server-Side Encryption with Amazon S3-Managed Keys (SSE-S3) or Server-Side Encryption with KMS Keys (SSE-KMS) on your S3 bucket. 
 
 ---
 
