@@ -655,3 +655,107 @@ After modifying key: null
 
 ### Conclusion:
 While **`StringBuilder`** can technically be used as a key in a **`HashMap`**, doing so is risky because of its mutable nature. It is strongly recommended to use immutable objects like **`String`** as keys to ensure consistent and reliable behavior of the **`HashMap`**. If you must use a **`StringBuilder`**, ensure it is not modified after being used as a key.
+
+---
+
+The **Diamond Problem** in Java is a common issue that arises with **multiple inheritance**. In languages that allow multiple inheritance (e.g., C++), this problem occurs when a class inherits from two classes that have a common ancestor, leading to ambiguity in method resolution. 
+
+Java avoids this problem at the class level by not supporting multiple inheritance of classes. However, the issue can still arise with **interfaces**, particularly after Java 8 introduced **default methods**.
+
+---
+
+### **Explanation**
+
+1. **The Problem:**
+   Suppose there are two interfaces, `A` and `B`, both defining or inheriting a default method with the same name. A third class, `C`, implements both `A` and `B`. Java now has to decide which version of the default method to use, leading to ambiguity.
+
+2. **How Java Handles It:**
+   Java forces the implementing class to **resolve the conflict** by overriding the ambiguous method and explicitly specifying which default method to use.
+
+---
+
+### **Example: Diamond Problem in Java**
+
+```java
+interface A {
+    default void display() {
+        System.out.println("Display method in Interface A");
+    }
+}
+
+interface B {
+    default void display() {
+        System.out.println("Display method in Interface B");
+    }
+}
+
+class C implements A, B {
+    // Must resolve the conflict explicitly
+    @Override
+    public void display() {
+        // Choose one implementation or provide a custom one
+        A.super.display(); // Calling the display method of Interface A
+        // B.super.display(); // Uncomment to call Interface B's method
+        System.out.println("Display method in Class C");
+    }
+}
+
+public class DiamondProblemExample {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.display();
+    }
+}
+```
+
+---
+
+### **Output**
+
+```
+Display method in Interface A
+Display method in Class C
+```
+
+---
+
+### **Explanation of Resolution**
+
+1. The compiler detects that both `A` and `B` have a `display()` method with the same signature.
+2. To resolve this, the class `C` is forced to override the `display()` method.
+3. Inside the overridden method in `C`, `A.super.display()` or `B.super.display()` can be explicitly called to refer to the respective interface's method.
+
+---
+
+### **Why Java Avoids the Diamond Problem at Class Level**
+Java doesn't allow multiple inheritance of classes. This eliminates ambiguity because a class can only inherit methods from a single superclass. 
+
+For example:
+
+```java
+class A {
+    void display() {
+        System.out.println("Display in Class A");
+    }
+}
+
+class B extends A {
+    void display() {
+        System.out.println("Display in Class B");
+    }
+}
+
+class C extends A, B { // Compilation error: Multiple inheritance not allowed in Java
+    // Not possible
+}
+```
+
+This design decision simplifies the inheritance model and avoids potential conflicts.
+
+---
+
+### **Key Points**
+
+1. **In Classes:** Java avoids the Diamond Problem by disallowing multiple inheritance of classes.
+2. **In Interfaces:** The problem arises with default methods but can be resolved by overriding the method in the implementing class.
+3. **Resolution:** Use `InterfaceName.super.methodName()` to explicitly specify which interface's default method to use.
