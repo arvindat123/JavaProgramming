@@ -242,48 +242,101 @@ Mastering these concepts will help you excel in interviews and optimize database
 
 ---
 
-### Difference Between `DELETE` and `TRUNCATE` in a Database
-
-Both `DELETE` and `TRUNCATE` commands are used to remove data from a database table, but they operate differently and are suited for different use cases.
+The **`DELETE`**, **`TRUNCATE`**, and **`DROP`** commands in databases are used to remove data, but they serve different purposes and operate differently. Here’s a detailed comparison:
 
 ---
 
-| Aspect                  | `DELETE`                                     | `TRUNCATE`                                 |
-|-------------------------|----------------------------------------------|--------------------------------------------|
-| **Purpose**             | Removes specific rows based on a condition or all rows if no condition is specified. | Removes all rows from a table.             |
-| **DML vs DDL**          | It is a **Data Manipulation Language (DML)** command. | It is a **Data Definition Language (DDL)** command. |
-| **WHERE Clause**        | Supports the **`WHERE`** clause to filter which rows to delete. | Does not support the **`WHERE`** clause.   |
-| **Rollback Capability** | Operations can be rolled back because it generates transaction logs for each deleted row. | Operations cannot be rolled back easily as it does not log individual row deletions. |
-| **Triggers**            | Triggers are fired when rows are deleted.    | Triggers are not fired.                    |
-| **Locking**             | Places a lock on each row being deleted.     | Places a table-level lock.                 |
-| **Performance**         | Slower, especially for large datasets, as it processes each row individually. | Faster for large datasets because it removes all rows in one operation. |
-| **Resets Auto-Increment** | Does not reset the auto-increment counter. | Resets the auto-increment counter to the starting value. |
-| **Table Schema**        | Does not affect the table schema, structure, or indexes. | Preserves the table schema and indexes but resets the table to an empty state. |
-| **Use Case**            | When specific rows need to be deleted or logging is required. | When the entire table needs to be emptied quickly and efficiently. |
-
----
-
-### Examples
-
-#### `DELETE`
+### **1. DELETE Command**
+- **Purpose**: Removes specific rows from a table based on a `WHERE` condition.
+- **Usage**: Use when you need fine-grained control over which rows to remove.
+  
+#### Characteristics:
+- Deletes rows **one at a time** and logs each deletion.
+- **DML (Data Manipulation Language)** operation.
+- Can include a `WHERE` clause to delete specific records.
+- Supports rollback if wrapped in a transaction.
+- Table structure and indexes remain intact.
+  
+#### Syntax:
 ```sql
--- Delete specific rows
-DELETE FROM employees WHERE department = 'HR';
-
--- Delete all rows
-DELETE FROM employees;
+DELETE FROM table_name WHERE condition;
 ```
 
-#### `TRUNCATE`
+#### Example:
 ```sql
--- Remove all rows from the table
+DELETE FROM employees WHERE department = 'HR';
+```
+
+---
+
+### **2. TRUNCATE Command**
+- **Purpose**: Removes all rows from a table, effectively emptying it.
+- **Usage**: Use when you need to quickly remove all records from a table without logging individual row deletions.
+
+#### Characteristics:
+- Operates faster than `DELETE` because it does not log individual row deletions.
+- **DDL (Data Definition Language)** operation.
+- Cannot include a `WHERE` clause (removes all rows).
+- Generally not rollback-able (depending on the database).
+- Resets any auto-increment counter on the table.
+- Table structure and indexes remain intact.
+  
+#### Syntax:
+```sql
+TRUNCATE TABLE table_name;
+```
+
+#### Example:
+```sql
 TRUNCATE TABLE employees;
 ```
 
 ---
 
-### Key Points
-1. Use `DELETE` when selective deletion or triggers are needed.
-2. Use `TRUNCATE` for faster, complete removal of data when rollback or specific deletion isn’t necessary.
-3. **Be cautious**: `TRUNCATE` is irreversible in most databases without backups or special setups.
+### **3. DROP Command**
+- **Purpose**: Removes the entire table (or other database object) from the database.
+- **Usage**: Use when you want to completely delete a table, including its structure, data, and dependencies.
 
+#### Characteristics:
+- Permanently deletes the table and its metadata (structure, indexes, constraints).
+- **DDL (Data Definition Language)** operation.
+- Cannot be rolled back once executed.
+- Any foreign key constraints referencing the table must be dropped first.
+  
+#### Syntax:
+```sql
+DROP TABLE table_name;
+```
+
+#### Example:
+```sql
+DROP TABLE employees;
+```
+
+---
+
+### **Comparison Table**
+
+| Feature              | DELETE                       | TRUNCATE                     | DROP                          |
+|----------------------|-----------------------------|-----------------------------|------------------------------|
+| **Operation Type**    | DML                         | DDL                         | DDL                          |
+| **Removes Rows?**     | Yes, based on condition     | Yes, all rows               | Yes, entire table            |
+| **Condition Support** | Yes (`WHERE` clause)        | No                          | No                           |
+| **Table Structure?**  | Retained                    | Retained                    | Removed                      |
+| **Transaction Support**| Yes (Rollback supported)   | No (Rollback not supported) | No                           |
+| **Auto-Increment Reset**| No                        | Yes                         | N/A                          |
+| **Speed**             | Slower (row-by-row logging)| Faster (no row logging)     | Fastest                      |
+
+---
+
+### When to Use:
+- **DELETE**: When specific rows need to be removed, especially in a transaction.
+- **TRUNCATE**: When all rows in a table need to be removed quickly, and rollback is not required.
+- **DROP**: When the table or database object is no longer needed.
+
+--- 
+
+### Example Scenario:
+- **DELETE**: Remove employees from the "HR" department.
+- **TRUNCATE**: Clear all data from a temporary table.
+- **DROP**: Completely remove a table that is no longer required.
