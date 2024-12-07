@@ -634,3 +634,135 @@ public class AppConfig {
 In this example, the values for `appName` and `appVersion` are read from `application.properties` or set with default values if not found.
 
 These questions and detailed examples cover a variety of key Spring and Spring Boot annotations, showcasing expertise for experienced professionals in real-world application development.
+
+---
+In Spring Framework, **bean scope** defines the lifecycle and visibility of a bean within the container. It determines how many instances of a bean are created and how they are shared. Spring provides several built-in scopes for beans:
+
+---
+
+### **1. Singleton (Default Scope)**
+- **Description**: A single shared instance of the bean is created and used across the entire Spring container.
+- **Scope**: Application-wide.
+- **Lifecycle**:
+  - Bean is created during container initialization (eager initialization by default).
+  - Shared across all requests and references.
+- **Usage**: For stateless beans, such as service and DAO layers.
+
+#### Example:
+```java
+@Component
+@Scope("singleton") // Default; can be omitted.
+public class MySingletonBean {
+}
+```
+
+---
+
+### **2. Prototype**
+- **Description**: A new instance of the bean is created every time it is requested from the container.
+- **Scope**: Limited to the object requesting it.
+- **Lifecycle**:
+  - Bean is created on demand, not during container startup.
+  - Container doesn’t manage the complete lifecycle of the bean (e.g., destruction).
+- **Usage**: For stateful beans, or beans that are expensive to create and used only for short periods.
+
+#### Example:
+```java
+@Component
+@Scope("prototype")
+public class MyPrototypeBean {
+}
+```
+
+---
+
+### **3. Request (Web Application Scope)**
+- **Description**: A single bean instance is created for each HTTP request.
+- **Scope**: HTTP request.
+- **Lifecycle**:
+  - Bean is created at the start of a request and destroyed when the request completes.
+- **Usage**: For web applications, such as handling request-specific data.
+
+#### Example:
+```java
+@Component
+@Scope("request")
+public class MyRequestScopedBean {
+}
+```
+
+---
+
+### **4. Session (Web Application Scope)**
+- **Description**: A single bean instance is created for each HTTP session.
+- **Scope**: HTTP session.
+- **Lifecycle**:
+  - Bean is created when a session starts and destroyed when the session ends.
+- **Usage**: For storing session-specific data in web applications.
+
+#### Example:
+```java
+@Component
+@Scope("session")
+public class MySessionScopedBean {
+}
+```
+
+---
+
+### **5. Application (Web Application Scope)**
+- **Description**: A single bean instance is shared across the entire ServletContext.
+- **Scope**: ServletContext-wide.
+- **Lifecycle**:
+  - Bean is created when the ServletContext is initialized and destroyed when it is shut down.
+- **Usage**: For application-wide shared resources.
+
+#### Example:
+```java
+@Component
+@Scope("application")
+public class MyApplicationScopedBean {
+}
+```
+
+---
+
+### **6. WebSocket (Web Application Scope)**
+- **Description**: A single bean instance is created for each WebSocket session.
+- **Scope**: WebSocket session.
+- **Lifecycle**:
+  - Bean is created when a WebSocket session is established and destroyed when the session ends.
+- **Usage**: For WebSocket-based applications.
+
+#### Example:
+```java
+@Component
+@Scope("websocket")
+public class MyWebSocketScopedBean {
+}
+```
+
+---
+
+### **Custom Scopes**
+- Spring allows defining custom scopes if the predefined scopes don't meet requirements.
+- Implement the `org.springframework.beans.factory.config.Scope` interface to create a custom scope.
+
+---
+
+### **Comparison Table**
+
+| Scope         | Instance Per       | Lifecycle Trigger           | Usage                              |
+|---------------|--------------------|-----------------------------|------------------------------------|
+| **Singleton** | Spring container   | Application context creation| Stateless, shared resources.      |
+| **Prototype** | Each request       | Bean request                | Stateful or short-lived beans.    |
+| **Request**   | HTTP request       | HTTP request lifecycle      | Request-specific data.            |
+| **Session**   | HTTP session       | HTTP session lifecycle      | Session-specific data.            |
+| **Application**| Servlet context   | Servlet context lifecycle   | Application-wide resources.       |
+| **WebSocket** | WebSocket session  | WebSocket lifecycle         | WebSocket-specific data.          |
+
+---
+
+### **Important Notes**:
+1. **Default Scope**: If no scope is explicitly defined, Spring assumes `singleton` scope.
+2. **Web Scopes**: `request`, `session`, `application`, and `websocket` scopes require a web-aware Spring application context (e.g., `Spring MVC` or `Spring Boot` web applications).
