@@ -239,3 +239,51 @@ EXPLAIN SELECT column1 FROM table_name WHERE column1 = 'value';
 ---
 
 Mastering these concepts will help you excel in interviews and optimize database performance in your projects. Let me know if you want in-depth explanations for any of the topics!
+
+---
+
+### Difference Between `DELETE` and `TRUNCATE` in a Database
+
+Both `DELETE` and `TRUNCATE` commands are used to remove data from a database table, but they operate differently and are suited for different use cases.
+
+---
+
+| Aspect                  | `DELETE`                                     | `TRUNCATE`                                 |
+|-------------------------|----------------------------------------------|--------------------------------------------|
+| **Purpose**             | Removes specific rows based on a condition or all rows if no condition is specified. | Removes all rows from a table.             |
+| **DML vs DDL**          | It is a **Data Manipulation Language (DML)** command. | It is a **Data Definition Language (DDL)** command. |
+| **WHERE Clause**        | Supports the **`WHERE`** clause to filter which rows to delete. | Does not support the **`WHERE`** clause.   |
+| **Rollback Capability** | Operations can be rolled back because it generates transaction logs for each deleted row. | Operations cannot be rolled back easily as it does not log individual row deletions. |
+| **Triggers**            | Triggers are fired when rows are deleted.    | Triggers are not fired.                    |
+| **Locking**             | Places a lock on each row being deleted.     | Places a table-level lock.                 |
+| **Performance**         | Slower, especially for large datasets, as it processes each row individually. | Faster for large datasets because it removes all rows in one operation. |
+| **Resets Auto-Increment** | Does not reset the auto-increment counter. | Resets the auto-increment counter to the starting value. |
+| **Table Schema**        | Does not affect the table schema, structure, or indexes. | Preserves the table schema and indexes but resets the table to an empty state. |
+| **Use Case**            | When specific rows need to be deleted or logging is required. | When the entire table needs to be emptied quickly and efficiently. |
+
+---
+
+### Examples
+
+#### `DELETE`
+```sql
+-- Delete specific rows
+DELETE FROM employees WHERE department = 'HR';
+
+-- Delete all rows
+DELETE FROM employees;
+```
+
+#### `TRUNCATE`
+```sql
+-- Remove all rows from the table
+TRUNCATE TABLE employees;
+```
+
+---
+
+### Key Points
+1. Use `DELETE` when selective deletion or triggers are needed.
+2. Use `TRUNCATE` for faster, complete removal of data when rollback or specific deletion isn’t necessary.
+3. **Be cautious**: `TRUNCATE` is irreversible in most databases without backups or special setups.
+
