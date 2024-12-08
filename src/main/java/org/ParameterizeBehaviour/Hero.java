@@ -1,5 +1,4 @@
 package org.ParameterizeBehaviour;
-import java.util.*;
 
 public class Hero extends Actor{
 	public void fight() {

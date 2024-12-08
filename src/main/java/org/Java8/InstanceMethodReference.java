@@ -8,7 +8,6 @@ package org.Java8;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 // Class 1
 // Helper class

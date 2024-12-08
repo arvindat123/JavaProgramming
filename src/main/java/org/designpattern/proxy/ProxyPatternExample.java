@@ -1,7 +1,5 @@
 package org.designpattern.proxy;
 
-import java.util.regex.Pattern;
-
 // Subject interface
 interface RealSubject {
     void request();

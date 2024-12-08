@@ -1,7 +1,5 @@
 package org.General;
 
-import java.util.HashSet;
-
 abstract class TestClass {
 	void eat() {
 		System.out.println("animal eating");

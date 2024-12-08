@@ -1,7 +1,6 @@
 package org.Observer;
 
-import java.io.*;
-public class Segregate 
+public class Segregate
 {
     /*Function to put all 0s on left and all 1s on right*/
     void segregate0and1(int arr[], int size) 

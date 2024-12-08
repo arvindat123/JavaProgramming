@@ -1,7 +1,5 @@
 package org.designpattern.singleton;
 
-import java.util.Objects;
-
 public class RevisionSingleton {
     private static volatile RevisionSingleton instance;
 

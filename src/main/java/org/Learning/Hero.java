@@ -1,5 +1,4 @@
 package org.Learning;
-import java.util.*;
 
 public class Hero extends Actor{
 	public void fight() {

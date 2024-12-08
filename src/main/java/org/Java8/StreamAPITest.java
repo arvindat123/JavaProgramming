@@ -1,13 +1,7 @@
 package org.Java8;
 
-import javax.swing.text.html.Option;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class StreamAPITest {
     public static void main(String[] args) {

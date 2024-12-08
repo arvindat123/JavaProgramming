@@ -1,11 +1,6 @@
 package org.Leetcode;
 
-import org.Interface.A;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DistinctLetterInAString {
     public static void main(String[] args) {

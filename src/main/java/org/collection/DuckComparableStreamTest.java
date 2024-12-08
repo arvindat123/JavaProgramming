@@ -2,7 +2,6 @@ package org.collection;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class DuckComparableStreamTest {
 	public static void main(String[] args) {

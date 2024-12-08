@@ -1,7 +1,5 @@
 package org.JavaTest2;
 
-import java.util.*;
-
 public class BextendsA extends A{
 	
 	private void aMethod() {

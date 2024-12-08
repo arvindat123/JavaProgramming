@@ -1,10 +1,7 @@
 package org.ThreadLearning;
 
-import org.Interface.B;
-
 import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 
 public class ConsumerProducer {
