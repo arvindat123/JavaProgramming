@@ -73,3 +73,270 @@ Once the transaction is committed, the addition of $500 is saved permanently. Ev
 | Consistency| Database must remain in a consistent state before and after the transaction.                        |
 | Isolation  | Transactions run independently, without interference from others.                                   |
 | Durability | Once a transaction is committed, changes are permanent.                                             |
+
+---
+
+Indexes in MySQL are a crucial component to optimize the performance of database queries. They allow the database engine to retrieve rows more quickly and efficiently by reducing the amount of data scanned. Below are the types of indexes available in MySQL and commonly asked interview questions with detailed explanations.
+
+---
+
+## **Types of Indexes in MySQL**
+
+1. **Primary Key Index**
+   - **Description**: Automatically created when a column is defined as a primary key. Ensures uniqueness and disallows `NULL` values.
+   - **Use Case**: Uniquely identifies each record in a table.
+
+2. **Unique Index**
+   - **Description**: Ensures all values in the indexed column are unique. Allows one `NULL` value.
+   - **Use Case**: Enforce data integrity without using a primary key.
+
+3. **Full-Text Index**
+   - **Description**: Special index type for text searching. Used for full-text searches in large textual data.
+   - **Use Case**: Used with `MATCH` and `AGAINST` clauses for searching large text fields.
+
+4. **Clustered Index**
+   - **Description**: MySQL does not explicitly support clustered indexes. However, in `InnoDB`, the primary key serves as a clustered index.
+   - **Use Case**: Optimizes retrieval of rows based on the primary key.
+
+5. **Non-Clustered Index**
+   - **Description**: Stores pointers to the physical rows of data. It is a logical index that refers to the data in the table.
+   - **Use Case**: Secondary indexes that improve query performance for non-primary key lookups.
+
+6. **Composite Index**
+   - **Description**: An index on multiple columns.
+   - **Use Case**: Optimizes queries filtering or sorting on multiple columns.
+
+7. **Spatial Index**
+   - **Description**: Used for indexing geometric and geographical data types.
+   - **Use Case**: Ideal for spatial queries.
+
+8. **Foreign Key Index**
+   - **Description**: Automatically created when a foreign key constraint is added to a column.
+   - **Use Case**: Helps enforce referential integrity and optimize join queries.
+
+9. **Hash Index**
+   - **Description**: Available for certain storage engines like `MEMORY`. Stores hash values for quick lookups.
+   - **Use Case**: Fast lookups for exact matches.
+
+---
+
+## **Common Index Interview Questions and Answers**
+
+### **1. What is an index in MySQL?**
+**Answer**:  
+An index in MySQL is a database structure used to improve the speed of data retrieval operations on a table. Indexes are created on columns that are frequently queried or used in conditions like `WHERE`, `ORDER BY`, or `GROUP BY`.
+
+---
+
+### **2. What is the difference between a primary key and a unique key?**
+**Answer**:  
+| Feature         | Primary Key                     | Unique Key                    |
+|------------------|--------------------------------|--------------------------------|
+| **Uniqueness**   | Ensures uniqueness            | Ensures uniqueness            |
+| **NULL Values**  | Does not allow `NULL` values  | Allows one `NULL` value       |
+| **Index Type**   | Clustered index               | Non-clustered index           |
+
+---
+
+### **3. How does an index improve query performance?**
+**Answer**:  
+Indexes reduce the number of rows the database engine scans by organizing data into a structure (e.g., B-tree) for faster lookups. Instead of performing a full table scan, the engine can quickly locate data using the index.
+
+---
+
+### **4. What are the disadvantages of indexes?**
+**Answer**:  
+- **Increased Storage**: Indexes consume additional disk space.
+- **Slower Write Operations**: Insertion, update, and deletion become slower due to the need to update the indexes.
+- **Complex Maintenance**: Maintaining multiple indexes can increase complexity during schema changes.
+
+---
+
+### **5. What is the difference between a clustered and non-clustered index?**
+**Answer**:  
+| Feature                 | Clustered Index                     | Non-Clustered Index               |
+|--------------------------|-------------------------------------|------------------------------------|
+| **Data Storage**         | Stores data in the same structure as the index. | Stores pointers to the actual data. |
+| **Number per Table**     | One per table (InnoDB primary key). | Many per table.                   |
+| **Performance**          | Faster for queries retrieving data using the primary key. | Slower than clustered indexes.    |
+
+---
+
+### **6. How can you find which indexes are present in a table?**
+**Answer**:  
+Run the query:  
+```sql
+SHOW INDEX FROM table_name;
+```
+
+---
+
+### **7. What is a composite index, and when should it be used?**
+**Answer**:  
+**Composite Index**: An index on multiple columns.  
+**Use Case**: When queries filter or sort data using multiple columns frequently.  
+**Example**:  
+```sql
+CREATE INDEX idx_name ON table_name (column1, column2);
+```
+- Order of columns in a composite index matters. For example, an index on `(column1, column2)` will support queries on `column1` or both `column1` and `column2` but not solely on `column2`.
+
+---
+
+### **8. What are covering indexes?**
+**Answer**:  
+A covering index is one that contains all the columns needed by a query, preventing the database engine from accessing the actual table rows.  
+
+**Example**:  
+For the query:  
+```sql
+SELECT column1, column2 FROM table_name WHERE column1 = 'value';
+```
+If an index is created as:  
+```sql
+CREATE INDEX idx_name ON table_name (column1, column2);
+```
+The query can be served entirely from the index.
+
+---
+
+### **9. What is the difference between B-Tree and Hash indexes?**
+**Answer**:  
+| Feature           | B-Tree Index                  | Hash Index                     |
+|--------------------|-------------------------------|---------------------------------|
+| **Use Case**       | Range queries and sorting.   | Exact matches.                 |
+| **Data Structure** | Tree-like structure.         | Hash table.                    |
+| **Storage Engine** | Commonly used in `InnoDB`.   | Used in `MEMORY` engine.       |
+
+---
+
+### **10. How do you decide which columns to index?**
+**Answer**:  
+- Columns used frequently in `WHERE`, `JOIN`, `ORDER BY`, and `GROUP BY` clauses.
+- Columns with high cardinality (many unique values).
+- Avoid indexing columns with low cardinality (e.g., boolean or gender).
+
+---
+
+### **11. Can an index slow down performance?**
+**Answer**:  
+Yes, indexes can slow down performance for write operations (`INSERT`, `UPDATE`, `DELETE`) because the database must update the index every time the table is modified.
+
+---
+
+### **12. How can you optimize index usage in MySQL?**
+**Answer**:  
+- Use the `EXPLAIN` statement to analyze query execution plans.
+- Avoid over-indexing, as it increases maintenance overhead.
+- Drop unused indexes.
+- Use composite indexes for queries filtering on multiple columns.
+
+**Example of `EXPLAIN`:**  
+```sql
+EXPLAIN SELECT column1 FROM table_name WHERE column1 = 'value';
+```
+
+---
+
+Mastering these concepts will help you excel in interviews and optimize database performance in your projects. Let me know if you want in-depth explanations for any of the topics!
+
+---
+
+The **`DELETE`**, **`TRUNCATE`**, and **`DROP`** commands in databases are used to remove data, but they serve different purposes and operate differently. Here’s a detailed comparison:
+
+---
+
+### **1. DELETE Command**
+- **Purpose**: Removes specific rows from a table based on a `WHERE` condition.
+- **Usage**: Use when you need fine-grained control over which rows to remove.
+  
+#### Characteristics:
+- Deletes rows **one at a time** and logs each deletion.
+- **DML (Data Manipulation Language)** operation.
+- Can include a `WHERE` clause to delete specific records.
+- Supports rollback if wrapped in a transaction.
+- Table structure and indexes remain intact.
+  
+#### Syntax:
+```sql
+DELETE FROM table_name WHERE condition;
+```
+
+#### Example:
+```sql
+DELETE FROM employees WHERE department = 'HR';
+```
+
+---
+
+### **2. TRUNCATE Command**
+- **Purpose**: Removes all rows from a table, effectively emptying it.
+- **Usage**: Use when you need to quickly remove all records from a table without logging individual row deletions.
+
+#### Characteristics:
+- Operates faster than `DELETE` because it does not log individual row deletions.
+- **DDL (Data Definition Language)** operation.
+- Cannot include a `WHERE` clause (removes all rows).
+- Generally not rollback-able (depending on the database).
+- Resets any auto-increment counter on the table.
+- Table structure and indexes remain intact.
+  
+#### Syntax:
+```sql
+TRUNCATE TABLE table_name;
+```
+
+#### Example:
+```sql
+TRUNCATE TABLE employees;
+```
+
+---
+
+### **3. DROP Command**
+- **Purpose**: Removes the entire table (or other database object) from the database.
+- **Usage**: Use when you want to completely delete a table, including its structure, data, and dependencies.
+
+#### Characteristics:
+- Permanently deletes the table and its metadata (structure, indexes, constraints).
+- **DDL (Data Definition Language)** operation.
+- Cannot be rolled back once executed.
+- Any foreign key constraints referencing the table must be dropped first.
+  
+#### Syntax:
+```sql
+DROP TABLE table_name;
+```
+
+#### Example:
+```sql
+DROP TABLE employees;
+```
+
+---
+
+### **Comparison Table**
+
+| Feature              | DELETE                       | TRUNCATE                     | DROP                          |
+|----------------------|-----------------------------|-----------------------------|------------------------------|
+| **Operation Type**    | DML                         | DDL                         | DDL                          |
+| **Removes Rows?**     | Yes, based on condition     | Yes, all rows               | Yes, entire table            |
+| **Condition Support** | Yes (`WHERE` clause)        | No                          | No                           |
+| **Table Structure?**  | Retained                    | Retained                    | Removed                      |
+| **Transaction Support**| Yes (Rollback supported)   | No (Rollback not supported) | No                           |
+| **Auto-Increment Reset**| No                        | Yes                         | N/A                          |
+| **Speed**             | Slower (row-by-row logging)| Faster (no row logging)     | Fastest                      |
+
+---
+
+### When to Use:
+- **DELETE**: When specific rows need to be removed, especially in a transaction.
+- **TRUNCATE**: When all rows in a table need to be removed quickly, and rollback is not required.
+- **DROP**: When the table or database object is no longer needed.
+
+--- 
+
+### Example Scenario:
+- **DELETE**: Remove employees from the "HR" department.
+- **TRUNCATE**: Clear all data from a temporary table.
+- **DROP**: Completely remove a table that is no longer required.
