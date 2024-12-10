@@ -497,6 +497,13 @@ CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
 
 future.thenApplyAsync(value -> value * 2)
       .thenAccept(result -> System.out.println("Result: " + result));  // Output: Result: 20
+
+example
+CompletableFuture.runAsync(this::processPurgeLogicCronMetaDeta);
+public void processPurgeLogicCronMetaDeta(){
+//logic implementation
+}
+
 ```
 Java 8 : Why Java 8
 Java 8 improves overall application performance 
