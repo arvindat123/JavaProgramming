@@ -457,3 +457,152 @@ Here are some commonly used Docker commands with examples:
      ```
 
 These commands cover many of the key operations in Docker, from managing images and containers to setting up networks, volumes, and using Docker Compose for multi-container applications.
+
+---
+
+Maven is a powerful build automation tool for Java projects, including Spring Boot applications. Here are some commonly used Maven commands with examples tailored to Java and Spring Boot projects:
+
+### 1. **Creating a New Spring Boot Project**
+You can use the Maven **`archetype:generate`** command to create a new project.
+
+```bash
+mvn archetype:generate -DgroupId=com.example -DartifactId=spring-boot-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+```
+
+### 2. **Cleaning the Project**
+The **`clean`** command removes the `target/` directory where compiled classes and built artifacts are stored.
+
+```bash
+mvn clean
+```
+
+### 3. **Compiling the Project**
+The **`compile`** command compiles the source code of your project.
+
+```bash
+mvn compile
+```
+
+### 4. **Running Unit Tests**
+The **`test`** command runs the unit tests defined in your project.
+
+```bash
+mvn test
+```
+
+### 5. **Building the Project**
+The **`package`** command builds your Spring Boot project and creates a JAR or WAR file (depending on your configuration).
+
+```bash
+mvn package
+```
+
+- For Spring Boot, this will create a runnable JAR file in the `target/` directory.
+
+### 6. **Running the Spring Boot Application**
+You can use the **`spring-boot:run`** plugin to run your application directly.
+
+```bash
+mvn spring-boot:run
+```
+
+- **Tip**: Ensure you have added the `spring-boot-maven-plugin` in your `pom.xml`.
+
+#### Example `pom.xml` Configuration:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+```
+
+### 7. **Installing the JAR in Local Maven Repository**
+The **`install`** command installs the built artifact into your local Maven repository (`~/.m2/repository`).
+
+```bash
+mvn install
+```
+
+### 8. **Skipping Tests**
+If you want to skip running tests during the build process, add the `-DskipTests` flag.
+
+```bash
+mvn package -DskipTests
+```
+
+### 9. **Running in Debug Mode**
+You can debug your Maven application by running it with the `-X` flag.
+
+```bash
+mvn spring-boot:run -X
+```
+
+### 10. **Creating a Spring Boot Project Using Spring Initializr**
+You can use Maven to bootstrap a Spring Boot project using Spring Initializr:
+
+```bash
+mvn archetype:generate -DgroupId=com.example -DartifactId=my-spring-boot-app -Dversion=1.0-SNAPSHOT -DinteractiveMode=false
+```
+
+### 11. **Verifying the Project**
+The **`verify`** command validates the project and ensures that all requirements for a build are satisfied.
+
+```bash
+mvn verify
+```
+
+### Example Workflow:
+1. **Clean and Build:**
+   ```bash
+   mvn clean package
+   ```
+
+2. **Run the Application:**
+   ```bash
+   mvn spring-boot:run
+   ```
+
+### Sample `pom.xml` for a Spring Boot Application:
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>spring-boot-app</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>spring-boot-app</name>
+    <description>Spring Boot Project</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.2</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
