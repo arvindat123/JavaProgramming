@@ -3340,3 +3340,182 @@ public class ExecutorCompletionServiceExample {
 ---
 
 
+Java 8 introduced several significant enhancements and features over Java 7, making it a landmark release in the evolution of the Java programming language. Here’s a detailed comparison:
+
+---
+
+### 1. **Functional Programming Features**
+#### **Java 7:**
+- Java 7 did not support functional programming. Developers had to rely on imperative programming styles with verbose syntax.
+
+#### **Java 8:**
+- Introduced **Lambda Expressions**, **Functional Interfaces**, and the **Stream API**, which support functional programming paradigms.
+
+#### **Example:**
+- **Java 7: Filtering a List of Strings**
+  ```java
+  List<String> names = Arrays.asList("John", "Jane", "Jack", "Jill");
+  List<String> filteredNames = new ArrayList<>();
+  for (String name : names) {
+      if (name.startsWith("J")) {
+          filteredNames.add(name);
+      }
+  }
+  System.out.println(filteredNames);
+  ```
+- **Java 8: Using Streams and Lambda Expressions**
+  ```java
+  List<String> names = Arrays.asList("John", "Jane", "Jack", "Jill");
+  List<String> filteredNames = names.stream()
+                                    .filter(name -> name.startsWith("J"))
+                                    .collect(Collectors.toList());
+  System.out.println(filteredNames);
+  ```
+
+---
+
+### 2. **Default Methods in Interfaces**
+#### **Java 7:**
+- Interfaces could only contain abstract methods, requiring implementing classes to define all methods.
+
+#### **Java 8:**
+- Introduced **default methods**, allowing interfaces to provide a default implementation for methods, enabling backward compatibility.
+
+#### **Example:**
+- **Java 7:**
+  ```java
+  interface Vehicle {
+      void start();
+  }
+  class Car implements Vehicle {
+      @Override
+      public void start() {
+          System.out.println("Car starts");
+      }
+  }
+  ```
+- **Java 8:**
+  ```java
+  interface Vehicle {
+      void start();
+      default void stop() {
+          System.out.println("Vehicle stops");
+      }
+  }
+  class Car implements Vehicle {
+      @Override
+      public void start() {
+          System.out.println("Car starts");
+      }
+  }
+  Vehicle car = new Car();
+  car.start();
+  car.stop(); // Default method from the interface
+  ```
+
+---
+
+### 3. **Stream API**
+#### **Java 7:**
+- No Stream API. Developers had to rely on loops and collections for operations on data.
+
+#### **Java 8:**
+- Introduced the **Stream API** for processing sequences of elements in a functional style.
+
+#### **Example:**
+- **Java 8: Summing Even Numbers**
+  ```java
+  List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+  int sum = numbers.stream()
+                   .filter(n -> n % 2 == 0)
+                   .mapToInt(Integer::intValue)
+                   .sum();
+  System.out.println(sum); // Output: 12
+  ```
+
+---
+
+### 4. **Date and Time API**
+#### **Java 7:**
+- Relied on the `java.util.Date` and `java.util.Calendar` classes, which were cumbersome and mutable.
+
+#### **Java 8:**
+- Introduced a new **Date and Time API** (`java.time` package), which is immutable and thread-safe.
+
+#### **Example:**
+- **Java 7:**
+  ```java
+  Calendar calendar = Calendar.getInstance();
+  calendar.set(2023, Calendar.DECEMBER, 13);
+  Date date = calendar.getTime();
+  System.out.println(date);
+  ```
+- **Java 8:**
+  ```java
+  LocalDate date = LocalDate.of(2023, Month.DECEMBER, 13);
+  System.out.println(date);
+  ```
+
+---
+
+### 5. **Optional Class**
+#### **Java 7:**
+- No dedicated support for handling null values. Developers used `null` checks and faced `NullPointerException`.
+
+#### **Java 8:**
+- Introduced `Optional` to handle nullable values more elegantly.
+
+#### **Example:**
+- **Java 7:**
+  ```java
+  String name = null;
+  if (name != null) {
+      System.out.println(name.toUpperCase());
+  } else {
+      System.out.println("Name is null");
+  }
+  ```
+- **Java 8:**
+  ```java
+  Optional<String> name = Optional.ofNullable(null);
+  System.out.println(name.map(String::toUpperCase).orElse("Name is null"));
+  ```
+
+---
+
+### 6. **Nashorn JavaScript Engine**
+#### **Java 7:**
+- Did not include the Nashorn JavaScript engine.
+
+#### **Java 8:**
+- Introduced the Nashorn engine to execute JavaScript code within Java applications.
+
+#### **Example:**
+```java
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+public class Java8NashornExample {
+    public static void main(String[] args) throws Exception {
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+        engine.eval("print('Hello from Nashorn');");
+    }
+}
+```
+
+---
+
+### 7. **Other Enhancements**
+| Feature                  | **Java 7**                           | **Java 8**                                                                 |
+|--------------------------|---------------------------------------|-----------------------------------------------------------------------------|
+| **Type Inference**       | Limited with diamond operator.       | Extended to Lambda expressions and method references.                      |
+| **Concurrency API**      | Fork/Join framework enhancements.    | Introduced `CompletableFuture` for asynchronous programming.               |
+| **PermGen Removal**      | Still uses PermGen for class metadata.| Removed PermGen and introduced Metaspace.                                  |
+
+---
+
+### Conclusion:
+Java 8 introduced groundbreaking features that promote a more functional and modern approach to programming, while Java 7 focused on improving the platform's stability and performance.
+
+---
+
