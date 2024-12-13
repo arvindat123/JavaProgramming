@@ -766,3 +766,82 @@ public class MyWebSocketScopedBean {
 ### **Important Notes**:
 1. **Default Scope**: If no scope is explicitly defined, Spring assumes `singleton` scope.
 2. **Web Scopes**: `request`, `session`, `application`, and `websocket` scopes require a web-aware Spring application context (e.g., `Spring MVC` or `Spring Boot` web applications).
+
+---
+
+The `DispatcherServlet` and a regular `Servlet` in Java serve different purposes and operate at different levels in a Java web application. Here's how they differ:
+
+### 1. **Purpose**
+   - **`Servlet`:**
+     - A `Servlet` is a core Java class that processes HTTP requests and generates HTTP responses. It operates at a low level and can handle tasks such as reading request parameters, writing responses, managing sessions, and interacting with backend resources.
+     - Example: A `HttpServlet` subclass might handle a specific URL pattern and directly produce the HTML or JSON response.
+   - **`DispatcherServlet`:**
+     - A `DispatcherServlet` is a specialized servlet provided by the Spring Framework. It acts as the **front controller** in the Spring MVC framework, coordinating and dispatching HTTP requests to various Spring MVC components such as controllers, views, and exception handlers.
+
+---
+
+### 2. **Role in Application**
+   - **`Servlet`:**
+     - Handles HTTP requests and responses directly, and you need to write a lot of code for handling application logic, mapping URLs, and interacting with backend components.
+   - **`DispatcherServlet`:**
+     - Delegates request processing to Spring MVC controllers (annotated with `@Controller` or `@RestController`) and uses other components like `HandlerMapping`, `HandlerAdapter`, and `ViewResolver`.
+     - It abstracts away much of the boilerplate code, making application development simpler and more structured.
+
+---
+
+### 3. **Configuration**
+   - **`Servlet`:**
+     - Defined in `web.xml` or annotated with `@WebServlet`.
+     - Example of mapping:
+       ```xml
+       <servlet>
+           <servlet-name>ExampleServlet</servlet-name>
+           <servlet-class>com.example.ExampleServlet</servlet-class>
+       </servlet>
+       <servlet-mapping>
+           <servlet-name>ExampleServlet</servlet-name>
+           <url-pattern>/example/*</url-pattern>
+       </servlet-mapping>
+       ```
+   - **`DispatcherServlet`:**
+     - Defined either in `web.xml` or programmatically via `WebApplicationInitializer` or a Spring Boot application class.
+     - Example in Spring Boot:
+       ```java
+       @SpringBootApplication
+       public class Application {
+           public static void main(String[] args) {
+               SpringApplication.run(Application.class, args);
+           }
+       }
+       ```
+     - Automatically configured by Spring Boot when using `spring-boot-starter-web`.
+
+---
+
+### 4. **Extensibility**
+   - **`Servlet`:**
+     - Developers need to handle all functionality, including routing, validation, and rendering, manually.
+   - **`DispatcherServlet`:**
+     - Extends `HttpServlet` and provides integration with the Spring ecosystem, such as dependency injection, interceptors, exception handling, and validation.
+
+---
+
+### 5. **Lifecycle**
+   - **`Servlet`:**
+     - Lifecycle methods like `init()`, `service()`, and `destroy()` must be implemented or overridden for custom behavior.
+   - **`DispatcherServlet`:**
+     - Inherits lifecycle methods from `HttpServlet`, but its behavior is heavily managed by the Spring container. Customization is typically done by configuring beans in the Spring application context.
+
+---
+
+### 6. **Usage**
+   - **`Servlet`:**
+     - Suitable for small applications or custom low-level HTTP request handling.
+     - Example: A custom servlet for streaming large files.
+   - **`DispatcherServlet`:**
+     - Ideal for building large-scale, maintainable, and component-based web applications using the Spring MVC framework.
+
+---
+
+### Key Analogy
+If a `Servlet` is a low-level worker directly handling HTTP traffic, the `DispatcherServlet` is a traffic controller that directs requests to specialized workers (controllers, services, etc.) based on predefined rules and configurations.
