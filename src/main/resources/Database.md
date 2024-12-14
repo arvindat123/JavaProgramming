@@ -561,4 +561,79 @@ The Tomcat JDBC pool is lightweight and often used in web applications.
 Let me know if you need further clarification or assistance!
 
 ---
+To get the second highest salary from a `MySQL` database, you can use various approaches. Here are the most commonly used ones:
 
+---
+
+### **1. Using `LIMIT` with `DISTINCT`**
+This approach sorts the unique salaries in descending order and selects the second row.
+
+```sql
+SELECT DISTINCT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+```
+
+- **Explanation:**
+  - `DISTINCT`: Ensures unique salaries are considered.
+  - `ORDER BY salary DESC`: Orders salaries from highest to lowest.
+  - `LIMIT 1 OFFSET 1`: Skips the first row (highest salary) and returns the second row.
+
+---
+
+### **2. Using a Subquery**
+This method uses a subquery to exclude the highest salary and find the second highest.
+
+```sql
+SELECT MAX(salary) AS second_highest_salary
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+```
+
+- **Explanation:**
+  - The inner query (`SELECT MAX(salary) FROM employees`) fetches the highest salary.
+  - The outer query gets the maximum salary that is less than the highest salary.
+
+---
+
+### **3. Using `DENSE_RANK` or `RANK` (For MySQL 8.0 and above)**
+You can use window functions to assign ranks to salaries.
+
+```sql
+WITH RankedSalaries AS (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM employees
+)
+SELECT salary AS second_highest_salary
+FROM RankedSalaries
+WHERE rank = 2;
+```
+
+- **Explanation:**
+  - `DENSE_RANK() OVER (ORDER BY salary DESC)`: Assigns a rank to each salary. Equal salaries get the same rank.
+  - The outer query filters the salary with a rank of `2`.
+
+---
+
+### **4. Handle Edge Cases**
+If there are fewer than two distinct salaries, the query should return `NULL` or handle this scenario explicitly.
+
+Example:
+```sql
+SELECT DISTINCT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+
+-- Will return NULL if there's no second highest salary.
+```
+
+---
+
+### **Choosing the Approach**
+- Use **Method 1** if you prefer simplicity and compatibility with older MySQL versions.
+- Use **Method 2** for straightforward logic and efficiency.
+- Use **Method 3** for modern MySQL versions with complex ranking requirements.
+
+Let me know if you have a specific schema or scenario for customization!
