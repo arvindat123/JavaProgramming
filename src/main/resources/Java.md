@@ -3519,3 +3519,155 @@ Java 8 introduced groundbreaking features that promote a more functional and mod
 
 ---
 
+Reading millions of records from a file using Java 8 Streams can be efficient, but performance and resource usage need to be carefully managed. Here’s how to do it and some considerations to mitigate potential performance impacts.
+
+---
+
+### **1. Reading a Large File Using Java 8 Stream**
+
+Java 8’s `Files.lines` method can be used to read lines from a file lazily as a stream, which is memory-efficient because it avoids loading the entire file into memory at once.
+
+#### **Example:**
+```java
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+public class LargeFileReader {
+    public static void main(String[] args) {
+        Path filePath = Paths.get("path/to/largefile.txt");
+        
+        try (Stream<String> lines = Files.lines(filePath)) {
+            lines.forEach(line -> {
+                // Process each line
+                System.out.println(line);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+- **Key Points:**
+  - `Files.lines`: Returns a lazily-loaded stream of lines.
+  - `try-with-resources`: Ensures the stream and file resources are closed after use.
+
+---
+
+### **2. Managing Performance Impact**
+
+#### **A. Memory Usage**
+- `Files.lines` reads lines lazily but keeps file handles open.
+- If the processing of each line is slow or involves buffering multiple lines, memory usage can grow.
+
+**Mitigation:**
+- Process each line immediately to avoid retaining data unnecessarily.
+- Use parallel streams if the processing is CPU-bound and can be parallelized.
+
+#### **B. File I/O Bottlenecks**
+- Disk I/O can be a bottleneck, especially for slow storage or remote files.
+
+**Mitigation:**
+- Tune the file buffer size using `BufferedReader` if needed:
+  ```java
+  Files.newBufferedReader(filePath).lines();
+  ```
+
+#### **C. Parallel Processing**
+- Java 8 streams can be converted to parallel streams for improved performance on multicore processors.
+
+**Example:**
+```java
+try (Stream<String> lines = Files.lines(filePath)) {
+    lines.parallel().forEach(line -> {
+        // Process each line in parallel
+        System.out.println(line);
+    });
+}
+```
+
+**Note:** Parallel streams work best when:
+- The processing of each line is independent.
+- The data source is sufficiently large to benefit from parallelism.
+
+#### **D. Error Handling**
+- Reading large files might encounter corrupt or unreadable lines.
+- Handle exceptions for specific lines without terminating the whole process:
+  ```java
+  lines.forEach(line -> {
+      try {
+          // Process the line
+      } catch (Exception e) {
+          System.err.println("Error processing line: " + line);
+      }
+  });
+  ```
+
+---
+
+### **3. Performance Considerations**
+
+#### **Advantages:**
+- **Memory Efficiency:** Lazily loads lines into memory.
+- **Readability:** Stream API provides concise and declarative syntax.
+- **Scalability:** Supports parallel processing for large datasets.
+
+#### **Potential Issues:**
+1. **File Handle Exhaustion:** Streams keep file handles open. Ensure they are closed properly.
+2. **Garbage Collection:** Millions of objects created for each line can increase GC pressure.
+3. **I/O Throughput:** Disk speed can limit performance.
+
+---
+
+### **4. Optimizing for Large Files**
+
+#### **A. Batch Processing**
+If processing involves external systems (e.g., database operations), process the file in batches:
+```java
+int batchSize = 1000;
+try (Stream<String> lines = Files.lines(filePath)) {
+    List<String> batch = new ArrayList<>();
+    lines.forEach(line -> {
+        batch.add(line);
+        if (batch.size() == batchSize) {
+            processBatch(batch);
+            batch.clear();
+        }
+    });
+    if (!batch.isEmpty()) {
+        processBatch(batch);
+    }
+}
+```
+
+#### **B. Chunked Reading**
+Split large files into smaller chunks and process them separately:
+- Use external tools like `split` (Linux) or write a Java program to split files.
+
+#### **C. Custom Thread Pool for Parallel Streams**
+Default `ForkJoinPool` used by parallel streams may not fit your application's needs. Configure a custom thread pool if necessary:
+```java
+ForkJoinPool customThreadPool = new ForkJoinPool(4);
+customThreadPool.submit(() -> {
+    try (Stream<String> lines = Files.lines(filePath)) {
+        lines.parallel().forEach(line -> {
+            // Process each line
+        });
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}).join();
+```
+
+---
+
+### **5. Conclusion**
+
+- **Stream API** is well-suited for processing large files due to its lazy nature and ability to leverage parallelism.
+- **Performance Considerations:** Be mindful of memory, file I/O bottlenecks, and parallelism overhead.
+- **Optimizations:** Use batching, parallel processing, and custom thread pools when appropriate.
+
+This approach ensures efficient handling of large files with minimal performance impact.
