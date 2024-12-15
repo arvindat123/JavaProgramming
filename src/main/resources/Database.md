@@ -718,7 +718,7 @@ When the maximum connection pool limit is reached:
 Proper configuration of pool size, timeouts, and monitoring tools is essential to mitigate these issues.
 ---
 
-Tuning a `SELECT` statement to efficiently retrieve data from a table with millions of records is critical to maintaining performance in high-volume databases. Below are strategies to optimize such queries:
+**Tuning a `SELECT` statement to efficiently retrieve data from a table with millions of records is critical to maintaining performance in high-volume databases. Below are strategies to optimize such queries:**
 
 ---
 
