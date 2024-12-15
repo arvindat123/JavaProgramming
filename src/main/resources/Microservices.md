@@ -229,3 +229,215 @@ Cache invalidation is crucial to ensure consistency:
 
 ### **Conclusion**
 Caching in microservices enhances performance and scalability. Tools like **Redis**, **Memcached**, and **API Gateway plugins**, along with application-level techniques (e.g., Spring Cache), are common implementations. The choice depends on your architecture, data access patterns, and consistency requirements.
+
+----
+
+### **Authentication Between Microservices in a Spring Boot Project**
+
+Authentication between microservices ensures secure communication and prevents unauthorized access. In Spring Boot, this can be achieved using methods such as OAuth 2.0, JSON Web Tokens (JWT), API keys, or mutual TLS. Below is an explanation of common approaches with examples:
+
+---
+
+### **1. Using OAuth 2.0 with JWT (Recommended)**
+OAuth 2.0 is the most widely used protocol for authentication between microservices. JWT is often used as the access token.
+
+#### **Architecture Overview**
+1. **Authorization Server (Identity Provider):** Issues JWT tokens to authorized clients.
+2. **Microservices:**
+   - Service A sends a request to Service B with a JWT in the `Authorization` header.
+   - Service B validates the token and processes the request if valid.
+
+#### **Implementation Steps**
+
+##### **Step 1: Add Dependencies**
+Add the Spring Security OAuth2 Resource Server dependency to each microservice:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+</dependency>
+```
+
+##### **Step 2: Configure the Authorization Server**
+Set up an external Identity Provider (e.g., **Keycloak**, **Okta**, or **Auth0**) or build your own Authorization Server using Spring Authorization Server.
+
+Example with Keycloak:
+- Configure realms, clients, and roles in Keycloak.
+- Obtain the issuer URI (e.g., `http://localhost:8080/realms/myrealm`).
+
+##### **Step 3: Secure Microservices**
+In **Service A**, configure OAuth 2.0 Client:
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          serviceB:
+            client-id: service-a-client
+            client-secret: secret
+            scope: ['read', 'write']
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
+```
+
+In **Service B**, configure OAuth 2.0 Resource Server:
+```yaml
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/myrealm
+```
+
+##### **Step 4: Enable Security in Service B**
+Use Spring Security to protect endpoints:
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .antMatchers("/public").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .oauth2ResourceServer().jwt();
+    }
+}
+```
+
+##### **Step 5: Communication Between Microservices**
+**Service A:** Send the JWT in the request:
+```java
+@Service
+public class ApiClient {
+    private final RestTemplate restTemplate;
+
+    public ApiClient(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
+
+    public String callServiceB(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+            "http://service-b/api/resource",
+            HttpMethod.GET,
+            entity,
+            String.class
+        );
+        return response.getBody();
+    }
+}
+```
+
+---
+
+### **2. Using Mutual TLS (mTLS)**
+Mutual TLS ensures both the client and server authenticate each other using certificates.
+
+#### **Implementation Steps**
+
+##### **Step 1: Generate Certificates**
+1. Create a self-signed certificate authority (CA).
+2. Generate server and client certificates signed by the CA.
+
+##### **Step 2: Configure mTLS in Microservices**
+In **Service A**, configure the client certificate:
+```yaml
+server:
+  ssl:
+    key-store: classpath:client-keystore.jks
+    key-store-password: clientpass
+    trust-store: classpath:truststore.jks
+    trust-store-password: trustpass
+```
+
+In **Service B**, enable client authentication:
+```yaml
+server:
+  ssl:
+    key-store: classpath:server-keystore.jks
+    key-store-password: serverpass
+    trust-store: classpath:truststore.jks
+    trust-store-password: trustpass
+    client-auth: need
+```
+
+##### **Step 3: RestTemplate with SSL**
+Configure RestTemplate in **Service A**:
+```java
+@Bean
+public RestTemplate restTemplate() throws Exception {
+    SSLContext sslContext = SSLContexts.custom()
+        .loadKeyMaterial(new File("client-keystore.jks"), "clientpass".toCharArray(), "clientpass".toCharArray())
+        .loadTrustMaterial(new File("truststore.jks"), "trustpass".toCharArray())
+        .build();
+    HttpClient client = HttpClients.custom().setSSLContext(sslContext).build();
+    return new RestTemplate(new HttpComponentsClientHttpRequestFactory(client));
+}
+```
+
+---
+
+### **3. Using API Keys**
+API keys are a simpler method of authentication for internal communication.
+
+#### **Implementation Steps**
+
+##### **Step 1: Set an API Key**
+Assign a unique key to each microservice.
+
+##### **Step 2: Validate API Key in Service B**
+Example filter to validate API keys:
+```java
+@Component
+public class ApiKeyFilter extends OncePerRequestFilter {
+
+    @Value("${api.key}")
+    private String validApiKey;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String apiKey = request.getHeader("x-api-key");
+        if (!validApiKey.equals(apiKey)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+```
+
+##### **Step 3: Send API Key in Request**
+**Service A:** Include the API key in headers:
+```java
+HttpHeaders headers = new HttpHeaders();
+headers.add("x-api-key", "your-api-key");
+HttpEntity<String> entity = new HttpEntity<>(headers);
+ResponseEntity<String> response = restTemplate.exchange(
+    "http://service-b/api/resource",
+    HttpMethod.GET,
+    entity,
+    String.class
+);
+```
+
+---
+
+### **4. Summary**
+
+| **Method**          | **Use Case**                                              | **Pros**                                      | **Cons**                               |
+|----------------------|----------------------------------------------------------|----------------------------------------------|----------------------------------------|
+| **OAuth 2.0 + JWT**  | Secure, scalable authentication between services         | Widely adopted, supports role-based access   | Requires additional setup (Auth server)|
+| **Mutual TLS**       | Highly secure communication in trusted environments      | Strong security, no reliance on third parties| Complex certificate management         |
+| **API Keys**         | Simple authentication for internal communication         | Easy to implement                            | Less secure than OAuth or mTLS         |
+
+The best method depends on your security requirements, scalability needs, and system complexity. **OAuth 2.0 with JWT** is recommended for most modern microservice architectures due to its flexibility and robustness.
