@@ -1,3 +1,7 @@
+In this case, SQL Server processes the clauses in the following order: FROM -> WHERE -> GROUP BY -> SELECT -> ORDER BY
+
+
+
 The **ACID properties** in SQL are key principles that ensure reliable transactions in a database. ACID stands for **Atomicity, Consistency, Isolation,** and **Durability**. Let's go through each property with an example.
 
 ### 1. Atomicity
