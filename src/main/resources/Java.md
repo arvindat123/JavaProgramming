@@ -863,6 +863,17 @@ Let me know if you'd like detailed examples for any of these!
 The **`wait()`** and **`sleep()`** methods in Java are often confused but serve distinct purposes and have different characteristics. Here's a detailed comparison:
 
 ---
+@Value("${threadpool.max.thread.count:100}")
+private int maxThreadCount;
+
+@Value("${threadpool.max.queue.size:200}")
+private int maxQueueSize;
+
+@Value("${threadpool.thread.timeout:60}")
+private long threadTimeout;
+
+@Value("${threadpool.max.thread.cpu:10}")
+private int maxThreadPerCPU;
 
 ### **1. Purpose**
 - **`wait()`**:
