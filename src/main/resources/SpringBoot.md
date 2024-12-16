@@ -845,3 +845,295 @@ The `DispatcherServlet` and a regular `Servlet` in Java serve different purposes
 
 ### Key Analogy
 If a `Servlet` is a low-level worker directly handling HTTP traffic, the `DispatcherServlet` is a traffic controller that directs requests to specialized workers (controllers, services, etc.) based on predefined rules and configurations.
+
+----
+
+Configuring multiple databases in a Spring Boot application requires setting up different `DataSource` configurations, transaction management, and repository management for each database. Here’s a detailed step-by-step guide:
+
+---
+
+### **Use Case**
+Suppose you want to connect to two databases:
+1. **Primary Database:** MySQL
+2. **Secondary Database:** PostgreSQL
+
+---
+
+### **Step-by-Step Implementation**
+
+#### **Step 1: Add Dependencies**
+Add database drivers for MySQL and PostgreSQL in your `pom.xml`:
+```xml
+<dependencies>
+    <!-- Spring Data JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+
+    <!-- PostgreSQL Driver -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+```
+
+---
+
+#### **Step 2: Configure `application.yml`**
+Define properties for both databases.
+
+```yaml
+spring:
+  datasource:
+    primary:
+      url: jdbc:mysql://localhost:3306/primarydb
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      url: jdbc:postgresql://localhost:5432/secondarydb
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    primary:
+      hibernate:
+        ddl-auto: update
+    secondary:
+      hibernate:
+        ddl-auto: update
+```
+
+---
+
+#### **Step 3: Create Configuration Classes**
+
+1. **Primary Database Configuration**
+
+```java
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        basePackages = "com.example.repository.primary", // Specify repository package
+        entityManagerFactoryRef = "primaryEntityManagerFactory",
+        transactionManagerRef = "primaryTransactionManager"
+)
+public class PrimaryDatabaseConfig {
+
+    @Primary
+    @Bean(name = "primaryDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Primary
+    @Bean(name = "primaryEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(
+            EntityManagerFactoryBuilder builder, @Qualifier("primaryDataSource") DataSource dataSource) {
+        return builder
+                .dataSource(dataSource)
+                .packages("com.example.model.primary") // Specify model package
+                .persistenceUnit("primary")
+                .build();
+    }
+
+    @Primary
+    @Bean(name = "primaryTransactionManager")
+    public PlatformTransactionManager primaryTransactionManager(
+            @Qualifier("primaryEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+}
+```
+
+2. **Secondary Database Configuration**
+
+```java
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        basePackages = "com.example.repository.secondary", // Specify repository package
+        entityManagerFactoryRef = "secondaryEntityManagerFactory",
+        transactionManagerRef = "secondaryTransactionManager"
+)
+public class SecondaryDatabaseConfig {
+
+    @Bean(name = "secondaryDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.secondary")
+    public DataSource secondaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "secondaryEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean secondaryEntityManagerFactory(
+            EntityManagerFactoryBuilder builder, @Qualifier("secondaryDataSource") DataSource dataSource) {
+        return builder
+                .dataSource(dataSource)
+                .packages("com.example.model.secondary") // Specify model package
+                .persistenceUnit("secondary")
+                .build();
+    }
+
+    @Bean(name = "secondaryTransactionManager")
+    public PlatformTransactionManager secondaryTransactionManager(
+            @Qualifier("secondaryEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+}
+```
+
+---
+
+#### **Step 4: Define Entity Classes**
+
+1. **Primary Database Entity**
+```java
+package com.example.model.primary;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class PrimaryEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+
+    // Getters and Setters
+}
+```
+
+2. **Secondary Database Entity**
+```java
+package com.example.model.secondary;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class SecondaryEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String description;
+
+    // Getters and Setters
+}
+```
+
+---
+
+#### **Step 5: Define Repository Interfaces**
+
+1. **Primary Database Repository**
+```java
+package com.example.repository.primary;
+
+import com.example.model.primary.PrimaryEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PrimaryRepository extends JpaRepository<PrimaryEntity, Long> {
+}
+```
+
+2. **Secondary Database Repository**
+```java
+package com.example.repository.secondary;
+
+import com.example.model.secondary.SecondaryEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SecondaryRepository extends JpaRepository<SecondaryEntity, Long> {
+}
+```
+
+---
+
+#### **Step 6: Use Repositories in a Service**
+```java
+package com.example.service;
+
+import com.example.model.primary.PrimaryEntity;
+import com.example.model.secondary.SecondaryEntity;
+import com.example.repository.primary.PrimaryRepository;
+import com.example.repository.secondary.SecondaryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MultiDatabaseService {
+
+    @Autowired
+    private PrimaryRepository primaryRepository;
+
+    @Autowired
+    private SecondaryRepository secondaryRepository;
+
+    public void saveData() {
+        // Save data to primary database
+        PrimaryEntity primaryEntity = new PrimaryEntity();
+        primaryEntity.setName("Primary Record");
+        primaryRepository.save(primaryEntity);
+
+        // Save data to secondary database
+        SecondaryEntity secondaryEntity = new SecondaryEntity();
+        secondaryEntity.setDescription("Secondary Record");
+        secondaryRepository.save(secondaryEntity);
+    }
+}
+```
+
+---
+
+#### **Step 7: Testing the Application**
+Create a REST controller or a test class to invoke the service:
+```java
+package com.example.controller;
+
+import com.example.service.MultiDatabaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MultiDatabaseController {
+
+    @Autowired
+    private MultiDatabaseService multiDatabaseService;
+
+    @GetMapping("/save")
+    public String saveData() {
+        multiDatabaseService.saveData();
+        return "Data saved to both databases";
+    }
+}
+```
+
+---
+
+### **Key Points**
+1. Use `@Primary` to mark the default `DataSource` if there are multiple.
+2. Separate entity, repository, and configuration packages for each database.
+3. Use different `persistenceUnit` names for each database.
+
+This setup ensures clear separation and seamless operation across multiple databases.
