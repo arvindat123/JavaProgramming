@@ -3682,3 +3682,87 @@ customThreadPool.submit(() -> {
 - **Optimizations:** Use batching, parallel processing, and custom thread pools when appropriate.
 
 This approach ensures efficient handling of large files with minimal performance impact.
+
+---
+
+This is a common question when working with **multithreading** in Java. To understand why we **call `start()` instead of directly calling `run()`**, we need to clarify the behavior of each method in the `Thread` class.
+
+### Key Points:  
+1. **`run()` method**:
+   - The `run()` method in the `Thread` class **contains the code to be executed** in the separate thread.
+   - If you directly call the `run()` method, it will **not start a new thread**. Instead, it will execute the code **synchronously** within the current thread.
+
+2. **`start()` method**:
+   - The `start()` method is responsible for creating a **new thread** and then calling the `run()` method **asynchronously** in that newly created thread.
+   - This method does not directly execute the `run()` method; instead, it **initiates the thread lifecycle** and delegates execution to the JVM.
+
+---
+
+### Why Not Call `run()` Directly?  
+
+When you directly call the `run()` method:
+- The `run()` code executes in the **current thread** instead of starting a new thread.
+- The thread does not enter the **Runnable state** or transition through the typical thread lifecycle (`NEW` → `RUNNABLE` → `TERMINATED`).
+- You lose the core benefit of multithreading, as the code will run sequentially in the calling thread.
+
+---
+
+### Example  
+
+```java
+class MyThread extends Thread {
+    public void run() {
+        System.out.println("Running in thread: " + Thread.currentThread().getName());
+    }
+}
+
+public class ThreadExample {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+
+        // Case 1: Using start()
+        t1.start(); // Starts a new thread and executes run() asynchronously
+        System.out.println("Main thread: " + Thread.currentThread().getName());
+
+        // Case 2: Calling run() directly
+        MyThread t2 = new MyThread();
+        t2.run(); // Executes run() in the main thread, NOT in a new thread
+    }
+}
+```
+
+#### Output (Example):
+```
+Running in thread: Thread-0    // Executed by t1's new thread
+Main thread: main             // Printed by the main thread
+Running in thread: main       // Executed by t2 in the main thread
+```
+
+---
+
+### Explanation of Output:
+1. **`t1.start()`**: Creates a **new thread** that executes the `run()` method, resulting in "Thread-0" printing.
+2. **`t2.run()`**: Executes the `run()` method **synchronously in the main thread**, as no new thread is created.
+
+---
+
+### Lifecycle of a Thread (`start()` Behavior):
+When you call `start()`, the following happens:
+1. The thread enters the `NEW` state.
+2. The JVM allocates resources for the new thread.
+3. The thread is scheduled by the **Thread Scheduler** and moves to the `RUNNABLE` state.
+4. The `run()` method is executed in the **new thread**.
+
+If you directly call `run()`:
+- Steps 1-3 are skipped.
+- The code executes immediately in the current thread.
+
+---
+
+### Summary  
+We call `start()` because it:
+- **Creates a new thread** and executes the `run()` method in that thread.
+- Allows the thread to go through its **lifecycle states** (`NEW`, `RUNNABLE`, etc.).
+- Achieves **true multithreading**.
+
+Calling `run()` directly defeats the purpose of multithreading, as it runs synchronously in the current thread.
