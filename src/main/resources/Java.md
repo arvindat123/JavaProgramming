@@ -3766,3 +3766,368 @@ We call `start()` because it:
 - Achieves **true multithreading**.
 
 Calling `run()` directly defeats the purpose of multithreading, as it runs synchronously in the current thread.
+
+---
+
+Here is a comprehensive list of **multithreading interview questions** in Java, ranging from beginner to advanced levels. These questions are designed to evaluate a candidate's understanding of multithreading concepts, concurrency issues, thread safety, and Java-specific features.
+
+---
+
+## **1. Basic Multithreading Concepts**
+1. **What is a thread in Java?**
+   - Explain how threads work in Java.
+2. **What is the difference between a process and a thread?**
+3. **How do you create a thread in Java?**
+   - Discuss `Thread` class vs `Runnable` interface.
+4. **What is the lifecycle of a thread in Java?**
+   - Explain the thread states: New, Runnable, Blocked, Waiting, Timed Waiting, and Terminated.
+5. **What is the difference between `start()` and `run()` methods in threads?**
+6. **What happens if we call `run()` directly instead of `start()`?**
+7. **Can we restart a thread in Java once it has been started?**
+8. **What is the default priority of a thread, and how can we change it?**
+   - Discuss `Thread.NORM_PRIORITY`, `Thread.MIN_PRIORITY`, and `Thread.MAX_PRIORITY`.
+9. **What is the difference between a user thread and a daemon thread?**
+   - How do you create a daemon thread?
+10. **How do you stop a thread in Java?**
+    - Explain why `stop()` is deprecated and the alternatives like `interrupt()`.
+
+---
+
+## **2. Thread Synchronization**
+11. **What is thread synchronization, and why is it important?**
+12. **How do you achieve thread safety in Java?**
+    - Discuss `synchronized` keyword.
+13. **What is the difference between class-level and object-level locking?**
+14. **What are the different ways to use the `synchronized` keyword?**
+    - Methods, code blocks, and static synchronization.
+15. **What is a monitor in Java?**
+16. **What are deadlocks?**
+    - Explain a deadlock scenario with an example.
+17. **How do you avoid deadlocks in Java?**
+18. **What is reentrant locking?**
+    - Explain how `synchronized` in Java is reentrant.
+19. **What are race conditions, and how do you prevent them?**
+20. **What is a `volatile` keyword in Java?**
+    - How is it different from `synchronized`?
+
+---
+
+## **3. Concurrency Utilities**
+21. **What is the `java.util.concurrent` package? Why was it introduced?**
+22. **What is `ReentrantLock` in Java? How is it different from `synchronized`?**
+23. **What are the advantages of `ReentrantLock` over the `synchronized` keyword?**
+24. **What is the difference between `tryLock()` and `lock()`?**
+25. **What is a `Semaphore`, and how is it used?**
+26. **What is a `CountDownLatch`? Provide a use case.**
+27. **What is a `CyclicBarrier`, and how does it differ from `CountDownLatch`?**
+28. **What is `ThreadLocal` in Java?**
+    - How does it provide thread safety?
+29. **What is an `ExecutorService`?**
+    - Discuss the purpose of `Executors` and thread pools.
+30. **What are the types of thread pools available in Java?**
+    - FixedThreadPool, CachedThreadPool, SingleThreadExecutor, and ScheduledThreadPool.
+31. **What is the difference between `submit()` and `execute()` methods of `ExecutorService`?**
+32. **What is a `Future` in Java?**
+    - How do you get results from a thread?
+33. **What is the difference between `Callable` and `Runnable`?**
+34. **What is a `BlockingQueue` in Java?**
+    - Discuss the different implementations like `ArrayBlockingQueue` and `LinkedBlockingQueue`.
+35. **What are `ConcurrentHashMap` and `CopyOnWriteArrayList`? How do they differ from their non-thread-safe counterparts?**
+
+---
+
+## **4. Thread Communication**
+36. **How do threads communicate with each other in Java?**
+    - Explain `wait()`, `notify()`, and `notifyAll()` methods.
+37. **What is the significance of calling `wait()` and `notify()` inside a synchronized block?**
+38. **What happens if `wait()` is called without acquiring a lock?**
+39. **What is spurious wakeup, and how do you handle it?**
+40. **What is the difference between `sleep()` and `wait()`?**
+41. **What is the difference between `notify()` and `notifyAll()`?**
+42. **How does thread communication work with condition variables?**
+    - Explain using `Condition` with `ReentrantLock`.
+
+---
+
+## **5. Advanced Multithreading Concepts**
+43. **What is a deadlock, livelock, and starvation in multithreading?**
+44. **What is thread starvation, and how can you prevent it?**
+45. **What is the **ForkJoin framework** in Java?**
+    - Explain `ForkJoinPool` and its use case.
+46. **What is the `CompletableFuture` class?**
+    - Discuss its advantages over `Future`.
+47. **What are `Phaser` and `Exchanger` in Java?**
+48. **What are immutable objects, and how do they help in multithreading?**
+49. **What is the **double-checked locking** pattern?**
+    - Where is it used, and what problem does it solve?
+50. **What is the `java.util.concurrent.atomic` package?**
+    - Discuss `AtomicInteger`, `AtomicLong`, and `compareAndSet()` operations.
+51. **How does the `CAS (Compare-And-Swap)` algorithm work?**
+52. **What are the differences between `synchronized` and `Lock` interfaces?**
+53. **How does the JVM handle thread scheduling?**
+    - Explain **preemptive scheduling** and **time slicing**.
+54. **What is the difference between `Thread.yield()` and `Thread.sleep()`?**
+
+---
+
+## **6. Best Practices and Real-World Scenarios**
+55. **What are some best practices for writing multithreaded code in Java?**
+56. **How do you handle thread interruptions?**
+    - Discuss the `interrupt()` method and the `InterruptedException`.
+57. **How do you debug and monitor threads in a Java application?**
+    - Tools: VisualVM, JConsole, and thread dumps.
+58. **How do you design a thread-safe singleton class?**
+    - Discuss the **Bill Pugh Singleton** and **lazy initialization** approaches.
+59. **How do you handle exceptions in threads?**
+60. **What tools or approaches do you use for testing multithreaded code?**
+    - Discuss the use of testing tools like **FindBugs**, **JUnit**, or **TestNG**.
+
+---
+
+## **7. Common Code Scenarios**
+61. Write a program to create two threads:  
+   - One thread prints **even numbers**, and the other thread prints **odd numbers**.  
+   - The output should be in sequential order.  
+62. Write a program that demonstrates deadlock between two threads.  
+63. Write a program that uses a `CountDownLatch` to ensure a task starts only after multiple threads complete their execution.  
+64. Write a program to demonstrate the use of `BlockingQueue` for producer-consumer problems.  
+65. Write a program to implement a thread-safe **singleton class**.
+
+---
+
+These questions are commonly asked in **multithreading interviews** to assess a developer's understanding of threads, synchronization, concurrency utilities, and how they can design thread-safe applications in Java. For senior roles, interviewers will often ask questions involving real-world problem-solving and advanced concurrency concepts.
+
+---
+
+Here is a list of **common multithreading code scenario questions** in Java. These are practical coding problems often asked in interviews to assess hands-on understanding of threads, synchronization, and concurrency.
+
+---
+
+## **1. Basic Thread Creation**
+**Question:**  
+Write a program to create two threads in Java:  
+- One thread should print numbers from 1 to 5.  
+- The other thread should print the square of those numbers.
+
+---
+
+## **2. Printing Even and Odd Numbers Sequentially**  
+**Question:**  
+Write a program to print even and odd numbers sequentially using two threads.  
+- Thread 1 prints odd numbers.  
+- Thread 2 prints even numbers.  
+- The output should be in proper order: `1, 2, 3, 4, 5, ...`.
+
+**Hint:** Use `synchronized` and `wait()/notify()` for thread communication.
+
+---
+
+## **3. Producer-Consumer Problem (BlockingQueue)**  
+**Question:**  
+Implement a producer-consumer problem in Java using `BlockingQueue`.  
+- The producer thread generates numbers from 1 to 10.  
+- The consumer thread consumes those numbers and prints them.
+
+**Follow-Up:**  
+- Solve it using wait/notify without using `BlockingQueue`.
+
+---
+
+## **4. Thread Deadlock Scenario**  
+**Question:**  
+Write a program to demonstrate a deadlock between two threads.  
+- Use two shared resources (`Resource1` and `Resource2`).  
+- Thread 1 locks Resource1 and then tries to lock Resource2.  
+- Thread 2 locks Resource2 and then tries to lock Resource1.
+
+**Follow-Up:**  
+How can you resolve or prevent the deadlock?
+
+---
+
+## **5. Thread Synchronization Using Synchronized Methods**  
+**Question:**  
+Write a program where multiple threads try to increment a shared counter.  
+- Use a synchronized method to ensure thread safety.  
+- Print the final value of the counter after all threads have finished execution.
+
+**Follow-Up:**  
+- Solve the same problem using `ReentrantLock` instead of `synchronized`.
+
+---
+
+## **6. Print “Ping” and “Pong” Alternately**  
+**Question:**  
+Write a program with two threads:  
+- One thread prints **"Ping"**.  
+- The other thread prints **"Pong"**.  
+- The output should alternate like: `Ping Pong Ping Pong...`.
+
+**Hint:** Use `wait()` and `notify()` for proper thread coordination.
+
+---
+
+## **7. Thread-Safe Singleton Implementation**  
+**Question:**  
+Write a thread-safe Singleton class in Java.  
+- Use lazy initialization.  
+- Ensure the singleton instance is created only once in a multi-threaded environment.
+
+**Follow-Up:**  
+What are the pros and cons of using the **Double-Checked Locking** pattern?
+
+---
+
+## **8. Print Numbers in Sequential Order Using N Threads**  
+**Question:**  
+Write a program where `N` threads print numbers in sequential order.  
+- For example, if `N=3`, Thread 1 prints 1, Thread 2 prints 2, Thread 3 prints 3, and then Thread 1 prints 4, and so on.
+
+**Hint:** Use `wait()/notify()` for coordination between threads.
+
+---
+
+## **9. Implement a Custom Thread Pool**  
+**Question:**  
+Write a program to implement a simple thread pool in Java.  
+- The thread pool should manage a fixed number of worker threads.  
+- Submit multiple tasks to the thread pool for execution.
+
+---
+
+## **10. Dining Philosophers Problem**  
+**Question:**  
+Implement the **Dining Philosophers Problem** in Java using threads.  
+- Five philosophers sit at a table with forks between them.  
+- Each philosopher alternates between thinking and eating.  
+- To eat, a philosopher needs to pick up two forks (shared resources).
+
+**Hint:** Use **synchronization** or `ReentrantLock` to avoid deadlock.
+
+---
+
+## **11. Implement a CountdownLatch Example**  
+**Question:**  
+Write a program where a main thread waits for other worker threads to complete their tasks before proceeding further.  
+- Use `CountDownLatch` to implement this.
+
+**Example Scenario:**  
+- Main thread waits for three worker threads to complete before printing "All tasks completed!".
+
+---
+
+## **12. Reader-Writer Problem**  
+**Question:**  
+Write a program to implement the **Reader-Writer problem** using threads.  
+- Allow multiple reader threads to read the data simultaneously.  
+- Ensure that writer threads have exclusive access to the data.
+
+**Hint:** Use `ReentrantReadWriteLock`.
+
+---
+
+## **13. ThreadLocal Example**  
+**Question:**  
+Write a program to demonstrate the use of `ThreadLocal` in Java.  
+- Each thread should have its own copy of a counter variable.  
+- Increment and print the counter value from different threads.
+
+---
+
+## **14. Implement a Barrier Using CyclicBarrier**  
+**Question:**  
+Write a program where multiple threads perform partial computations and then wait at a barrier before proceeding to the next phase.  
+- Use `CyclicBarrier` to synchronize the threads.
+
+---
+
+## **15. Simulate Bank Transactions with Deadlock-Free Solution**  
+**Question:**  
+Write a program where multiple threads perform bank transactions (transferring money between accounts).  
+- Ensure thread safety.  
+- Avoid deadlocks when accessing two accounts simultaneously.
+
+---
+
+## **16. ScheduledExecutorService Example**  
+**Question:**  
+Write a program to schedule a task to run at a fixed interval using `ScheduledExecutorService`.
+
+**Example Use Case:**  
+Print a message every 2 seconds.
+
+---
+
+## **17. Merge Two Sorted Arrays Using Threads**  
+**Question:**  
+Write a program where two threads merge two sorted arrays into a single sorted array.  
+- Thread 1 merges the first half.  
+- Thread 2 merges the second half.  
+- Main thread combines the results.
+
+---
+
+## **18. Thread Interruption Example**  
+**Question:**  
+Write a program to demonstrate how to properly interrupt a thread in Java.  
+- Use the `interrupt()` method.  
+- Ensure the thread checks for interruptions and handles it gracefully.
+
+---
+
+## **19. Implement a Custom Blocking Queue**  
+**Question:**  
+Write a program to implement a custom thread-safe blocking queue using `wait()` and `notify()`.  
+- The queue should support `enqueue()` and `dequeue()` operations.  
+- Block producer threads if the queue is full.  
+- Block consumer threads if the queue is empty.
+
+---
+
+## **20. Simulate Multi-Threaded File Processing**  
+**Question:**  
+Write a program where multiple threads process a large file concurrently.  
+- Each thread processes a specific part of the file.  
+- Combine the results after all threads finish processing.
+
+---
+
+## **21. Simple Thread Sleep Example**  
+**Question:**  
+Write a program where two threads print numbers 1 to 5, but each thread sleeps for a different duration.
+
+---
+
+## **22. Thread Join Example**  
+**Question:**  
+Write a program where the main thread waits for multiple worker threads to finish using `join()`.
+
+---
+
+## **23. Implement a Thread-Safe Counter**  
+**Question:**  
+Write a program to increment a counter from multiple threads.  
+- Ensure thread safety using:  
+   - `synchronized`  
+   - `ReentrantLock`  
+   - `AtomicInteger`  
+
+---
+
+## **24. Parallel Array Sum Calculation**  
+**Question:**  
+Write a program to calculate the sum of a large array using multiple threads.  
+- Divide the array into equal parts.  
+- Each thread computes the sum of its part.  
+- Combine the partial results.
+
+---
+
+## **25. Multithreaded Matrix Multiplication**  
+**Question:**  
+Write a program to perform matrix multiplication using multiple threads.  
+- Each thread calculates one row or block of the resultant matrix.
+
+---
+
+These **common coding scenarios** help you demonstrate your understanding of **multithreading** concepts such as thread creation, synchronization, deadlocks, concurrent utilities, and problem-solving. Being able to write and debug these programs is critical for acing Java multithreading interviews.
