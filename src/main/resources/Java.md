@@ -3993,10 +3993,86 @@ Even Thread: 20
 
 The output will always be sequential, as the two threads communicate and wait for their turn to print.
 ---
-62. Write a program that demonstrates deadlock between two threads.  
-63. Write a program that uses a `CountDownLatch` to ensure a task starts only after multiple threads complete their execution.  
-64. Write a program to demonstrate the use of `BlockingQueue` for producer-consumer problems.  
-65. Write a program to implement a thread-safe **singleton class**.
+62. Write a program that demonstrates deadlock between two threads.
+A **deadlock** occurs in Java multithreading when two or more threads are blocked forever, each waiting for the other to release a lock. This situation typically arises when multiple threads need the same locks but acquire them in different orders. 
+
+Here's an example demonstrating a deadlock between two threads:
+
+```java
+public class DeadlockDemo {
+
+    public static void main(String[] args) {
+        final Object resource1 = "Resource 1";
+        final Object resource2 = "Resource 2";
+
+        // Thread 1 tries to lock resource1 then resource2
+        Thread thread1 = new Thread(() -> {
+            synchronized (resource1) {
+                System.out.println("Thread 1: locked resource 1");
+
+                // Adding delay to simulate real-world scenario and ensure deadlock
+                try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+                synchronized (resource2) {
+                    System.out.println("Thread 1: locked resource 2");
+                }
+            }
+        });
+
+        // Thread 2 tries to lock resource2 then resource1
+        Thread thread2 = new Thread(() -> {
+            synchronized (resource2) {
+                System.out.println("Thread 2: locked resource 2");
+
+                // Adding delay to simulate real-world scenario and ensure deadlock
+                try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+                synchronized (resource1) {
+                    System.out.println("Thread 2: locked resource 1");
+                }
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+**Explanation:**
+
+- **Resources:** Two objects, `resource1` and `resource2`, represent the resources that the threads will attempt to lock.
+
+- **Thread 1:** Locks `resource1` first, then attempts to lock `resource2`.
+
+- **Thread 2:** Locks `resource2` first, then attempts to lock `resource1`.
+
+**Deadlock Scenario:**
+
+1. **Thread 1** locks `resource1` and sleeps for 100 milliseconds.
+
+2. **Thread 2** locks `resource2` and sleeps for 100 milliseconds.
+
+3. After waking up, **Thread 1** attempts to lock `resource2` but can't because **Thread 2** holds it.
+
+4. After waking up, **Thread 2** attempts to lock `resource1` but can't because **Thread 1** holds it.
+
+Both threads are now waiting indefinitely for each other to release the locks, resulting in a deadlock.
+
+**Avoiding Deadlock:**
+
+To prevent deadlocks, ensure that all threads acquire locks in the same order. In this example, if both threads attempted to lock `resource1` first and then `resource2`, the deadlock would not occur.
+
+For a more in-depth understanding of deadlocks in Java multithreading, you can refer to this resource: 
+
+Additionally, here's a video tutorial that explains deadlocks in Java multithreading:
+
+ 
+
+---
+64. Write a program that uses a `CountDownLatch` to ensure a task starts only after multiple threads complete their execution.  
+65. Write a program to demonstrate the use of `BlockingQueue` for producer-consumer problems.  
+66. Write a program to implement a thread-safe **singleton class**.
 
 ---
 
