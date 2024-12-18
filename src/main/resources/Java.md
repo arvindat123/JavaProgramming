@@ -3887,7 +3887,112 @@ Here is a comprehensive list of **multithreading interview questions** in Java, 
 ## **7. Common Code Scenarios**
 61. Write a program to create two threads:  
    - One thread prints **even numbers**, and the other thread prints **odd numbers**.  
-   - The output should be in sequential order.  
+   - The output should be in sequential order.
+---
+Here is a Java program that creates two threads to print even and odd numbers in **sequential order**. The program uses a **shared lock object** and `wait()`/`notify()` to synchronize the two threads. This ensures that the numbers are printed in the correct order.
+
+### Code
+```java
+class PrintNumbers {
+    private int limit;
+    private int number = 1; // Start with 1
+    
+    public PrintNumbers(int limit) {
+        this.limit = limit;
+    }
+    
+    public void printOdd() {
+        synchronized (this) {
+            while (number <= limit) {
+                if (number % 2 == 0) { // Check if it's even
+                    try {
+                        wait(); // Wait for the even thread
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Odd Thread: " + number);
+                    number++;
+                    notify(); // Notify the even thread
+                }
+            }
+        }
+    }
+    
+    public void printEven() {
+        synchronized (this) {
+            while (number <= limit) {
+                if (number % 2 != 0) { // Check if it's odd
+                    try {
+                        wait(); // Wait for the odd thread
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Even Thread: " + number);
+                    number++;
+                    notify(); // Notify the odd thread
+                }
+            }
+        }
+    }
+}
+
+public class EvenOddThreads {
+    public static void main(String[] args) {
+        int limit = 20; // The maximum number to print
+        PrintNumbers pn = new PrintNumbers(limit);
+        
+        // Thread for printing odd numbers
+        Thread oddThread = new Thread(() -> pn.printOdd());
+        
+        // Thread for printing even numbers
+        Thread evenThread = new Thread(() -> pn.printEven());
+        
+        // Start both threads
+        oddThread.start();
+        evenThread.start();
+    }
+}
+```
+
+---
+
+### Explanation:
+1. **Shared Resource**:
+   - The `PrintNumbers` class is shared between both threads.
+   - It has a `number` that keeps track of the current number to print.
+
+2. **Synchronization**:
+   - The `synchronized` block ensures only one thread prints at a time.
+   - `wait()` makes a thread wait when it’s not its turn to print.
+   - `notify()` wakes up the waiting thread to resume printing.
+
+3. **Threads**:
+   - One thread (`oddThread`) handles odd numbers.
+   - The other thread (`evenThread`) handles even numbers.
+
+4. **Sequential Output**:
+   - The threads coordinate using `wait()` and `notify()` so they alternate and print numbers in order.
+
+---
+
+### Sample Output:
+```
+Odd Thread: 1
+Even Thread: 2
+Odd Thread: 3
+Even Thread: 4
+Odd Thread: 5
+Even Thread: 6
+Odd Thread: 7
+Even Thread: 8
+...
+Even Thread: 20
+```
+
+The output will always be sequential, as the two threads communicate and wait for their turn to print.
+---
 62. Write a program that demonstrates deadlock between two threads.  
 63. Write a program that uses a `CountDownLatch` to ensure a task starts only after multiple threads complete their execution.  
 64. Write a program to demonstrate the use of `BlockingQueue` for producer-consumer problems.  
