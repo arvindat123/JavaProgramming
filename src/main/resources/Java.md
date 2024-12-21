@@ -4312,3 +4312,140 @@ Write a program to perform matrix multiplication using multiple threads.
 ---
 
 These **common coding scenarios** help you demonstrate your understanding of **multithreading** concepts such as thread creation, synchronization, deadlocks, concurrent utilities, and problem-solving. Being able to write and debug these programs is critical for acing Java multithreading interviews.
+
+---
+
+The lifecycle of a thread in Java consists of several states that a thread goes through during its lifetime. These states are defined in the `java.lang.Thread.State` enumeration. The thread states are as follows:
+
+### 1. **New**  
+- **Description:** A thread is created but not yet started.
+- **How it happens:** When a thread object is instantiated using the `Thread` class or implementing the `Runnable` interface, it is in the `NEW` state.
+- **Transition:** The thread moves to the `Runnable` state when the `start()` method is called.
+
+**Code Example:**
+```java
+Thread thread = new Thread(() -> System.out.println("Thread is running"));
+System.out.println("Thread state: " + thread.getState()); // Output: NEW
+```
+
+---
+
+### 2. **Runnable**  
+- **Description:** The thread is ready to run and waiting for CPU time.
+- **How it happens:** After calling `start()`, the thread is in the `Runnable` state. Note that it might not run immediately because the operating system's thread scheduler decides when it will run.
+- **Transition:** It can move to the `Running` state when the thread gets CPU time.
+
+**Code Example:**
+```java
+thread.start(); // Now the thread is in the Runnable state.
+System.out.println("Thread state: " + thread.getState()); // Output: RUNNABLE
+```
+
+---
+
+### 3. **Running**  
+- **Description:** The thread is executing its `run()` method.
+- **How it happens:** The thread scheduler selects the thread and allocates CPU time to it.
+- **Transition:** It can move to the `Blocked`, `Waiting`, `Timed_Waiting`, or `Terminated` state based on thread operations.
+
+**Note:** The `Running` state is not explicitly represented in `Thread.State`.
+
+---
+
+### 4. **Waiting**  
+- **Description:** The thread is waiting indefinitely for another thread to perform a specific action.
+- **How it happens:** The thread enters the `Waiting` state when methods like `Object.wait()` or `Thread.join()` are called without a timeout.
+- **Transition:** It moves back to the `Runnable` state when it is notified or the waiting action is complete.
+
+**Code Example:**
+```java
+Thread t1 = new Thread(() -> {
+    try {
+        t2.join(); // t1 waits for t2 to finish.
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+});
+Thread t2 = new Thread(() -> System.out.println("Thread t2 is running"));
+
+t1.start();
+t2.start();
+```
+
+---
+
+### 5. **Timed_Waiting**  
+- **Description:** The thread is waiting for another thread to perform a specific action for a limited amount of time.
+- **How it happens:** Methods like `Thread.sleep()`, `Object.wait(timeout)`, or `Thread.join(timeout)` are called.
+- **Transition:** The thread moves to the `Runnable` state when the specified time elapses or the waiting action is completed.
+
+**Code Example:**
+```java
+Thread thread = new Thread(() -> {
+    try {
+        Thread.sleep(1000); // The thread enters the Timed_Waiting state.
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+});
+thread.start();
+```
+
+---
+
+### 6. **Blocked**  
+- **Description:** The thread is waiting to acquire a lock to enter a synchronized block or method.
+- **How it happens:** A thread enters the `Blocked` state when it tries to access a synchronized block or method that is already locked by another thread.
+- **Transition:** It moves to the `Runnable` state once it acquires the lock.
+
+**Code Example:**
+```java
+class SharedResource {
+    synchronized void sharedMethod() {
+        try {
+            Thread.sleep(1000); // Simulate work.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+SharedResource resource = new SharedResource();
+
+Thread t1 = new Thread(() -> resource.sharedMethod());
+Thread t2 = new Thread(() -> resource.sharedMethod());
+
+t1.start();
+t2.start(); // t2 will enter the Blocked state while t1 holds the lock.
+```
+
+---
+
+### 7. **Terminated (Dead)**  
+- **Description:** The thread has finished its execution.
+- **How it happens:** A thread enters this state when the `run()` method completes or an unhandled exception terminates it.
+- **Transition:** A terminated thread cannot be restarted.
+
+**Code Example:**
+```java
+Thread thread = new Thread(() -> System.out.println("Thread is running"));
+thread.start();
+
+try {
+    thread.join(); // Wait for the thread to finish.
+} catch (InterruptedException e) {
+    e.printStackTrace();
+}
+System.out.println("Thread state: " + thread.getState()); // Output: TERMINATED
+```
+
+---
+
+### Summary of Transitions
+The following diagram summarizes the lifecycle:
+
+```
+NEW --> RUNNABLE --> RUNNING --> (WAITING | TIMED_WAITING | BLOCKED) --> TERMINATED
+```
+
+By understanding these states and transitions, you can write multithreaded applications that handle concurrency more effectively.
