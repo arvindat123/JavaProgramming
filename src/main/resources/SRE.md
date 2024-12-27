@@ -81,6 +81,7 @@ The role of a **Site Reliability Engineer (SRE)** is to ensure the reliability, 
 - **Innovation**: By managing error budgets, SREs enable teams to innovate without compromising reliability.
 
 SRE combines the best of **software engineering** and **operations**, creating a culture of accountability and continuous improvement. Would you like examples of specific challenges SREs solve or how they work within teams?
+
 2. How does SRE differ from DevOps or traditional operations roles?
 3. Explain the concept of Service Level Objectives (SLOs), Service Level Indicators (SLIs), and Service Level Agreements (SLAs).
 4. What is toil, and why is it important to minimize it in SRE?
