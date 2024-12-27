@@ -1137,3 +1137,132 @@ public class MultiDatabaseController {
 3. Use different `persistenceUnit` names for each database.
 
 This setup ensures clear separation and seamless operation across multiple databases.
+
+---
+
+Handling custom exceptions in a Spring Boot application involves creating a custom exception class, defining an exception handler using `@ControllerAdvice`, and optionally using `@ResponseStatus` to map the exception to a specific HTTP status code.
+
+### Step-by-Step Guide
+
+#### 1. Create a Custom Exception Class
+Define a custom exception class that extends `RuntimeException` or `Exception`.
+
+```java
+package com.example.demo.exception;
+
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+```
+
+#### 2. Create a Global Exception Handler
+Use `@ControllerAdvice` to centralize exception handling.
+
+```java
+package com.example.demo.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+```
+
+#### 3. Create a Custom Error Response Class
+Define a standard structure for error responses.
+
+```java
+package com.example.demo.exception;
+
+public class ErrorResponse {
+    private int statusCode;
+    private String message;
+
+    public ErrorResponse(int statusCode, String message) {
+        this.statusCode = statusCode;
+        this.message = message;
+    }
+
+    // Getters and Setters
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+}
+```
+
+#### 4. Use the Custom Exception in Your Application
+Throw the custom exception in your service or controller when necessary.
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.exception.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UserController {
+
+    @GetMapping("/users/{id}")
+    public String getUserById(@PathVariable String id) {
+        if (!"123".equals(id)) {
+            throw new ResourceNotFoundException("User with ID " + id + " not found");
+        }
+        return "User details for ID " + id;
+    }
+}
+```
+
+#### 5. Test the Exception Handling
+When you access an invalid user ID, the application will respond with a structured error message:
+
+**Request:**
+```http
+GET /users/999
+```
+
+**Response:**
+```json
+{
+    "statusCode": 404,
+    "message": "User with ID 999 not found"
+}
+```
+
+### Additional Features
+- **Logging**: Add logging in the `GlobalExceptionHandler` for better debugging.
+- **Custom HTTP Status**: Use `@ResponseStatus` on exceptions for default HTTP status mapping.
+- **Validation Errors**: Handle `MethodArgumentNotValidException` for detailed validation error responses.
+- **Internationalization**: Return error messages using message sources for different locales.
+
+Would you like an example for any of these additional features?
