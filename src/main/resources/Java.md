@@ -4449,3 +4449,200 @@ NEW --> RUNNABLE --> RUNNING --> (WAITING | TIMED_WAITING | BLOCKED) --> TERMINA
 ```
 
 By understanding these states and transitions, you can write multithreaded applications that handle concurrency more effectively.
+
+---
+Java Stream API provides a powerful way to process collections of data. Operations on streams can be classified into two types: **intermediate** and **terminal** operations.
+
+---
+
+### **Intermediate Operations**
+Intermediate operations transform a stream into another stream. They are **lazy**, meaning they don’t execute until a terminal operation is invoked.
+
+#### Common Intermediate Operations
+
+1. **`filter`**
+   - Filters elements based on a predicate.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+   List<Integer> evens = numbers.stream()
+                                .filter(n -> n % 2 == 0)
+                                .collect(Collectors.toList());
+   System.out.println(evens); // [2, 4]
+   ```
+
+2. **`map`**
+   - Transforms each element in the stream.
+   ```java
+   List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+   List<Integer> nameLengths = names.stream()
+                                    .map(String::length)
+                                    .collect(Collectors.toList());
+   System.out.println(nameLengths); // [5, 3, 7]
+   ```
+
+3. **`flatMap`**
+   - Flattens nested collections or streams.
+   ```java
+   List<List<Integer>> listOfLists = Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4));
+   List<Integer> flatList = listOfLists.stream()
+                                       .flatMap(List::stream)
+                                       .collect(Collectors.toList());
+   System.out.println(flatList); // [1, 2, 3, 4]
+   ```
+
+4. **`distinct`**
+   - Removes duplicate elements.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 3, 3, 4);
+   List<Integer> distinctNumbers = numbers.stream()
+                                          .distinct()
+                                          .collect(Collectors.toList());
+   System.out.println(distinctNumbers); // [1, 2, 3, 4]
+   ```
+
+5. **`sorted`**
+   - Sorts elements in natural or custom order.
+   ```java
+   List<String> names = Arrays.asList("Charlie", "Alice", "Bob");
+   List<String> sortedNames = names.stream()
+                                   .sorted()
+                                   .collect(Collectors.toList());
+   System.out.println(sortedNames); // [Alice, Bob, Charlie]
+   ```
+
+6. **`limit`**
+   - Limits the number of elements.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+   List<Integer> limited = numbers.stream()
+                                  .limit(3)
+                                  .collect(Collectors.toList());
+   System.out.println(limited); // [1, 2, 3]
+   ```
+
+7. **`skip`**
+   - Skips a given number of elements.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+   List<Integer> skipped = numbers.stream()
+                                  .skip(2)
+                                  .collect(Collectors.toList());
+   System.out.println(skipped); // [3, 4, 5]
+   ```
+
+---
+
+### **Terminal Operations**
+Terminal operations produce a result or side effect. They are **eager**, meaning they trigger the pipeline execution.
+
+#### Common Terminal Operations
+
+1. **`collect`**
+   - Collects elements into a collection or other forms.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3);
+   List<Integer> collected = numbers.stream()
+                                    .collect(Collectors.toList());
+   System.out.println(collected); // [1, 2, 3]
+   ```
+
+2. **`forEach`**
+   - Performs an action on each element.
+   ```java
+   List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+   names.stream().forEach(System.out::println);
+   // Alice
+   // Bob
+   // Charlie
+   ```
+
+3. **`reduce`**
+   - Reduces elements to a single value.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+   int sum = numbers.stream()
+                    .reduce(0, Integer::sum);
+   System.out.println(sum); // 10
+   ```
+
+4. **`toArray`**
+   - Converts elements to an array.
+   ```java
+   List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+   String[] array = names.stream().toArray(String[]::new);
+   System.out.println(Arrays.toString(array)); // [Alice, Bob, Charlie]
+   ```
+
+5. **`anyMatch`**
+   - Checks if any element matches a predicate.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3);
+   boolean hasEven = numbers.stream().anyMatch(n -> n % 2 == 0);
+   System.out.println(hasEven); // true
+   ```
+
+6. **`allMatch`**
+   - Checks if all elements match a predicate.
+   ```java
+   List<Integer> numbers = Arrays.asList(2, 4, 6);
+   boolean allEven = numbers.stream().allMatch(n -> n % 2 == 0);
+   System.out.println(allEven); // true
+   ```
+
+7. **`noneMatch`**
+   - Checks if no elements match a predicate.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 3, 5);
+   boolean noneEven = numbers.stream().noneMatch(n -> n % 2 == 0);
+   System.out.println(noneEven); // true
+   ```
+
+8. **`count`**
+   - Counts the number of elements.
+   ```java
+   List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+   long count = numbers.stream().count();
+   System.out.println(count); // 4
+   ```
+
+9. **`findFirst`**
+   - Finds the first element, if available.
+   ```java
+   List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+   Optional<String> first = names.stream().findFirst();
+   first.ifPresent(System.out::println); // Alice
+   ```
+
+10. **`findAny`**
+    - Finds any element (useful in parallel streams).
+    ```java
+    List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+    Optional<String> any = names.stream().findAny();
+    any.ifPresent(System.out::println); // Could print any element
+    ```
+
+---
+
+### Summary Table
+
+| **Operation**   | **Type**      | **Description**                                           |
+|------------------|---------------|-----------------------------------------------------------|
+| `filter`         | Intermediate  | Filters elements based on a predicate.                   |
+| `map`            | Intermediate  | Transforms elements.                                      |
+| `flatMap`        | Intermediate  | Flattens nested streams.                                  |
+| `distinct`       | Intermediate  | Removes duplicates.                                       |
+| `sorted`         | Intermediate  | Sorts elements.                                           |
+| `limit`          | Intermediate  | Limits the number of elements.                           |
+| `skip`           | Intermediate  | Skips the first n elements.                              |
+| `collect`        | Terminal      | Collects elements into a collection.                     |
+| `forEach`        | Terminal      | Performs an action on each element.                      |
+| `reduce`         | Terminal      | Reduces elements to a single value.                      |
+| `toArray`        | Terminal      | Converts elements to an array.                           |
+| `anyMatch`       | Terminal      | Checks if any element matches a predicate.               |
+| `allMatch`       | Terminal      | Checks if all elements match a predicate.                |
+| `noneMatch`      | Terminal      | Checks if no elements match a predicate.                 |
+| `count`          | Terminal      | Counts the elements.                                      |
+| `findFirst`      | Terminal      | Finds the first element.                                  |
+| `findAny`        | Terminal      | Finds any element (useful in parallel streams).          |
+
+By combining intermediate and terminal operations, you can create powerful and concise data processing pipelines.
