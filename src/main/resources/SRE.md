@@ -191,6 +191,97 @@ SLAs (Agreements) → Enforceable contracts based on SLOs (e.g., 99.9% uptime, w
 
 These metrics and agreements allow teams to manage trade-offs between reliability and innovation, enabling better prioritization and resource allocation. Would you like detailed examples of how to define SLOs or implement SLIs?
 
+### In **ServiceNow**, an **Incident SLA (Service Level Agreement)** is a defined set of rules and timelines that ensure incidents are resolved within a specific timeframe to meet agreed-upon service levels. SLAs in ServiceNow are used to track, measure, and enforce response and resolution times for incidents.
+
+### **Key Components of Incident SLA in ServiceNow**
+
+1. **SLA Definition**:
+   - Specifies the conditions under which the SLA applies.
+   - Includes the start, pause, and stop criteria for SLA measurement.
+
+2. **Types of SLA Timelines**:
+   - **Response SLA**: The time within which the service provider acknowledges or responds to an incident.
+   - **Resolution SLA**: The time within which the incident must be fully resolved.
+
+3. **Priority Levels**:
+   - SLAs are often tied to the priority of the incident (e.g., P1 for critical, P4 for low-priority issues).
+   - Example:
+     - P1 (Critical): Resolution within 1 hour.
+     - P2 (High): Resolution within 4 hours.
+     - P3 (Medium): Resolution within 8 business hours.
+
+4. **SLA Stages**:
+   - **New**: SLA timer starts.
+   - **In Progress**: Incident is being worked on.
+   - **Paused**: SLA is paused if the ticket is on hold or awaiting user action.
+   - **Breached**: SLA is breached if the timeline exceeds the defined threshold.
+
+---
+
+### **Key Terms**
+
+1. **Task SLA**:
+   - A specific SLA applied to a task, such as an incident.
+   - Tracked in the `Task SLA` table (`task_sla`).
+
+2. **SLA Metrics**:
+   - Time Elapsed: Time spent on the task.
+   - Time Left: Remaining time before breach.
+   - SLA Percentage: Progress toward meeting or breaching the SLA.
+
+3. **Workflow Integration**:
+   - ServiceNow workflows can trigger actions (e.g., notifications, escalations) based on SLA status.
+
+---
+
+### **How Incident SLA Works in ServiceNow**
+
+1. **SLA Application**:
+   - When an incident is created or updated, ServiceNow checks SLA conditions.
+   - If conditions match, an SLA record is created in the `Task SLA` table.
+
+2. **Timers and Conditions**:
+   - SLA Start: When the incident is created or assigned.
+   - SLA Pause: When the incident is pending or on hold.
+   - SLA Stop: When the incident is resolved or closed.
+
+3. **Escalation Rules**:
+   - If an SLA is approaching a breach, ServiceNow can trigger escalations such as:
+     - Notifications to stakeholders.
+     - Assigning incidents to higher-priority queues.
+     - Updating incident priority.
+
+---
+
+### **Example SLA Use Case**
+
+#### Scenario:
+A company's SLA for incident resolution is:
+- **Critical Incidents (P1)**: Must be resolved within 2 hours.
+- **High Incidents (P2)**: Must be resolved within 4 hours.
+- **Medium Incidents (P3)**: Must be resolved within 8 hours.
+
+#### Workflow:
+1. A critical incident (P1) is created at 10:00 AM.
+2. The SLA timer starts.
+3. If unresolved by 11:30 AM, ServiceNow sends a warning notification (90% SLA time elapsed).
+4. If unresolved by 12:00 PM, the SLA breaches.
+5. Breached incidents are highlighted, and escalations are triggered.
+
+---
+
+### **Benefits of Using Incident SLA in ServiceNow**
+1. **Accountability**:
+   - Tracks whether teams meet service expectations.
+2. **Visibility**:
+   - Real-time tracking of SLA progress, breaches, and escalations.
+3. **Automation**:
+   - Automatically escalates incidents to ensure timely resolution.
+4. **Customer Satisfaction**:
+   - Ensures service commitments are met, enhancing trust.
+
+---
+
 4. What is toil, and why is it important to minimize it in SRE?
 5. Describe the "error budget" and its importance in SRE.
 
