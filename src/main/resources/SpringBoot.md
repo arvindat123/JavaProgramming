@@ -1140,7 +1140,7 @@ This setup ensures clear separation and seamless operation across multiple datab
 
 ---
 
-Handling custom exceptions in a Spring Boot application involves creating a custom exception class, defining an exception handler using `@ControllerAdvice`, and optionally using `@ResponseStatus` to map the exception to a specific HTTP status code.
+## Handling custom exceptions in a Spring Boot application involves creating a custom exception class, defining an exception handler using `@ControllerAdvice`, and optionally using `@ResponseStatus` to map the exception to a specific HTTP status code.
 
 ### Step-by-Step Guide
 
