@@ -298,7 +298,130 @@ A company's SLA for incident resolution is:
 
 ### **Incident Management**
 1. What steps do you take during a production incident?
-2. Explain how to perform a root cause analysis (RCA) after an incident.
+## 2. Explain how to perform a root cause analysis (RCA) after an incident.
+Root Cause Analysis (RCA) is a systematic process for identifying the underlying reasons behind an incident or failure. In the context of IT and Site Reliability Engineering (SRE), RCA helps teams prevent the recurrence of incidents by addressing their root causes rather than just symptoms.
+
+---
+
+### **Steps to Perform Root Cause Analysis (RCA)**
+
+#### **1. Document the Incident**
+   - **Capture Details**:
+     - Incident date, time, duration.
+     - Services or components affected.
+     - Impact on users or business (e.g., downtime, data loss).
+   - **Record Observations**:
+     - Error messages, logs, and symptoms observed during the incident.
+
+#### **2. Assemble an RCA Team**
+   - **Involve Stakeholders**:
+     - Engineers familiar with the system.
+     - Incident responders.
+     - Domain experts (e.g., network, database, application).
+   - **Assign Roles**:
+     - Facilitator to guide the discussion.
+     - Recorder to document findings.
+
+#### **3. Reconstruct the Timeline**
+   - **Sequence Events**:
+     - When did the issue start?
+     - What events preceded it (e.g., deployments, configuration changes)?
+     - When and how was it detected?
+     - How was it mitigated or resolved?
+   - **Gather Evidence**:
+     - System logs, monitoring data, dashboards, alerts.
+     - User reports or tickets.
+
+#### **4. Identify Contributing Factors**
+   - Analyze each step in the timeline to uncover factors contributing to the incident:
+     - **Human Errors**: Misconfiguration, incorrect deployment.
+     - **Process Failures**: Lack of testing, insufficient documentation.
+     - **System Issues**: Hardware failures, software bugs, capacity limits.
+
+#### **5. Determine the Root Cause**
+   - **Use Problem-Solving Techniques**:
+     - **5 Whys Method**:
+       - Ask "Why?" iteratively to drill down to the root cause.
+       - Example:
+         1. Why did the service fail? (The database crashed.)
+         2. Why did the database crash? (It ran out of memory.)
+         3. Why did it run out of memory? (The query was not optimized.)
+         4. Why was the query not optimized? (There were no performance reviews.)
+         5. Why was there no performance review? (Lack of monitoring practices.)
+     - **Fishbone Diagram**:
+       - Categorize contributing factors into areas such as people, process, tools, and environment.
+     - **Fault Tree Analysis**:
+       - Create a logical tree diagram to map potential causes leading to the incident.
+
+#### **6. Implement Corrective Actions**
+   - **Short-Term Fixes**:
+     - Mitigate immediate risks (e.g., rollback changes, apply patches).
+   - **Long-Term Solutions**:
+     - Address root causes to prevent recurrence (e.g., improve query optimization, implement memory limits).
+   - **Systemic Improvements**:
+     - Update processes, documentation, and training.
+     - Enhance monitoring and alerting systems.
+
+#### **7. Verify and Validate Solutions**
+   - Test implemented changes to ensure they resolve the issue.
+   - Simulate similar scenarios to confirm robustness.
+
+#### **8. Document and Share Findings**
+   - Create an RCA report that includes:
+     - Incident description.
+     - Timeline and impact analysis.
+     - Root cause(s) and contributing factors.
+     - Corrective actions taken.
+   - Share the report with stakeholders to promote transparency and learning.
+
+#### **9. Monitor for Recurrence**
+   - Monitor the system post-implementation to ensure the issue does not reoccur.
+   - Adjust solutions if new insights emerge.
+
+---
+
+### **Best Practices for RCA**
+- **Blameless Approach**:
+  - Focus on understanding the issue, not assigning blame.
+  - Encourage open and honest discussions.
+- **Continuous Improvement**:
+  - Treat RCA as an opportunity to improve processes and systems.
+- **Collaborative Effort**:
+  - Engage cross-functional teams for a holistic view.
+- **Leverage Automation**:
+  - Use automated tools to collect and analyze logs, metrics, and alerts.
+
+---
+
+### **RCA Report Template**
+
+| Section              | Details                                                                 |
+|----------------------|-------------------------------------------------------------------------|
+| **Incident Overview**| Date, time, impact, and affected systems.                              |
+| **Timeline**         | Chronological sequence of events.                                      |
+| **Root Cause(s)**    | Detailed explanation of the underlying issue.                         |
+| **Contributing Factors** | Additional factors that led to the incident.                     |
+| **Short-Term Actions**| Immediate steps taken to mitigate the incident.                      |
+| **Long-Term Actions**| Solutions implemented to prevent recurrence.                          |
+| **Lessons Learned**  | Key takeaways to improve future reliability.                          |
+
+---
+
+### **Example**
+
+#### **Incident**:
+A web application experienced a complete outage for 2 hours.
+
+#### **Root Cause**:
+A misconfigured load balancer rule sent all traffic to an unhealthy backend server.
+
+#### **Corrective Actions**:
+1. Short-Term:
+   - Reverted the load balancer configuration to a previous stable state.
+2. Long-Term:
+   - Implemented automated health checks for backend servers.
+   - Updated deployment process to include configuration validation.
+---
 3. How do you ensure effective post-mortem documentation?
 4. Describe a challenging incident you've resolved and what you learned from it.
 5. How would you handle a situation where multiple critical incidents occur simultaneously?
