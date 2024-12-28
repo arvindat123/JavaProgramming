@@ -49,8 +49,83 @@ Apache Kafka is an **open-source distributed event streaming platform** designed
    - Example: Triggering order processing when an order is placed in an e-commerce system.
 
 By combining reliability, scalability, and flexibility, Kafka has become a cornerstone technology for modern data-driven applications.
+---
 
-2. Explain the architecture of Kafka. What are the key components?  
+## 2. Explain the architecture of Kafka. What are the key components?  
+
+### **Architecture of Kafka**  
+Kafka's architecture is designed to handle high-throughput, distributed, and fault-tolerant data streaming. It follows a **publish-subscribe model** and consists of several interconnected components that work together to provide a robust messaging system.
+
+---
+
+### **Key Components of Kafka Architecture**
+
+1. **Producer**  
+   - Producers are responsible for sending messages (data records) to Kafka topics.  
+   - They write data to specific topics and decide how to partition the data across partitions.  
+   - Can be configured for **acknowledgments** to ensure reliable delivery.  
+
+2. **Consumer**  
+   - Consumers read messages from Kafka topics.  
+   - A **Consumer Group** enables multiple consumers to share the load by processing messages from different partitions of a topic.  
+   - Kafka ensures that each partition is consumed by only one consumer within a group, providing scalability.
+
+3. **Broker**  
+   - A Kafka broker is a server that stores data and serves client requests.  
+   - Kafka clusters consist of multiple brokers, which work together to ensure fault tolerance and scalability.  
+   - Each broker is identified by a unique ID.  
+
+4. **Topic**  
+   - Topics are categories to which producers send messages and from which consumers read messages.  
+   - Topics are further divided into **partitions** for parallelism.  
+   - Data in topics is stored as a **log file**, where each message is assigned a unique offset.
+
+5. **Partition**  
+   - A partition is a subset of a topic, enabling Kafka to scale horizontally.  
+   - Each partition is stored on a broker and replicated across other brokers for fault tolerance.  
+   - Messages in partitions are ordered and immutable.  
+
+6. **Leader and Replica**  
+   - Each partition has a single **leader**, which handles all reads and writes.  
+   - Other brokers maintain **replicas** of the partition, which act as backups.  
+   - If the leader fails, a replica is promoted to the leader to ensure availability.  
+
+7. **ZooKeeper**  
+   - ZooKeeper manages Kafka’s metadata, such as broker information, topic configurations, and leader election.  
+   - It ensures coordination between brokers.  
+   - Starting with Kafka 2.8, Kafka is transitioning to a **self-managed metadata quorum (KRaft)** to eliminate the dependency on ZooKeeper.
+
+8. **Producer API**  
+   - Allows applications to publish messages to topics.  
+
+9. **Consumer API**  
+   - Enables applications to subscribe to topics and process messages.  
+
+10. **Kafka Connect**  
+    - A framework for connecting Kafka with external systems, such as databases and file systems, through connectors.  
+
+11. **Kafka Streams**  
+    - A library for building real-time stream processing applications.  
+
+---
+
+### **How the Architecture Works**  
+
+1. **Producers** send data to **topics** in the Kafka cluster.  
+2. Topics are divided into **partitions**, and each message is written to a specific partition.  
+3. The partition leader handles the writes and replicates data to other brokers (replicas).  
+4. **Consumers** subscribe to topics and process messages from partitions.  
+5. Kafka uses **ZooKeeper** (or KRaft) for metadata management and leader election.  
+6. Data is stored durably on disk for a configurable retention period, enabling reprocessing of historical data.  
+
+---
+
+### **Kafka Architecture Diagram**  
+- Producers → Topics (with Partitions) → Brokers (with Replication) → Consumers  
+- ZooKeeper handles metadata coordination and leader election.  
+
+This distributed design makes Kafka highly scalable, fault-tolerant, and suitable for real-time data streaming in complex systems.
+---
 3. What is a Kafka topic, and how is it different from a partition?  
 4. How does Kafka ensure data durability and fault tolerance?  
 5. What is the role of a Kafka broker?  
