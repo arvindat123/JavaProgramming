@@ -4646,3 +4646,92 @@ Terminal operations produce a result or side effect. They are **eager**, meaning
 | `findAny`        | Terminal      | Finds any element (useful in parallel streams).          |
 
 By combining intermediate and terminal operations, you can create powerful and concise data processing pipelines.
+
+
+---
+
+### **Difference Between Multithreading and Concurrency**
+
+| **Aspect**              | **Multithreading**                                                                                      | **Concurrency**                                                                                   |
+|-------------------------|--------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| **Definition**           | A programming technique where multiple threads run in the same process to perform tasks in parallel.  | The ability of a system to handle multiple tasks at the same time by managing their execution.    |
+| **Execution Context**    | Focuses on running multiple threads simultaneously within a single process.                           | Focuses on managing multiple tasks, which can be threads, processes, or even distributed systems. |
+| **Parallelism**          | Can lead to parallel execution of threads if running on a multi-core processor.                       | Does not necessarily mean parallel execution; tasks may run sequentially but appear simultaneous. |
+| **Resource Sharing**     | Threads share the same memory space and resources of the process.                                     | Can involve shared or separate resources, depending on whether it uses threads or processes.      |
+| **Scope**                | Limited to threads within a process.                                                                 | Broader, encompassing multitasking, multithreading, and distributed systems.                     |
+| **Primary Goal**         | Increase application performance through parallelism.                                                 | Efficiently manage multiple tasks or workflows, with or without parallelism.                     |
+| **Complexity**           | Typically involves managing shared resources and synchronization between threads.                     | Involves coordination of tasks, which can be threads, processes, or I/O operations.              |
+
+---
+
+### **Key Differences Explained**
+
+1. **Multithreading:**
+   - Refers specifically to using multiple threads in a single process.
+   - Threads within a process share the same memory, making communication efficient but requiring careful synchronization to avoid issues like race conditions or deadlocks.
+   - Example:
+     - A web server using multithreading to handle multiple client requests, where each thread processes one client.
+
+2. **Concurrency:**
+   - Refers to the general concept of managing multiple tasks simultaneously, whether they are threads, processes, or asynchronous operations.
+   - Focuses on task interleaving and resource management, which can involve multithreading or multiprocessing.
+   - Example:
+     - An operating system running multiple applications simultaneously, where each application is a separate process.
+
+---
+
+### **Analogy to Understand:**
+- **Multithreading:** Imagine a restaurant with a single kitchen where multiple chefs (threads) work simultaneously to prepare dishes.
+- **Concurrency:** Imagine a restaurant where waiters, chefs, and cleaning staff (different tasks) operate concurrently to ensure smooth operations. Not all activities are simultaneous, but they are managed effectively to avoid bottlenecks.
+
+---
+
+### **Examples in Code:**
+
+#### **Multithreading Example:**
+```java
+public class MultithreadingExample extends Thread {
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " is running.");
+    }
+
+    public static void main(String[] args) {
+        MultithreadingExample thread1 = new MultithreadingExample();
+        MultithreadingExample thread2 = new MultithreadingExample();
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+Output:
+- Threads may execute in parallel or interleave depending on the CPU.
+
+#### **Concurrency Example with Asynchronous Tasks:**
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ConcurrencyExample {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        Runnable task1 = () -> System.out.println("Task 1 running");
+        Runnable task2 = () -> System.out.println("Task 2 running");
+
+        executor.submit(task1);
+        executor.submit(task2);
+
+        executor.shutdown();
+    }
+}
+```
+
+Output:
+- Tasks are managed concurrently, which may involve thread-pooling or scheduling.
+
+---
+
+### **Conclusion:**
+- **Multithreading** is a specific implementation of **concurrency**.  
+- Concurrency is a broader concept encompassing multiple paradigms to handle multiple tasks effectively, with or without parallelism.
