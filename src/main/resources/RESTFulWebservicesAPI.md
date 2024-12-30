@@ -636,8 +636,98 @@ Here's a breakdown of the most common HTTP verbs and their security implications
 ---
 
 ### **Interview Questions on Development & Development of APIs using REST & JSON**
+---
+### **What is Representational State Transfer (REST)?**
 
-#### **1. Basic Concepts**
+**Representational State Transfer (REST)** is an architectural style for designing networked applications. It was introduced by **Roy Fielding** in his doctoral dissertation in 2000. REST relies on a set of principles and constraints that use standard web protocols like HTTP to enable communication between a client and a server.
+
+---
+
+### **Core Concepts of REST**
+
+1. **Resource-Based**:
+   - In REST, the primary focus is on **resources**, which are identifiable entities (e.g., users, products, orders).
+   - Resources are represented by **URIs (Uniform Resource Identifiers)**. For example:
+     ```
+     GET /users/123  -> Retrieves user with ID 123
+     POST /orders    -> Creates a new order
+     ```
+
+2. **Representation of Resources**:
+   - A resource can have multiple representations, such as JSON, XML, or HTML, depending on the client's request.
+   - For example, a `user` resource might be represented as:
+     ```json
+     {
+       "id": 123,
+       "name": "John Doe",
+       "email": "john.doe@example.com"
+     }
+     ```
+
+3. **Stateless Communication**:
+   - Each client request must contain all the information needed for the server to process it.
+   - The server does not store any client context between requests.
+   - This makes REST scalable and suitable for distributed systems.
+
+4. **Standard HTTP Methods**:
+   - REST leverages the existing HTTP methods to perform operations on resources:
+     - **GET**: Retrieve a resource.
+     - **POST**: Create a new resource.
+     - **PUT**: Update an existing resource.
+     - **DELETE**: Remove a resource.
+
+5. **Layered Architecture**:
+   - A RESTful system can have multiple layers, such as intermediaries (e.g., load balancers, proxies), which enhance scalability and modularity without affecting the client-server communication.
+
+6. **Uniform Interface**:
+   - A consistent and uniform way to interact with resources. This includes:
+     - Resource URIs.
+     - Standardized HTTP methods.
+     - Consistent error codes and formats.
+
+7. **Cacheable Responses**:
+   - Responses from the server should indicate whether they are cacheable.
+   - Caching improves performance by reducing unnecessary requests.
+
+8. **HATEOAS (Hypermedia as the Engine of Application State)**:
+   - A RESTful API may include links in responses to guide clients on possible actions related to the resource.
+   - Example:
+     ```json
+     {
+       "id": 123,
+       "name": "John Doe",
+       "links": [
+         { "rel": "self", "href": "/users/123" },
+         { "rel": "orders", "href": "/users/123/orders" }
+       ]
+     }
+     ```
+
+---
+
+### **REST vs. Other Architectures**
+- Unlike SOAP or RPC, REST is lightweight, stateless, and relies on standard web protocols (HTTP).
+- It emphasizes scalability, simplicity, and flexibility, making it widely used in web and mobile applications.
+
+---
+
+### **Benefits of REST**
+1. **Scalability**: Stateless nature and caching make REST scalable.
+2. **Interoperability**: Resource representations in standard formats like JSON or XML enable cross-platform communication.
+3. **Flexibility**: Different clients can consume the same API using different resource representations.
+4. **Ease of Implementation**: Based on well-known HTTP methods and protocols.
+
+---
+
+### **Use Cases**
+- REST is commonly used for:
+  - Web APIs (e.g., retrieving data from a server).
+  - Microservices communication.
+  - Mobile app backends.
+  - IoT devices.
+
+REST is the foundation of many modern web services, making it an essential concept for developers.
+---
 ### 1. What is a RESTful API? How does it differ from other APIs?
 ### **What is a RESTful API?**
 
