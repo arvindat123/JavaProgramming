@@ -632,3 +632,97 @@ Here's a breakdown of the most common HTTP verbs and their security implications
 ### **Conclusion**
 - **"More secure"** depends on usage: GET is safer for idempotent operations, while POST, PUT, DELETE, and PATCH need stronger safeguards due to their potential to modify data.
 - Follow security best practices to minimize risks, regardless of the HTTP verb.
+
+---
+
+### **Interview Questions on Development & Development of APIs using REST & JSON**
+
+#### **1. Basic Concepts**
+1. What is a RESTful API? How does it differ from other APIs?
+2. Explain the key principles of REST architecture.
+3. What is JSON, and why is it commonly used in REST APIs?
+4. How do you handle different HTTP methods (GET, POST, PUT, DELETE) in REST APIs?
+5. What is the difference between PUT and POST methods in REST?
+6. What are idempotent methods in REST APIs? Give examples.
+7. Can REST be used over protocols other than HTTP? If yes, provide examples.
+
+---
+
+#### **2. API Design**
+1. How do you design a REST API from scratch? What are the key considerations?
+2. How do you ensure backward compatibility in REST APIs?
+3. What is resource representation in REST, and how do you model resources?
+4. Explain the concept of **HATEOAS** (Hypermedia as the Engine of Application State) in REST.
+5. How would you version your REST API? Provide examples.
+6. What are URI naming conventions for RESTful APIs?
+7. How do you handle large resource responses in REST APIs?
+
+---
+
+#### **3. Error Handling**
+1. How do you handle errors in REST APIs? Explain with examples.
+2. What are the common HTTP status codes used in REST APIs? Provide examples of when to use each.
+3. What is the structure of a typical JSON error response?
+
+---
+
+#### **4. Security**
+1. How do you secure REST APIs?
+2. What is the difference between authentication and authorization in the context of REST APIs?
+3. How do you implement API authentication (e.g., Basic Auth, OAuth2, API Keys)?
+4. What is Cross-Origin Resource Sharing (CORS), and why is it important for REST APIs?
+5. How do you prevent common security vulnerabilities in REST APIs (e.g., SQL injection, XSS)?
+
+---
+
+#### **5. Performance Optimization**
+1. What strategies can be used to optimize REST API performance?
+2. How would you implement caching in REST APIs?
+3. What are the differences between client-side and server-side caching in REST?
+4. How do you handle pagination in REST APIs?
+5. What are some techniques for reducing payload size in REST API responses?
+
+---
+
+#### **6. Advanced Topics**
+1. What is RESTful API rate limiting, and how would you implement it?
+2. Explain the difference between synchronous and asynchronous REST APIs.
+3. How do you handle file uploads and downloads in REST APIs?
+4. How would you document your REST API? Name some tools you have used.
+5. What is the role of API gateways in managing REST APIs?
+6. How do you monitor and log REST API usage?
+
+---
+
+#### **7. Tools and Frameworks**
+1. Which frameworks have you used to build REST APIs (e.g., Spring Boot, Express.js, Django)?
+2. How do you test REST APIs? Name some tools you have used (e.g., Postman, Swagger, JUnit).
+3. Have you used API testing tools like Postman or automated testing tools like RestAssured? If yes, how?
+4. How would you integrate REST APIs with front-end applications?
+5. Have you worked with any API management platforms (e.g., Apigee, AWS API Gateway)?
+
+---
+
+#### **8. Real-World Scenarios**
+1. Describe a challenging API you developed and how you resolved the challenges.
+2. How do you handle breaking changes in a live REST API?
+3. How would you design a REST API for an e-commerce platform?
+4. What is the difference between REST APIs and GraphQL APIs, and when would you use each?
+
+---
+
+#### **9. Debugging and Maintenance**
+1. How do you debug issues in a REST API?
+2. What are common causes of performance bottlenecks in REST APIs?
+3. How do you ensure REST API reliability in production environments?
+
+---
+
+#### **10. Practical Tasks**
+1. Write a REST API to create, read, update, and delete (CRUD) user data using JSON.
+2. Demonstrate how to implement pagination and sorting in a REST API.
+3. Create a REST API that supports filtering and searching of resources.
+
+---
+
+These questions cover a wide range of REST and JSON API development topics, ensuring a thorough evaluation of your technical knowledge and practical skills.
