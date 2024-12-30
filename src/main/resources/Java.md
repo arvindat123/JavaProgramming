@@ -4735,3 +4735,234 @@ Output:
 ### **Conclusion:**
 - **Multithreading** is a specific implementation of **concurrency**.  
 - Concurrency is a broader concept encompassing multiple paradigms to handle multiple tasks effectively, with or without parallelism.
+
+---
+### In Java, threads can be created and run in several ways. Here are the primary methods along with detailed examples:
+
+
+### **1. Extending the `Thread` Class**
+- Create a class that extends `Thread`.
+- Override the `run()` method to define the thread's task.
+- Start the thread using the `start()` method.
+
+**Example:**
+```java
+class MyThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " is running.");
+    }
+}
+
+public class ThreadExample1 {
+    public static void main(String[] args) {
+        MyThread thread1 = new MyThread();
+        MyThread thread2 = new MyThread();
+        
+        thread1.start(); // Starts a new thread
+        thread2.start();
+    }
+}
+```
+
+---
+
+### **2. Implementing the `Runnable` Interface**
+- Create a class that implements `Runnable`.
+- Define the thread's task in the `run()` method.
+- Pass the `Runnable` object to a `Thread` object and call `start()`.
+
+**Example:**
+```java
+class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " is running.");
+    }
+}
+
+public class ThreadExample2 {
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(new MyRunnable());
+        Thread thread2 = new Thread(new MyRunnable());
+        
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+---
+
+### **3. Using Lambda Expressions (Java 8+)**
+- Use a lambda expression to define the `Runnable` task and pass it to a `Thread` object.
+
+**Example:**
+```java
+public class ThreadExample3 {
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + " is running.");
+        });
+
+        thread1.start();
+    }
+}
+```
+
+---
+
+### **4. Using `ExecutorService` (Thread Pool)**
+- Use the `ExecutorService` framework to manage threads efficiently.
+- Submit tasks using the `submit()` or `execute()` method.
+
+**Example:**
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ThreadExample4 {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        Runnable task = () -> {
+            System.out.println(Thread.currentThread().getName() + " is running.");
+        };
+
+        executor.submit(task);
+        executor.submit(task);
+        executor.shutdown(); // Graceful shutdown
+    }
+}
+```
+
+---
+
+### **5. Using the `Callable` Interface with `Future`**
+- `Callable` allows returning a value and throwing exceptions.
+- Submit `Callable` tasks to an `ExecutorService` and use `Future` to retrieve results.
+
+**Example:**
+```java
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class ThreadExample5 {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Callable<String> task = () -> {
+            return Thread.currentThread().getName() + " is running.";
+        };
+
+        Future<String> result = executor.submit(task);
+
+        System.out.println(result.get()); // Get the result of the Callable
+        executor.shutdown();
+    }
+}
+```
+
+---
+
+### **6. Using `Timer` for Scheduled Threads**
+- Use the `Timer` class to schedule tasks at fixed intervals or delays.
+
+**Example:**
+```java
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ThreadExample6 {
+    public static void main(String[] args) {
+        Timer timer = new Timer();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName() + " is running.");
+            }
+        };
+
+        timer.schedule(task, 1000, 2000); // Delay of 1 second, repeat every 2 seconds
+    }
+}
+```
+
+---
+
+### **7. Using `ForkJoinPool` (Java 7+)**
+- Use `ForkJoinPool` for parallelism with divide-and-conquer algorithms.
+
+**Example:**
+```java
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
+
+class SumTask extends RecursiveTask<Integer> {
+    private int[] array;
+    private int start, end;
+
+    public SumTask(int[] array, int start, int end) {
+        this.array = array;
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    protected Integer compute() {
+        if (end - start <= 5) {
+            int sum = 0;
+            for (int i = start; i < end; i++) {
+                sum += array[i];
+            }
+            return sum;
+        } else {
+            int mid = (start + end) / 2;
+            SumTask leftTask = new SumTask(array, start, mid);
+            SumTask rightTask = new SumTask(array, mid, end);
+            leftTask.fork();
+            return rightTask.compute() + leftTask.join();
+        }
+    }
+}
+
+public class ThreadExample7 {
+    public static void main(String[] args) {
+        int[] array = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        ForkJoinPool pool = new ForkJoinPool();
+        SumTask task = new SumTask(array, 0, array.length);
+        System.out.println("Sum: " + pool.invoke(task));
+    }
+}
+```
+
+---
+
+### **8. Using `CompletableFuture` (Java 8+)**
+- Use `CompletableFuture` for asynchronous programming and thread management.
+
+**Example:**
+```java
+import java.util.concurrent.CompletableFuture;
+
+public class ThreadExample8 {
+    public static void main(String[] args) {
+        CompletableFuture.runAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + " is running asynchronously.");
+        });
+    }
+}
+```
+
+---
+
+### **Summary**
+Each method serves different use cases:
+- Use **Thread** or **Runnable** for simple tasks.
+- Use **ExecutorService** for thread pool management.
+- Use **ForkJoinPool** for parallel computation.
+- Use **CompletableFuture** for asynchronous tasks.
+- Use **Callable** if you need results or exception handling.
