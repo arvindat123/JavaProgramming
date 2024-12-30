@@ -1,4 +1,4 @@
-## **Strategy Design Pattern**
+# **Strategy Design Pattern**
 
 The **Strategy Design Pattern** is a behavioral design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern allows the algorithm to be selected at runtime. 
 
