@@ -9,7 +9,101 @@ Here are some advanced Java collections interview questions along with answers t
 ### 2. **How does `HashMap` handle collisions, and what are hash collisions?**
    - **Answer**: 
       - A hash collision occurs when two distinct keys produce the same hash code. `HashMap` handles collisions using chaining, which means it stores multiple elements in a single bucket as a linked list. Starting from Java 8, when a bucket's size exceeds a threshold (typically 8), the linked list is replaced by a balanced tree, improving search performance to O(log n) from O(n) in cases with a large number of collisions.
-  
+---    
+### **Difference Between HashMap and SynchronizedHashMap**
+
+| **Aspect**                  | **HashMap**                                                                                                     | **SynchronizedHashMap**                                                                                   |
+|-----------------------------|-----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| **Thread-Safety**            | Not thread-safe. Concurrent modifications can cause `ConcurrentModificationException`.                         | Thread-safe. Operations are synchronized to allow safe usage in multithreaded environments.               |
+| **Performance**              | Faster in single-threaded environments because it doesn’t incur synchronization overhead.                      | Slower due to synchronization overhead in multithreaded environments.                                     |
+| **Synchronization**          | No synchronization. Multiple threads can access it simultaneously, leading to potential data inconsistency.    | Synchronization ensures only one thread can access the map at a time, preventing data inconsistency.       |
+| **Usage Scenario**           | Suitable for single-threaded applications or scenarios where thread-safety is managed externally.              | Suitable for multithreaded applications where the map is accessed by multiple threads concurrently.        |
+| **Implementation**           | Part of `java.util` package.                                                                                   | Can be created using `Collections.synchronizedMap()` wrapper on a `HashMap`.                              |
+
+---
+
+### **Detailed Example: HashMap**
+
+In a **HashMap**, concurrent modifications by multiple threads may lead to inconsistent state or exceptions.
+
+```java
+import java.util.HashMap;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>();
+
+        // Adding elements to HashMap
+        hashMap.put(1, "One");
+        hashMap.put(2, "Two");
+        hashMap.put(3, "Three");
+
+        // Accessing HashMap in multiple threads
+        Runnable task = () -> {
+            for (int i = 1; i <= 3; i++) {
+                System.out.println(Thread.currentThread().getName() + " - " + hashMap.get(i));
+            }
+        };
+
+        Thread thread1 = new Thread(task, "Thread 1");
+        Thread thread2 = new Thread(task, "Thread 2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+**Output:**
+The above code may result in inconsistent outputs or a `ConcurrentModificationException` if threads modify the map simultaneously.
+
+---
+
+### **Detailed Example: SynchronizedHashMap**
+
+In a **SynchronizedHashMap**, all operations are synchronized, ensuring thread safety.
+
+```java
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class SynchronizedHashMapExample {
+    public static void main(String[] args) {
+        Map<Integer, String> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
+
+        // Adding elements to SynchronizedHashMap
+        synchronizedMap.put(1, "One");
+        synchronizedMap.put(2, "Two");
+        synchronizedMap.put(3, "Three");
+
+        // Accessing SynchronizedHashMap in multiple threads
+        Runnable task = () -> {
+            synchronized (synchronizedMap) { // Required for iteration to avoid ConcurrentModificationException
+                for (Map.Entry<Integer, String> entry : synchronizedMap.entrySet()) {
+                    System.out.println(Thread.currentThread().getName() + " - Key: " + entry.getKey() + ", Value: " + entry.getValue());
+                }
+            }
+        };
+
+        Thread thread1 = new Thread(task, "Thread 1");
+        Thread thread2 = new Thread(task, "Thread 2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+**Output:**
+The synchronized map ensures consistent and safe outputs even with multiple threads accessing it.
+
+---
+
+### **Key Notes**
+- **Iteration:** Even with `Collections.synchronizedMap`, external synchronization (e.g., using `synchronized` block) is required for iterating over the map.
+- **Alternative:** Use **ConcurrentHashMap** for better performance in multithreaded scenarios as it uses a more granular locking mechanism compared to `SynchronizedHashMap`.
+---  
 ### 3. **Explain the differences between `ArrayList` and `LinkedList` in Java.**
    - **Answer**:
       - **Storage**: `ArrayList` is backed by a resizable array, while `LinkedList` uses a doubly-linked list structure.

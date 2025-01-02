@@ -1,4 +1,4 @@
-Here are some common Java exception interview questions along with brief answers:
+# Here are some common Java exception interview questions along with brief answers:
 
 ### 1. **What is an Exception in Java?**
 **Answer**: An exception in Java is an event that disrupts the normal flow of a program's execution. It is an object that is thrown at runtime to indicate the occurrence of an unexpected condition or error.
@@ -456,3 +456,164 @@ If the system running the JVM experiences a power failure, or if the machine is 
 
 ### Conclusion
 While the `finally` block is a reliable way to ensure code execution in most cases, there are scenarios involving extreme conditions or JVM-level interruptions where it may not run.
+
+---
+
+### Exception Hierarchy in Java
+
+In Java, exceptions are objects of classes that inherit from the `Throwable` class. The `Throwable` class is the root of the exception hierarchy and has two main subclasses:
+
+1. **`Error`**: Represents serious problems that an application should not try to handle (e.g., `OutOfMemoryError`, `StackOverflowError`).
+2. **`Exception`**: Represents conditions that an application might want to handle.
+
+#### Exception Hierarchy Diagram
+
+```
+Throwable
+   ├── Error
+   │     ├── OutOfMemoryError
+   │     ├── StackOverflowError
+   │     └── ...
+   └── Exception
+         ├── RuntimeException
+         │       ├── NullPointerException
+         │       ├── ArrayIndexOutOfBoundsException
+         │       ├── ArithmeticException
+         │       └── ...
+         └── IOException
+                 ├── FileNotFoundException
+                 ├── EOFException
+                 └── ...
+```
+
+### Key Points About Exception Hierarchy
+
+1. **`Error`**:
+   - Indicates serious issues that the JVM cannot recover from.
+   - Examples: `OutOfMemoryError`, `StackOverflowError`.
+
+2. **`Exception`**:
+   - Represents errors that are expected and can be handled by the application.
+
+3. **Checked Exceptions**:
+   - Exceptions that must be declared in the `throws` clause or handled using a `try-catch` block.
+   - Examples: `IOException`, `SQLException`.
+
+4. **Unchecked Exceptions**:
+   - Subclasses of `RuntimeException` that do not need to be declared in the `throws` clause.
+   - Examples: `NullPointerException`, `ArithmeticException`.
+
+---
+
+### Example with Detailed Explanation
+
+#### 1. Custom Exception Hierarchy
+Let's create a custom exception hierarchy to understand how to extend the exception classes.
+
+```java
+// Base Custom Exception
+class ApplicationException extends Exception {
+    public ApplicationException(String message) {
+        super(message);
+    }
+}
+
+// Derived Custom Exception (Checked)
+class InvalidInputException extends ApplicationException {
+    public InvalidInputException(String message) {
+        super(message);
+    }
+}
+
+// Derived Custom Exception (Unchecked)
+class DataProcessingException extends RuntimeException {
+    public DataProcessingException(String message) {
+        super(message);
+    }
+}
+```
+
+---
+
+#### 2. Handling Checked Exception
+Checked exceptions must be handled or declared in the `throws` clause.
+
+```java
+public class CheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            validateInput(-1); // Call method that throws a checked exception
+        } catch (InvalidInputException e) {
+            System.out.println("Caught checked exception: " + e.getMessage());
+        }
+    }
+
+    public static void validateInput(int input) throws InvalidInputException {
+        if (input < 0) {
+            throw new InvalidInputException("Input must be non-negative.");
+        }
+    }
+}
+```
+
+**Output:**
+```
+Caught checked exception: Input must be non-negative.
+```
+
+---
+
+#### 3. Handling Unchecked Exception
+Unchecked exceptions are typically programming bugs or unexpected situations.
+
+```java
+public class UncheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            processData(null); // Call method that throws an unchecked exception
+        } catch (DataProcessingException e) {
+            System.out.println("Caught unchecked exception: " + e.getMessage());
+        }
+    }
+
+    public static void processData(String data) {
+        if (data == null) {
+            throw new DataProcessingException("Data cannot be null.");
+        }
+    }
+}
+```
+
+**Output:**
+```
+Caught unchecked exception: Data cannot be null.
+```
+
+---
+
+### Comparison Between Checked and Unchecked Exceptions
+
+| Aspect              | Checked Exceptions                      | Unchecked Exceptions                   |
+|---------------------|------------------------------------------|----------------------------------------|
+| Class               | Subclasses of `Exception` (except `RuntimeException`) | Subclasses of `RuntimeException`       |
+| Declaration         | Must be declared in the `throws` clause | No need to declare in the `throws` clause |
+| Compile-time Check  | Enforced by the compiler                | Not enforced by the compiler           |
+| Examples            | `IOException`, `SQLException`          | `NullPointerException`, `ArithmeticException` |
+
+---
+
+### Exception Propagation
+- **Checked Exceptions**: Propagate up the call stack and must be handled or declared at each level.
+- **Unchecked Exceptions**: Automatically propagate without requiring explicit handling.
+
+---
+
+### Best Practices
+
+1. **Use Checked Exceptions** for recoverable conditions (e.g., invalid input, file not found).
+2. **Use Unchecked Exceptions** for programming errors (e.g., null references).
+3. **Wrap Exceptions**: Use custom exceptions to abstract third-party exceptions.
+4. **Log Exceptions**: Always log exceptions for debugging.
+5. **Avoid Catch-All**: Avoid `catch (Exception e)` unless you rethrow or handle appropriately.
+
+Let me know if you'd like further examples or have any specific questions!
