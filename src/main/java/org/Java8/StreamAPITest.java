@@ -8,11 +8,11 @@ public class StreamAPITest {
         List<EmployeeObj> employeeList = new ArrayList<EmployeeObj>();
 
         //(int id, String name, int age, String gender, String department, int yearOfJoining, double salary)
-        employeeList.add(new EmployeeObj(111, "Jiya Brein", 32, "Female", "HR", 2011, 25000.0));
         employeeList.add(new EmployeeObj(122, "Paul Niksui", 25, "Male", "Sales And Marketing", 2015, 13500.0));
+        employeeList.add(new EmployeeObj(111, "Jiya Brein", 32, "Female", "HR", 2011, 25000.0));
         employeeList.add(new EmployeeObj(133, "Martin Theron", 29, "Male", "Infrastructure", 2012, 18000.0));
         employeeList.add(new EmployeeObj(144, "Murali Gowda", 28, "Male", "Product Development", 2014, 32500.0));
-        employeeList.add(new EmployeeObj(155, "Nima Roy", 27, "Female", "HR", 2013, 22700.0));
+        employeeList.add(new EmployeeObj(155, "Nima Roy", 43, "Female", "HR", 2013, 22700.0));
         employeeList.add(new EmployeeObj(166, "Iqbal Hussain", 43, "Male", "Security And Transport", 2016, 10500.0));
         employeeList.add(new EmployeeObj(177, "Manu Sharma", 35, "Male", "Account And Finance", 2010, 27000.0));
         employeeList.add(new EmployeeObj(188, "Wang Liu", 31, "Male", "Product Development", 2015, 34500.0));
@@ -27,7 +27,10 @@ public class StreamAPITest {
         employeeList.add(new EmployeeObj(277, "Anuj Chettiar", 31, "Male", "Product Development", 2012, 35700.0));
 
         // Double sorting
-        employeeList.stream().sorted(Comparator.comparing(EmployeeObj::getAge).reversed().thenComparing(EmployeeObj::getDepartment)).collect(Collectors.toList()).forEach(System.out::println);
+        //employeeList.stream().sorted(Comparator.comparing(EmployeeObj::getAge).reversed().thenComparing(EmployeeObj::getDepartment)).collect(Collectors.toList()).forEach(System.out::println);
+
+        List<EmployeeObj> list = employeeList.stream().sorted(Comparator.comparing(EmployeeObj::getAge).reversed().thenComparing(EmployeeObj::getDepartment)).collect(Collectors.toList());
+        //System.out.println(list);
 
         //Find out the count of male and female employees present in the organization?
 

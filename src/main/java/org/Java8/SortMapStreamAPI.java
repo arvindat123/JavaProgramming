@@ -31,6 +31,8 @@ public class SortMapStreamAPI {
         Map<String,Integer> sortedMapKey = unsortMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(p-> p.getKey(), p-> p.getValue(),(oldVal,newVal) -> oldVal, LinkedHashMap::new));
 
+        unsortMap.entrySet().stream().sorted(Map.Entry.comparingByKey()).collect(Collectors.toMap(k->k.getKey(),v->v.getValue(),(old,newN)->old,LinkedHashMap::new));
+
        // System.out.println(sortedMapKey);
 
         // Not Recommend, but it works.
