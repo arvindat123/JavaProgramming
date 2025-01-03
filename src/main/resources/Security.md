@@ -28,7 +28,7 @@ Securing API endpoints in microservices is crucial to protect sensitive data, en
         httpPost.setHeader("Connection", "keep-alive");
         CloseableHttpResponse response = HTTP_CLIENT.execute(httpPost);
 - get access token from response and encrypt it using Amazon KMS and generate one data_key and save to database
-- If token is not expired and required to send request to partner system and refresh token with current time
+- If token is not expired and required to send request to partner system and refresh token with current time and extend expiry_at with expiry time given by partner system
 
 ### **1. Authentication and Authorization**
 
