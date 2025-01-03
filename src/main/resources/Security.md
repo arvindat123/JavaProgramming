@@ -1,6 +1,34 @@
 Securing API endpoints in microservices is crucial to protect sensitive data, ensure authorized access, and maintain the integrity of the system. Below are the approaches to secure API endpoints in a microservices architecture:
 
 ---
+- Table which store token (findByFieldNameAndSystemNameAndKmsRegion)
+- ![image](https://github.com/user-attachments/assets/0da5cf44-b704-44b0-82b7-b56c809a0dab)
+- Get token from database
+- if(encryptedSecretOptional.get().getExpiryAt().minusMinutes(5).isAfter(LocalDateTime.now())) -> token is valid
+- Token is stored in base64 encrypted format in database based on data_key
+- get Base64.getDecoder().decode(cipherText) [Decoder RFC4648]
+- pass ciphertext and datakey to AmazonHelper.decrypt() to get decrypted token
+-  ```java
+   private static SecretKeySpec decryptKey(final EnvelopeEncryptedMessage envelope) {
+		ByteBuffer encryptedKey = ByteBuffer.wrap(envelope.getEncryptedKey());
+		DecryptRequest decryptRequest = new DecryptRequest().withCiphertextBlob(encryptedKey);
+		ByteBuffer plainTextKey = getAmazonKMSClient().decrypt(decryptRequest).getPlaintext();
+		SecretKeySpec key = new SecretKeySpec(plainTextKey.array(), "AES");
+		return key;
+
+	}
+   ```
+- After getting access token, send it to partner system
+- To generate token
+  - get client id and secret key from AWS secret manager and tokenURL from config server and transaction id of request
+  -     HttpPost httpPost = new HttpPost(postUri);
+        String base64Credentials = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
+        httpPost.setHeader("Authorization", "Basic " + base64Credentials);
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("Connection", "keep-alive");
+        CloseableHttpResponse response = HTTP_CLIENT.execute(httpPost);
+- get access token from response and encrypt it using Amazon KMS and generate one data_key and save to database
+- If token is not expired and required to send request to partner system and refresh token with current time
 
 ### **1. Authentication and Authorization**
 
