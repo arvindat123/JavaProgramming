@@ -1,5 +1,79 @@
 Here are some advanced Java collections interview questions along with answers that would be helpful for experienced professionals:
 
+In Java, `HashMap`, `SynchronizedMap`, and `ConcurrentHashMap` are part of the Java Collections Framework, and they serve different purposes depending on the need for thread safety and performance. Here's how you can create and use each:
+
+### 1. **HashMap**
+`HashMap` is not thread-safe and should be used only in single-threaded environments or where thread safety is handled externally.
+
+```java
+import java.util.HashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>();
+        hashMap.put(1, "Value1");
+        hashMap.put(2, "Value2");
+        System.out.println(hashMap);
+    }
+}
+```
+
+### 2. **SynchronizedMap**
+`SynchronizedMap` wraps a `HashMap` to make it thread-safe. Use it when you need thread-safe operations but can tolerate lower performance due to synchronized methods.
+
+```java
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, String> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
+        synchronizedMap.put(1, "Value1");
+        synchronizedMap.put(2, "Value2");
+
+        // Synchronize block when iterating
+        synchronized (synchronizedMap) {
+            for (Map.Entry<Integer, String> entry : synchronizedMap.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+        }
+    }
+}
+```
+
+### 3. **ConcurrentHashMap**
+`ConcurrentHashMap` is thread-safe and designed for high concurrency. It uses a fine-grained locking mechanism to allow concurrent reads and writes.
+
+```java
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        ConcurrentHashMap<Integer, String> concurrentHashMap = new ConcurrentHashMap<>();
+        concurrentHashMap.put(1, "Value1");
+        concurrentHashMap.put(2, "Value2");
+
+        concurrentHashMap.forEach((key, value) -> {
+            System.out.println(key + ": " + value);
+        });
+    }
+}
+```
+
+### Key Differences:
+| Feature                  | HashMap         | SynchronizedMap                     | ConcurrentHashMap               |
+|--------------------------|-----------------|-------------------------------------|---------------------------------|
+| **Thread Safety**        | No              | Yes (single lock for all operations) | Yes (fine-grained locks)       |
+| **Performance**          | High            | Low (due to global lock)            | High (due to concurrent locks) |
+| **Null Keys/Values**     | Allows 1 null key and multiple null values | Same as `HashMap`                | No null keys or values allowed |
+| **Concurrency Level**    | N/A             | Single-threaded operations          | Multiple threads concurrently  |
+
+Choose the appropriate map type based on your use case:
+- Use `HashMap` for single-threaded applications.
+- Use `SynchronizedMap` for simple thread-safe needs.
+- Use `ConcurrentHashMap` for high-performance, thread-safe applications.
+
 ### 1. **What is the difference between `HashMap` and `ConcurrentHashMap`?**
    - **Answer**: 
       - `HashMap` is not thread-safe, meaning it is not designed for concurrent access. If multiple threads modify it simultaneously, it can lead to unpredictable behavior, like data corruption.
