@@ -1,6 +1,103 @@
+The **Definition of Done (DoD)** and **Definition of Ready (DoR)** are key concepts in Agile methodologies, particularly Scrum. They provide clarity and consistency around the quality of work, its readiness for development, and completion criteria. Below is an explanation of these concepts and related factors:
+
 ---
 
-The **Scrum Master** plays a pivotal role in facilitating Agile projects using the Scrum framework. Their primary responsibility is to ensure the Scrum process is followed, enabling the team to deliver high-quality work efficiently. Here’s a breakdown of the key responsibilities and roles of a Scrum Master:
+### **Definition of Done (DoD)**
+
+The **Definition of Done** is a clear checklist of criteria that a user story, task, or product increment must meet before it is considered complete. 
+
+#### **Purpose**
+- Ensures that all work delivered meets a consistent standard of quality.
+- Provides transparency to stakeholders and team members.
+- Reduces technical debt by enforcing quality.
+
+#### **Common Criteria**
+1. **Code Development**: The code is complete and adheres to coding standards.
+2. **Testing**:
+   - Unit tests written and passed.
+   - Functional and non-functional testing completed.
+   - Integration tests passed.
+3. **Code Review**: Peer review or approval is done.
+4. **Documentation**:
+   - Relevant technical or user documentation updated.
+   - Comments added where necessary.
+5. **Deployment**:
+   - Changes are merged into the main branch.
+   - Build and deployment verified in the staging or production environment.
+6. **Acceptance**:
+   - Product Owner has reviewed and accepted the story.
+   - Meets all acceptance criteria defined in the user story.
+7. **Other Quality Metrics**:
+   - Meets performance and security standards.
+   - All defects are resolved.
+
+---
+
+### **Definition of Ready (DoR)**
+
+The **Definition of Ready** outlines the criteria that a user story or task must meet before the team can pull it into a sprint for development.
+
+#### **Purpose**
+- Ensures the team has enough information to start work confidently.
+- Reduces ambiguity and avoids mid-sprint blockers.
+- Helps prioritize work effectively.
+
+#### **Common Criteria**
+1. **Clear Description**:
+   - The user story is well-written and follows a standard format (e.g., "As a [user], I want [functionality], so that [benefit]").
+2. **Acceptance Criteria**:
+   - Defined and measurable acceptance criteria are listed.
+3. **Dependencies Resolved**:
+   - External dependencies identified and managed.
+4. **Prioritized**:
+   - The Product Owner has ranked the story in the backlog.
+5. **Sized**:
+   - The team has estimated the effort using story points or other techniques.
+6. **Mockups/Designs**:
+   - Any UI/UX requirements are provided.
+7. **Stakeholder Input**:
+   - Necessary feedback or approvals obtained.
+
+---
+
+### **Key Differences Between DoD and DoR**
+| Aspect                     | Definition of Ready                  | Definition of Done                  |
+|----------------------------|---------------------------------------|-------------------------------------|
+| **Focus**                  | Starting work                        | Completing work                     |
+| **When Used**              | Before a task is added to a sprint    | Before a task is marked as complete |
+| **Goal**                   | Ensure readiness for development      | Ensure quality and completeness     |
+
+---
+
+### **Other Factors in Agile Delivery**
+
+#### **1. Sprint Goals**
+- A clear objective for what the team aims to achieve in a sprint.
+- Ensures alignment and focus.
+
+#### **2. Acceptance Criteria**
+- Specific conditions that must be met for a story to be considered done.
+- Prevents misunderstandings about deliverables.
+
+#### **3. Increment**
+- A potentially shippable product version delivered at the end of the sprint.
+- Represents the cumulative outcome of all completed work.
+
+#### **4. Technical Debt**
+- Refers to shortcuts taken to deliver faster but could lead to higher maintenance costs.
+- Addressed regularly to maintain long-term productivity.
+
+#### **5. Retrospectives**
+- Regular meetings to reflect on the sprint and identify improvements.
+- Promotes continuous learning and process optimization.
+
+---
+
+These concepts collectively ensure that Agile teams maintain high-quality standards, reduce waste, and align with customer expectations effectively.
+
+---
+
+### The **Scrum Master** plays a pivotal role in facilitating Agile projects using the Scrum framework. Their primary responsibility is to ensure the Scrum process is followed, enabling the team to deliver high-quality work efficiently. Here’s a breakdown of the key responsibilities and roles of a Scrum Master:
 
 ---
 
