@@ -1,3 +1,5 @@
+
+
 The 12-Factor App methodology is a set of principles that provide best practices for building modern, scalable, and maintainable software applications, especially suitable for cloud-native microservices. Below are the 12 factors with a brief explanation of how they apply to microservices:
 
 ### 1. **Codebase (One codebase tracked in revision control, many deploys)**
