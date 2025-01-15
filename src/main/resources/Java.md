@@ -1,3 +1,87 @@
+---
+Java EE (Java Platform, Enterprise Edition) and Jakarta EE (Jakarta Platform, Enterprise Edition) are both platforms for building enterprise-level applications in Java. However, they differ primarily in governance, branding, and evolution. Here's a breakdown:
+
+---
+
+### 1. **Governance and Ownership**
+   - **Java EE**:
+     - Was developed and maintained by Sun Microsystems, and later Oracle Corporation after it acquired Sun.
+     - Oracle controlled the platform's specifications, implementation, and branding.
+
+   - **Jakarta EE**:
+     - Jakarta EE is the successor to Java EE, now governed by the **Eclipse Foundation**.
+     - The transition happened after Oracle decided to donate Java EE to the Eclipse Foundation in 2017.
+     - The community-driven approach under the Eclipse Foundation fosters greater transparency and collaboration.
+
+---
+
+### 2. **Branding and Naming**
+   - **Java EE**:
+     - The "Java" name is a trademark of Oracle, and the platform was branded under the "Java" family.
+     - The naming rights remained with Oracle.
+
+   - **Jakarta EE**:
+     - Oracle retained the "Java" trademark, so the platform was rebranded as "Jakarta EE."
+     - The new name was chosen to reflect its fresh direction under the Eclipse Foundation.
+
+---
+
+### 3. **Evolution**
+   - **Java EE**:
+     - Java EE had a slower release cycle under Oracle.
+     - Major versions were infrequent, and updates took longer due to corporate decision-making processes.
+
+   - **Jakarta EE**:
+     - Jakarta EE is designed to have a faster, more agile release cycle under the community-driven model.
+     - The goal is to respond more quickly to technological advancements and developer needs.
+
+---
+
+### 4. **Specifications and Compatibility**
+   - **Java EE**:
+     - The last release was **Java EE 8** in 2017, which included technologies like Servlet 4.0, JSON-B, and improvements to CDI and JAX-RS.
+
+   - **Jakarta EE**:
+     - Jakarta EE 8 was functionally identical to Java EE 8 to ensure a seamless transition for developers and vendors.
+     - Subsequent versions, such as **Jakarta EE 9**, introduced namespace changes (from `javax.*` to `jakarta.*`) as part of its evolution.
+     - **Jakarta EE 10** introduced new features, modern APIs, and better support for cloud-native architectures.
+
+---
+
+### 5. **Namespace Changes**
+   - One of the most significant differences is the change in package namespaces:
+     - **Java EE**: Used `javax.*` (e.g., `javax.servlet`, `javax.persistence`).
+     - **Jakarta EE**: Moved to `jakarta.*` (e.g., `jakarta.servlet`, `jakarta.persistence`) starting from Jakarta EE 9.
+
+---
+
+### 6. **Community and Ecosystem**
+   - **Java EE**:
+     - Was largely controlled by Oracle, with limited input from the broader community.
+
+   - **Jakarta EE**:
+     - Open to contributions from a wide range of individuals, organizations, and vendors.
+     - Aims to modernize the platform for cloud-native and microservices-based applications.
+
+---
+
+### Summary Table
+
+| Aspect            | Java EE                     | Jakarta EE                  |
+|--------------------|-----------------------------|-----------------------------|
+| Governance         | Oracle                     | Eclipse Foundation          |
+| Branding           | "Java" (Oracle-owned)      | "Jakarta" (community-driven)|
+| Namespace          | `javax.*`                  | `jakarta.*`                 |
+| Evolution Speed    | Slower                     | Faster                      |
+| Release Example    | Java EE 8                  | Jakarta EE 10               |
+| Ecosystem          | Corporate-driven           | Community-driven            |
+
+---
+
+### Conclusion
+Jakarta EE is the modern evolution of Java EE, focused on agility, innovation, and community collaboration. If you're starting a new enterprise project or maintaining an existing one, transitioning to Jakarta EE is recommended for its up-to-date features and community support.
+---
+
 ### What is a Marker Interface?
 
 A **Marker Interface** in Java is an interface that does not contain any methods or fields and serves as a *tag* or *marker* to indicate that a class possesses some special property or behavior. Marker interfaces provide metadata to the Java runtime or framework, signaling that classes implementing these interfaces should be treated differently.
