@@ -1,5 +1,325 @@
 ---
 
+### **List of Java Constructor Interview Questions with Detailed Answers and Examples**
+
+---
+
+### **1. What is a Constructor in Java?**
+**Answer:**
+A constructor is a special method in Java used to initialize an object when it is created. It has the same name as the class and no return type (not even `void`).
+
+**Example:**
+```java
+public class Example {
+    private String message;
+
+    // Constructor
+    public Example(String message) {
+        this.message = message;
+    }
+
+    public void printMessage() {
+        System.out.println("Message: " + message);
+    }
+
+    public static void main(String[] args) {
+        Example example = new Example("Hello, Constructor!");
+        example.printMessage(); // Output: Message: Hello, Constructor!
+    }
+}
+```
+
+---
+
+### **2. What are the Types of Constructors in Java?**
+**Answer:**
+There are two types of constructors:
+1. **Default Constructor**: A no-argument constructor provided by Java if no constructors are explicitly defined.
+2. **Parameterized Constructor**: A constructor with parameters to initialize objects with specific values.
+
+**Example:**
+```java
+class Example {
+    private int number;
+
+    // Default Constructor
+    public Example() {
+        this.number = 0;
+    }
+
+    // Parameterized Constructor
+    public Example(int number) {
+        this.number = number;
+    }
+
+    public void display() {
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example defaultExample = new Example();
+        Example parameterizedExample = new Example(10);
+
+        defaultExample.display();         // Output: Number: 0
+        parameterizedExample.display();  // Output: Number: 10
+    }
+}
+```
+
+---
+
+### **3. What is the Difference Between a Constructor and a Method?**
+**Answer:**
+
+| Feature               | Constructor                         | Method                                |
+|-----------------------|-------------------------------------|---------------------------------------|
+| Name                  | Same as the class name             | Can have any name                     |
+| Return Type           | No return type (not even `void`)   | Must have a return type               |
+| Purpose               | Initialize an object               | Perform a task                        |
+| Invocation            | Called automatically during object creation | Called explicitly                     |
+
+**Example:**
+```java
+class Example {
+    private String text;
+
+    // Constructor
+    public Example(String text) {
+        this.text = text;
+    }
+
+    // Method
+    public void display() {
+        System.out.println("Text: " + text);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example example = new Example("Hello");
+        example.display(); // Output: Text: Hello
+    }
+}
+```
+
+---
+
+### **4. Can a Constructor be Overloaded?**
+**Answer:**
+Yes, constructors can be overloaded by defining multiple constructors with different parameter lists.
+
+**Example:**
+```java
+class OverloadExample {
+    private int number;
+
+    // Default Constructor
+    public OverloadExample() {
+        this.number = 0;
+    }
+
+    // Parameterized Constructor
+    public OverloadExample(int number) {
+        this.number = number;
+    }
+
+    public void display() {
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        OverloadExample obj1 = new OverloadExample();
+        OverloadExample obj2 = new OverloadExample(42);
+
+        obj1.display(); // Output: Number: 0
+        obj2.display(); // Output: Number: 42
+    }
+}
+```
+
+---
+
+### **5. Can a Constructor Call Another Constructor in the Same Class?**
+**Answer:**
+Yes, a constructor can call another constructor using the `this()` keyword. This is known as **constructor chaining**.
+
+**Example:**
+```java
+class ChainingExample {
+    private int number;
+
+    // Constructor 1
+    public ChainingExample() {
+        this(10); // Calls Constructor 2
+    }
+
+    // Constructor 2
+    public ChainingExample(int number) {
+        this.number = number;
+    }
+
+    public void display() {
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ChainingExample obj = new ChainingExample();
+        obj.display(); // Output: Number: 10
+    }
+}
+```
+
+---
+
+### **6. Can a Constructor be Private in Java?**
+**Answer:**
+Yes, a constructor can be private. This is typically used in the **Singleton Design Pattern** to restrict object creation from outside the class.
+
+**Example:**
+```java
+class Singleton {
+    private static Singleton instance;
+
+    // Private Constructor
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Singleton obj1 = Singleton.getInstance();
+        Singleton obj2 = Singleton.getInstance();
+
+        System.out.println(obj1 == obj2); // Output: true
+    }
+}
+```
+
+---
+
+### **7. Can a Constructor Have a Return Statement?**
+**Answer:**
+A constructor cannot have a return type (not even `void`), but it can use the `return` keyword to exit early.
+
+**Example:**
+```java
+class Example {
+    public Example(String text) {
+        if (text == null || text.isEmpty()) {
+            System.out.println("Invalid input. Exiting constructor.");
+            return;
+        }
+        System.out.println("Text: " + text);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new Example("");        // Output: Invalid input. Exiting constructor.
+        new Example("Hello!");  // Output: Text: Hello!
+    }
+}
+```
+
+---
+
+### **8. What Happens if a Class Does Not Have a Constructor?**
+**Answer:**
+If a class does not define any constructor, Java provides a **default constructor**. This constructor is parameterless and initializes instance variables to their default values.
+
+**Example:**
+```java
+class DefaultConstructorExample {
+    int number;
+    String text;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        DefaultConstructorExample obj = new DefaultConstructorExample();
+        System.out.println("Number: " + obj.number); // Output: Number: 0
+        System.out.println("Text: " + obj.text);     // Output: Text: null
+    }
+}
+```
+
+---
+
+### **9. Can a Constructor Throw an Exception?**
+**Answer:**
+Yes, a constructor can throw exceptions using the `throws` keyword.
+
+**Example:**
+```java
+class ExceptionExample {
+    public ExceptionExample(int number) throws Exception {
+        if (number < 0) {
+            throw new Exception("Number cannot be negative");
+        }
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        try {
+            new ExceptionExample(-1); // Throws Exception
+        } catch (Exception e) {
+            System.out.println(e.getMessage()); // Output: Number cannot be negative
+        }
+    }
+}
+```
+
+---
+
+### **10. Can You Use `super()` and `this()` Together in a Constructor?**
+**Answer:**
+No, `super()` and `this()` cannot be used together in the same constructor. They must be the first statement, and only one of them can be used.
+
+**Example:**
+```java
+class Parent {
+    public Parent() {
+        System.out.println("Parent Constructor");
+    }
+}
+
+class Child extends Parent {
+    public Child() {
+        super(); // Calls Parent Constructor
+        System.out.println("Child Constructor");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new Child();
+        // Output:
+        // Parent Constructor
+        // Child Constructor
+    }
+}
+```
+
+---
+
+These questions cover the most common aspects of Java constructors and provide practical examples to illustrate their usage.
+---
+---
+
 A **memory leak** occurs when an application fails to release memory that is no longer needed, causing the application to consume increasing amounts of memory over time. In a monolith application, memory leaks can lead to **performance degradation**, **high CPU utilization (due to frequent garbage collection)**, and eventually **application crashes** due to `OutOfMemoryError`.
 
 ---
