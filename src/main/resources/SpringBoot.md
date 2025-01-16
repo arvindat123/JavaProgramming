@@ -1,4 +1,224 @@
 ---
+### **What is Circular Dependency in Spring?**
+
+A **circular dependency** in Spring occurs when two or more beans depend on each other, directly or indirectly, causing a cycle in the dependency graph. Spring, which uses dependency injection to manage beans, cannot resolve the dependencies in this scenario, leading to a runtime error during the application context initialization.
+
+For example:
+- Bean `A` depends on Bean `B`.
+- Bean `B` depends on Bean `A`.
+
+This results in a **`BeanCurrentlyInCreationException`** because Spring gets stuck in an infinite loop trying to create these beans.
+
+---
+
+### **Example of Circular Dependency**
+
+```java
+@Component
+public class ClassA {
+    private final ClassB classB;
+
+    @Autowired
+    public ClassA(ClassB classB) {
+        this.classB = classB;
+    }
+}
+
+@Component
+public class ClassB {
+    private final ClassA classA;
+
+    @Autowired
+    public ClassB(ClassA classA) {
+        this.classA = classA;
+    }
+}
+```
+
+Here:
+- `ClassA` depends on `ClassB`.
+- `ClassB` depends on `ClassA`.
+
+When Spring tries to instantiate `ClassA`, it needs `ClassB`, and vice versa, creating a circular dependency.
+
+---
+
+### **How to Resolve Circular Dependency in Spring**
+
+#### **1. Using `@Lazy` Annotation**
+
+The `@Lazy` annotation delays the initialization of a bean until it is required. This allows Spring to break the dependency cycle.
+
+```java
+@Component
+public class ClassA {
+    private final ClassB classB;
+
+    @Autowired
+    public ClassA(@Lazy ClassB classB) {
+        this.classB = classB;
+    }
+}
+
+@Component
+public class ClassB {
+    private final ClassA classA;
+
+    @Autowired
+    public ClassB(ClassA classA) {
+        this.classA = classA;
+    }
+}
+```
+
+By adding `@Lazy` to one of the dependencies, Spring creates a proxy for the bean and initializes it only when accessed.
+
+---
+
+#### **2. Refactor the Code to Remove the Circular Dependency**
+
+A circular dependency often indicates a design issue. Refactor the code by introducing a third class or service to handle the interaction between the two beans.
+
+```java
+@Component
+public class ClassA {
+    public void action() {
+        System.out.println("Action in ClassA");
+    }
+}
+
+@Component
+public class ClassB {
+    private final ClassA classA;
+
+    @Autowired
+    public ClassB(ClassA classA) {
+        this.classA = classA;
+    }
+
+    public void perform() {
+        System.out.println("Perform in ClassB");
+        classA.action();
+    }
+}
+```
+
+Here, only `ClassB` depends on `ClassA`. If interactions between `ClassA` and `ClassB` are required, they can be managed via a separate service or mediator class.
+
+---
+
+#### **3. Use Setter Injection**
+
+Switching to setter-based injection instead of constructor injection can resolve circular dependencies because Spring initializes the beans first and resolves dependencies later.
+
+```java
+@Component
+public class ClassA {
+    private ClassB classB;
+
+    @Autowired
+    public void setClassB(ClassB classB) {
+        this.classB = classB;
+    }
+}
+
+@Component
+public class ClassB {
+    private ClassA classA;
+
+    @Autowired
+    public void setClassA(ClassA classA) {
+        this.classA = classA;
+    }
+}
+```
+
+---
+
+#### **4. Use `@PostConstruct` for Initialization**
+
+Break the circular dependency by deferring the initialization of some dependencies until after the beans are constructed using `@PostConstruct`.
+
+```java
+@Component
+public class ClassA {
+    private ClassB classB;
+
+    @Autowired
+    public void setClassB(ClassB classB) {
+        this.classB = classB;
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("ClassA initialized");
+    }
+}
+
+@Component
+public class ClassB {
+    private ClassA classA;
+
+    @Autowired
+    public void setClassA(ClassA classA) {
+        this.classA = classA;
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("ClassB initialized");
+    }
+}
+```
+
+---
+
+#### **5. Use `ObjectFactory` or `javax.inject.Provider`**
+
+Using `ObjectFactory` or `javax.inject.Provider` can help by lazily retrieving the dependent bean.
+
+```java
+@Component
+public class ClassA {
+    private final ObjectFactory<ClassB> classBFactory;
+
+    @Autowired
+    public ClassA(ObjectFactory<ClassB> classBFactory) {
+        this.classBFactory = classBFactory;
+    }
+
+    public void useClassB() {
+        ClassB classB = classBFactory.getObject();
+        classB.perform();
+    }
+}
+
+@Component
+public class ClassB {
+    public void perform() {
+        System.out.println("ClassB performing");
+    }
+}
+```
+
+---
+
+#### **6. Use Spring Profiles to Define Beans Separately**
+
+Sometimes, separating bean definitions into different configurations or profiles can help avoid circular dependencies.
+
+---
+
+### **Best Practices**
+
+1. **Reassess Your Design**: Circular dependencies often indicate a design flaw. Use **SOLID principles** to redesign your classes.
+2. **Use Interfaces**: Decouple dependencies by programming to an interface.
+3. **Use Dependency Inversion Principle**: Abstract dependencies using higher-level modules.
+4. **Avoid Constructor Injection for Circular Dependencies**: Prefer setter or field injection when circular dependencies are unavoidable.
+
+By using these techniques, you can effectively resolve circular dependency issues in Spring and build a cleaner, maintainable application.
+---
+---
 ### **What is Cyclic Dependency in Spring?**
 
 A **cyclic dependency** occurs when two or more beans are dependent on each other, directly or indirectly, in such a way that they form a circular chain. This situation can lead to runtime errors during the application context initialization in Spring, as Spring cannot resolve the dependencies to create the beans.
