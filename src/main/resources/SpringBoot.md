@@ -1,3 +1,188 @@
+---
+### **What is Cyclic Dependency in Spring?**
+
+A **cyclic dependency** occurs when two or more beans are dependent on each other, directly or indirectly, in such a way that they form a circular chain. This situation can lead to runtime errors during the application context initialization in Spring, as Spring cannot resolve the dependencies to create the beans.
+
+#### **Example of Cyclic Dependency**
+
+Consider the following example of a cyclic dependency between two classes:
+
+```java
+@Component
+public class ClassA {
+    private final ClassB classB;
+
+    @Autowired
+    public ClassA(ClassB classB) {
+        this.classB = classB;
+    }
+}
+```
+
+```java
+@Component
+public class ClassB {
+    private final ClassA classA;
+
+    @Autowired
+    public ClassB(ClassA classA) {
+        this.classA = classA;
+    }
+}
+```
+
+When Spring tries to instantiate `ClassA`, it needs `ClassB`, and to instantiate `ClassB`, it needs `ClassA`. This circular dependency causes a **`BeanCurrentlyInCreationException`**.
+
+---
+
+### **Resolving Cyclic Dependency**
+
+Spring provides several ways to resolve cyclic dependencies:
+
+---
+
+#### **1. Using `@Lazy` Annotation**
+
+The `@Lazy` annotation delays the initialization of one of the beans until it is actually needed.
+
+```java
+@Component
+public class ClassA {
+    private final ClassB classB;
+
+    @Autowired
+    public ClassA(@Lazy ClassB classB) {
+        this.classB = classB;
+    }
+}
+```
+
+This allows Spring to break the cycle by creating a proxy for `ClassB`, deferring its initialization.
+
+---
+
+#### **2. Refactoring Dependencies**
+
+Often, a cyclic dependency indicates a design flaw. Refactor your code to eliminate the circular dependency. For example, introduce a third class (`ClassC`) to manage the interaction between `ClassA` and `ClassB`.
+
+```java
+@Component
+public class ClassC {
+    private final ClassA classA;
+    private final ClassB classB;
+
+    @Autowired
+    public ClassC(ClassA classA, ClassB classB) {
+        this.classA = classA;
+        this.classB = classB;
+    }
+
+    // Add methods to handle interactions between ClassA and ClassB
+}
+```
+
+---
+
+#### **3. Use Setter Injection**
+
+Switching to setter-based injection can help resolve circular dependencies since Spring initializes the beans first and then resolves the dependencies.
+
+```java
+@Component
+public class ClassA {
+    private ClassB classB;
+
+    @Autowired
+    public void setClassB(ClassB classB) {
+        this.classB = classB;
+    }
+}
+```
+
+```java
+@Component
+public class ClassB {
+    private ClassA classA;
+
+    @Autowired
+    public void setClassA(ClassA classA) {
+        this.classA = classA;
+    }
+}
+```
+
+---
+
+#### **4. Use `@PostConstruct` or `@Bean` Initialization**
+
+Break the dependency cycle by deferring the dependency initialization using `@PostConstruct` or a `@Bean` method.
+
+```java
+@Component
+public class ClassA {
+    private ClassB classB;
+
+    @Autowired
+    public ClassA() {
+    }
+
+    @Autowired
+    public void setClassB(ClassB classB) {
+        this.classB = classB;
+    }
+}
+```
+
+```java
+@Component
+public class ClassB {
+    private ClassA classA;
+
+    @Autowired
+    public ClassB() {
+    }
+
+    @Autowired
+    public void setClassA(ClassA classA) {
+        this.classA = classA;
+    }
+}
+```
+
+---
+
+#### **5. Spring's `ObjectFactory` or `Provider`**
+
+Use `ObjectFactory` or `javax.inject.Provider` to lazily retrieve the bean.
+
+```java
+@Component
+public class ClassA {
+    private final ObjectFactory<ClassB> classBFactory;
+
+    @Autowired
+    public ClassA(ObjectFactory<ClassB> classBFactory) {
+        this.classBFactory = classBFactory;
+    }
+
+    public ClassB getClassB() {
+        return classBFactory.getObject();
+    }
+}
+```
+
+---
+
+### **Best Practices**
+
+1. **Avoid cyclic dependencies whenever possible.** They usually indicate a design issue.
+2. Refactor the code to follow the **Single Responsibility Principle**.
+3. Use interfaces or service layers to decouple dependencies.
+4. If unavoidable, rely on Spring's mechanisms like `@Lazy`, `ObjectFactory`, or `Provider`.
+
+By implementing these solutions, you can ensure that your Spring application is robust and free from cyclic dependency issues.
+---
+
 Here are some advanced Spring Boot interview questions and answers with detailed examples, suitable for experienced professionals:
 
 ### 1. **What is Spring Boot and how does it differ from the traditional Spring Framework?**
