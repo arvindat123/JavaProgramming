@@ -1,222 +1,235 @@
 ---
-### **What is Circular Dependency in Spring?**
+### **What is Bean Ambiguity in Spring?**
 
-A **circular dependency** in Spring occurs when two or more beans depend on each other, directly or indirectly, causing a cycle in the dependency graph. Spring, which uses dependency injection to manage beans, cannot resolve the dependencies in this scenario, leading to a runtime error during the application context initialization.
+**Bean ambiguity** occurs in Spring when the framework encounters multiple beans of the same type during dependency injection and cannot determine which one to inject. This typically happens when:
 
-For example:
-- Bean `A` depends on Bean `B`.
-- Bean `B` depends on Bean `A`.
+1. Multiple beans of the same type exist in the application context.
+2. A bean is injected by type rather than by name or using other qualifiers.
 
-This results in a **`BeanCurrentlyInCreationException`** because Spring gets stuck in an infinite loop trying to create these beans.
+In such cases, Spring throws a `NoUniqueBeanDefinitionException`, stating that more than one bean is available for the dependency.
 
 ---
 
-### **Example of Circular Dependency**
+### **Example of Bean Ambiguity**
 
 ```java
 @Component
-public class ClassA {
-    private final ClassB classB;
+public class ServiceA {
+    private final MyService myService;
 
     @Autowired
-    public ClassA(ClassB classB) {
-        this.classB = classB;
-    }
-}
-
-@Component
-public class ClassB {
-    private final ClassA classA;
-
-    @Autowired
-    public ClassB(ClassA classA) {
-        this.classA = classA;
+    public ServiceA(MyService myService) {
+        this.myService = myService;
     }
 }
 ```
 
-Here:
-- `ClassA` depends on `ClassB`.
-- `ClassB` depends on `ClassA`.
-
-When Spring tries to instantiate `ClassA`, it needs `ClassB`, and vice versa, creating a circular dependency.
-
----
-
-### **How to Resolve Circular Dependency in Spring**
-
-#### **1. Using `@Lazy` Annotation**
-
-The `@Lazy` annotation delays the initialization of a bean until it is required. This allows Spring to break the dependency cycle.
-
 ```java
 @Component
-public class ClassA {
-    private final ClassB classB;
-
-    @Autowired
-    public ClassA(@Lazy ClassB classB) {
-        this.classB = classB;
-    }
-}
-
-@Component
-public class ClassB {
-    private final ClassA classA;
-
-    @Autowired
-    public ClassB(ClassA classA) {
-        this.classA = classA;
-    }
-}
-```
-
-By adding `@Lazy` to one of the dependencies, Spring creates a proxy for the bean and initializes it only when accessed.
-
----
-
-#### **2. Refactor the Code to Remove the Circular Dependency**
-
-A circular dependency often indicates a design issue. Refactor the code by introducing a third class or service to handle the interaction between the two beans.
-
-```java
-@Component
-public class ClassA {
-    public void action() {
-        System.out.println("Action in ClassA");
-    }
-}
-
-@Component
-public class ClassB {
-    private final ClassA classA;
-
-    @Autowired
-    public ClassB(ClassA classA) {
-        this.classA = classA;
-    }
-
+public class MyServiceImpl1 implements MyService {
+    @Override
     public void perform() {
-        System.out.println("Perform in ClassB");
-        classA.action();
-    }
-}
-```
-
-Here, only `ClassB` depends on `ClassA`. If interactions between `ClassA` and `ClassB` are required, they can be managed via a separate service or mediator class.
-
----
-
-#### **3. Use Setter Injection**
-
-Switching to setter-based injection instead of constructor injection can resolve circular dependencies because Spring initializes the beans first and resolves dependencies later.
-
-```java
-@Component
-public class ClassA {
-    private ClassB classB;
-
-    @Autowired
-    public void setClassB(ClassB classB) {
-        this.classB = classB;
+        System.out.println("MyServiceImpl1 performing...");
     }
 }
 
 @Component
-public class ClassB {
-    private ClassA classA;
-
-    @Autowired
-    public void setClassA(ClassA classA) {
-        this.classA = classA;
-    }
-}
-```
-
----
-
-#### **4. Use `@PostConstruct` for Initialization**
-
-Break the circular dependency by deferring the initialization of some dependencies until after the beans are constructed using `@PostConstruct`.
-
-```java
-@Component
-public class ClassA {
-    private ClassB classB;
-
-    @Autowired
-    public void setClassB(ClassB classB) {
-        this.classB = classB;
-    }
-
-    @PostConstruct
-    public void init() {
-        System.out.println("ClassA initialized");
-    }
-}
-
-@Component
-public class ClassB {
-    private ClassA classA;
-
-    @Autowired
-    public void setClassA(ClassA classA) {
-        this.classA = classA;
-    }
-
-    @PostConstruct
-    public void init() {
-        System.out.println("ClassB initialized");
-    }
-}
-```
-
----
-
-#### **5. Use `ObjectFactory` or `javax.inject.Provider`**
-
-Using `ObjectFactory` or `javax.inject.Provider` can help by lazily retrieving the dependent bean.
-
-```java
-@Component
-public class ClassA {
-    private final ObjectFactory<ClassB> classBFactory;
-
-    @Autowired
-    public ClassA(ObjectFactory<ClassB> classBFactory) {
-        this.classBFactory = classBFactory;
-    }
-
-    public void useClassB() {
-        ClassB classB = classBFactory.getObject();
-        classB.perform();
-    }
-}
-
-@Component
-public class ClassB {
+public class MyServiceImpl2 implements MyService {
+    @Override
     public void perform() {
-        System.out.println("ClassB performing");
+        System.out.println("MyServiceImpl2 performing...");
+    }
+}
+```
+
+In this scenario:
+1. `MyService` is an interface with two implementations (`MyServiceImpl1` and `MyServiceImpl2`).
+2. When Spring attempts to inject `MyService` into `ServiceA`, it encounters ambiguity since both `MyServiceImpl1` and `MyServiceImpl2` match the type.
+
+---
+
+### **How to Resolve Bean Ambiguity**
+
+#### **1. Use `@Primary` Annotation**
+
+Mark one of the beans as the primary bean to give it precedence during injection.
+
+```java
+@Component
+@Primary
+public class MyServiceImpl1 implements MyService {
+    @Override
+    public void perform() {
+        System.out.println("MyServiceImpl1 performing...");
+    }
+}
+
+@Component
+public class MyServiceImpl2 implements MyService {
+    @Override
+    public void perform() {
+        System.out.println("MyServiceImpl2 performing...");
+    }
+}
+```
+
+Spring will now inject `MyServiceImpl1` wherever `MyService` is required.
+
+---
+
+#### **2. Use `@Qualifier` Annotation**
+
+Use `@Qualifier` to specify the exact bean to inject by name.
+
+```java
+@Component
+public class ServiceA {
+    private final MyService myService;
+
+    @Autowired
+    public ServiceA(@Qualifier("myServiceImpl2") MyService myService) {
+        this.myService = myService;
+    }
+}
+```
+
+Here, Spring injects the bean named `myServiceImpl2`.
+
+---
+
+#### **3. Use Bean Names Explicitly**
+
+Instead of relying on annotations, you can define beans explicitly in a configuration class using `@Bean`.
+
+```java
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyService myServiceImpl1() {
+        return new MyServiceImpl1();
+    }
+
+    @Bean
+    public MyService myServiceImpl2() {
+        return new MyServiceImpl2();
+    }
+}
+```
+
+When injecting, use the specific bean name:
+
+```java
+@Component
+public class ServiceA {
+    private final MyService myService;
+
+    @Autowired
+    public ServiceA(@Qualifier("myServiceImpl1") MyService myService) {
+        this.myService = myService;
     }
 }
 ```
 
 ---
 
-#### **6. Use Spring Profiles to Define Beans Separately**
+#### **4. Use `Map` or `List` Injection for All Beans of a Type**
 
-Sometimes, separating bean definitions into different configurations or profiles can help avoid circular dependencies.
+If multiple beans are required, inject them as a `List` or `Map`.
+
+```java
+@Component
+public class ServiceA {
+    private final List<MyService> myServices;
+
+    @Autowired
+    public ServiceA(List<MyService> myServices) {
+        this.myServices = myServices;
+    }
+
+    public void performAll() {
+        myServices.forEach(MyService::perform);
+    }
+}
+```
+
+Or inject as a `Map` with bean names as keys:
+
+```java
+@Component
+public class ServiceA {
+    private final Map<String, MyService> myServiceMap;
+
+    @Autowired
+    public ServiceA(Map<String, MyService> myServiceMap) {
+        this.myServiceMap = myServiceMap;
+    }
+
+    public void performByName(String beanName) {
+        myServiceMap.get(beanName).perform();
+    }
+}
+```
+
+---
+
+#### **5. Use a Custom Annotation**
+
+If you frequently encounter such situations, create a custom annotation to specify the desired implementation.
+
+1. Define a custom annotation:
+   ```java
+   @Qualifier
+   @Retention(RetentionPolicy.RUNTIME)
+   @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+   public @interface MyServiceType {
+       String value();
+   }
+   ```
+
+2. Apply it to your beans:
+   ```java
+   @Component
+   @MyServiceType("impl1")
+   public class MyServiceImpl1 implements MyService {
+       @Override
+       public void perform() {
+           System.out.println("MyServiceImpl1 performing...");
+       }
+   }
+
+   @Component
+   @MyServiceType("impl2")
+   public class MyServiceImpl2 implements MyService {
+       @Override
+       public void perform() {
+           System.out.println("MyServiceImpl2 performing...");
+       }
+   }
+   ```
+
+3. Use the custom annotation during injection:
+   ```java
+   @Component
+   public class ServiceA {
+       private final MyService myService;
+
+       @Autowired
+       public ServiceA(@MyServiceType("impl1") MyService myService) {
+           this.myService = myService;
+       }
+   }
+   ```
 
 ---
 
 ### **Best Practices**
 
-1. **Reassess Your Design**: Circular dependencies often indicate a design flaw. Use **SOLID principles** to redesign your classes.
-2. **Use Interfaces**: Decouple dependencies by programming to an interface.
-3. **Use Dependency Inversion Principle**: Abstract dependencies using higher-level modules.
-4. **Avoid Constructor Injection for Circular Dependencies**: Prefer setter or field injection when circular dependencies are unavoidable.
+1. **Use `@Primary` for Default Implementations**: If one bean is the default choice, mark it as primary.
+2. **Use `@Qualifier` for Explicit Selection**: When you need a specific bean.
+3. **Refactor for Clarity**: Avoid having too many beans of the same type to minimize confusion.
+4. **Inject Collections**: Use `List` or `Map` when working with multiple beans of the same type.
 
-By using these techniques, you can effectively resolve circular dependency issues in Spring and build a cleaner, maintainable application.
+By applying these strategies, you can resolve bean ambiguity effectively and maintain a clear and manageable Spring application.
 ---
 ---
 ### **What is Cyclic Dependency in Spring?**
