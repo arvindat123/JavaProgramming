@@ -1,4 +1,137 @@
 ---
+
+A **memory leak** occurs when an application fails to release memory that is no longer needed, causing the application to consume increasing amounts of memory over time. In a monolith application, memory leaks can lead to **performance degradation**, **high CPU utilization (due to frequent garbage collection)**, and eventually **application crashes** due to `OutOfMemoryError`.
+
+---
+
+### **Common Causes of Memory Leaks**
+1. **Unreleased Object References**:
+   - Objects are held in memory due to lingering references, even though they are no longer needed.
+   - **Example**: Adding objects to a collection (e.g., `List` or `Map`) but never removing them.
+
+2. **Static Variables**:
+   - Static variables have a lifecycle tied to the application's lifespan and may hold objects unnecessarily.
+   - **Example**: A `static Map` storing data that grows indefinitely.
+
+3. **Listener or Callback References**:
+   - Event listeners or callbacks are registered but never unregistered, causing objects to stay in memory.
+   - **Example**: Registering listeners in GUIs or event-driven frameworks without proper cleanup.
+
+4. **Thread Local Variables**:
+   - Improper use of `ThreadLocal` variables can cause memory to linger beyond the intended scope.
+   - **Example**: Thread-local data not cleared after thread execution.
+
+5. **Caching Without Eviction**:
+   - Caching strategies that do not remove stale or unused entries.
+   - **Example**: A cache (like `HashMap`) growing without size limits.
+
+6. **Custom Class Loaders**:
+   - Improper handling of class loaders can cause memory leaks, especially in applications that reload modules (e.g., web applications in servlet containers).
+   - **Example**: Retaining references to objects from the previous class loader after redeployment.
+
+7. **Poorly Managed Collections**:
+   - Collections that grow indefinitely without cleanup.
+   - **Example**: Accumulating logs or temporary data in an unbounded collection.
+
+8. **Finalizer or Shutdown Hooks**:
+   - Objects waiting for finalization or shutdown hooks can stay in memory longer than necessary.
+   - **Example**: Using `finalize()` improperly instead of explicit resource cleanup.
+
+9. **Improper Use of Weak/Soft References**:
+   - Weak or soft references not managed properly, leading to unintentional retention of objects.
+   - **Example**: Misusing `WeakHashMap` without understanding its behavior.
+
+---
+
+### **How to Detect Memory Leaks**
+1. **Monitoring Tools**:
+   - Use tools like **JVM monitoring tools** (VisualVM, JConsole) or APM tools (AppDynamics, Dynatrace) to track memory usage over time.
+
+2. **Heap Dumps**:
+   - Capture heap dumps using tools like `jmap` or built-in profilers and analyze them with tools like Eclipse MAT (Memory Analyzer Tool).
+
+3. **Garbage Collection Logs**:
+   - Enable and analyze GC logs to check for frequent garbage collections and excessive memory usage.
+
+4. **Profilers**:
+   - Use profilers (e.g., YourKit, JProfiler) to monitor object retention and identify the source of leaks.
+
+---
+
+### **How to Fix and Prevent Memory Leaks**
+1. **Release References**:
+   - Ensure unused objects are dereferenced.
+   - **Example**: Remove entries from collections like `Map` or `List` when they are no longer needed.
+
+2. **Use Weak or Soft References**:
+   - Use `WeakReference` or `SoftReference` for objects that can be garbage collected when not strongly referenced.
+
+3. **Unregister Listeners**:
+   - Properly unregister listeners or callbacks when they are no longer needed.
+   - **Example**: `eventSource.removeListener(listener)`.
+
+4. **Use Thread Pools Properly**:
+   - Avoid creating too many threads or improperly handling `ThreadLocal` variables. Clear thread-local values explicitly after use.
+
+5. **Optimize Caching**:
+   - Use cache libraries like **Guava Cache** or **Caffeine** with eviction policies.
+   - Set size limits and expiration times for cache entries.
+
+6. **Static Variables**:
+   - Be cautious with `static` variables. Use them sparingly and only when necessary.
+
+7. **Avoid Finalize**:
+   - Do not rely on `finalize()` for resource cleanup; use `try-with-resources` or explicit cleanup methods.
+
+8. **Class Loader Management**:
+   - Avoid holding references to objects loaded by previous class loaders when reloading modules.
+
+9. **Use Tools for Analysis**:
+   - Integrate heap dump analysis into the debugging process to proactively identify leaks.
+
+---
+
+### **Example of a Memory Leak in Java**
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakExample {
+    private static List<Object> memoryLeakList = new ArrayList<>();
+
+    public static void main(String[] args) {
+        while (true) {
+            Object obj = new Object();
+            memoryLeakList.add(obj); // Object added but never removed
+        }
+    }
+}
+```
+
+**Fix**:
+Use a bounded collection or properly clear the list when objects are no longer needed:
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakFixed {
+    private static List<Object> memorySafeList = new ArrayList<>();
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) { // Limit the size of the list
+            Object obj = new Object();
+            memorySafeList.add(obj);
+        }
+    }
+}
+```
+
+---
+
+By being proactive with coding practices, profiling, and regular monitoring, you can minimize the risk of memory leaks in your monolith application.
+
+---
+---
 High CPU utilization in a running monolith application can stem from various causes. Here are some common reasons and their explanations:
 ---
 
