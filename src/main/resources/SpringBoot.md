@@ -1,4 +1,5 @@
 ---
+
 ### **What is Bean Ambiguity in Spring?**
 
 **Bean ambiguity** occurs in Spring when the framework encounters multiple beans of the same type during dependency injection and cannot determine which one to inject. This typically happens when:
