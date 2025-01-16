@@ -1,4 +1,97 @@
 ---
+High CPU utilization in a running monolith application can stem from various causes. Here are some common reasons and their explanations:
+
+### 1. **Inefficient Code or Algorithm**
+   - **Description**: Suboptimal algorithms or inefficient loops can consume excessive CPU resources.
+   - **Example**: A poorly implemented sorting algorithm or an unnecessary nested loop can lead to high computational overhead.
+
+---
+
+### 2. **High Concurrency/Threading Issues**
+   - **Description**: Excessive concurrent threads or thread contention for shared resources can lead to high CPU usage.
+   - **Example**: A thread pool with an unbounded number of threads or improper synchronization leading to CPU spinning.
+
+---
+
+### 3. **High Request Load**
+   - **Description**: If the monolith is under heavy traffic, the application server may struggle to handle the increased number of incoming requests.
+   - **Example**: High API call volume during peak traffic times or unexpected spikes in user activity.
+
+---
+
+### 4. **Inefficient Database Queries**
+   - **Description**: Poorly written or unoptimized queries can lead to excessive CPU usage on the application side if processing large datasets.
+   - **Example**: Loading too much data into memory or executing complex joins without proper indexing.
+
+---
+
+### 5. **Excessive Logging**
+   - **Description**: Verbose logging, especially at debug or trace levels, can consume significant CPU resources.
+   - **Example**: Logging every incoming request and response payload during high traffic.
+
+---
+
+### 6. **Memory Leaks**
+   - **Description**: Memory leaks can trigger frequent garbage collection, leading to high CPU utilization.
+   - **Example**: Accumulating objects in memory that are never released due to bad references.
+
+---
+
+### 7. **Garbage Collection Overhead**
+   - **Description**: Inefficient garbage collection settings or excessive object creation can lead to high CPU utilization by the JVM garbage collector.
+   - **Example**: Using default GC settings without tuning them for high load scenarios.
+
+---
+
+### 8. **Improper Configuration**
+   - **Description**: Misconfigured thread pools, caching layers, or other system resources can cause bottlenecks.
+   - **Example**: A thread pool with too few threads causing tasks to pile up.
+
+---
+
+### 9. **CPU-Intensive Operations**
+   - **Description**: Certain operations are inherently CPU-intensive, such as encryption, compression, or image/video processing.
+   - **Example**: Encoding a large video file on the server.
+
+---
+
+### 10. **Third-Party Library Issues**
+   - **Description**: Bugs or inefficiencies in third-party libraries used by the application.
+   - **Example**: Using a library that has known performance issues with certain inputs.
+
+---
+
+### 11. **Deadlocks or Infinite Loops**
+   - **Description**: Threads stuck in a deadlock or infinite loop can hog CPU resources.
+   - **Example**: A misconfigured retry mechanism causing infinite retries.
+
+---
+
+### How to Diagnose?
+1. **Monitor Metrics**:
+   - Use monitoring tools (e.g., ELK, Grafana, Prometheus) to track CPU usage.
+2. **Thread Dump Analysis**:
+   - Use `jstack` or similar tools to analyze thread behavior.
+3. **Profiling**:
+   - Use profilers like VisualVM, JProfiler, or YourKit to identify hotspots.
+4. **Database Query Analysis**:
+   - Monitor slow queries and analyze execution plans.
+5. **Log Analysis**:
+   - Check logs for excessive or unnecessary entries.
+
+---
+
+### How to Mitigate?
+- Optimize the code and algorithms.
+- Tune thread pool and GC configurations.
+- Optimize database queries and indexing.
+- Reduce logging levels in production.
+- Implement caching for frequently used data.
+- Scale the application horizontally (e.g., via load balancers).
+
+Let me know if you'd like deeper insights into any of these causes or solutions!
+---
+---
 Java EE (Java Platform, Enterprise Edition) and Jakarta EE (Jakarta Platform, Enterprise Edition) are both platforms for building enterprise-level applications in Java. However, they differ primarily in governance, branding, and evolution. Here's a breakdown:
 
 ---
