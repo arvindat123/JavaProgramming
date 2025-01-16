@@ -1,5 +1,6 @@
 ---
 High CPU utilization in a running monolith application can stem from various causes. Here are some common reasons and their explanations:
+---
 
 ### 1. **Inefficient Code or Algorithm**
    - **Description**: Suboptimal algorithms or inefficient loops can consume excessive CPU resources.
