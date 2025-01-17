@@ -1,3 +1,59 @@
+---
+---
+
+Yes, a table can have **more than one unique key**. However, there can only be **one primary key**.
+
+---
+
+### **Key Differences Between Primary Key and Unique Key**
+
+| **Aspect**             | **Primary Key**                                 | **Unique Key**                                 |
+|-------------------------|------------------------------------------------|------------------------------------------------|
+| **Purpose**             | Uniquely identifies each row in the table.      | Ensures uniqueness for a column or a set of columns. |
+| **Number of Keys**      | Only one primary key per table.                 | Can have multiple unique keys in a table.      |
+| **Null Values**         | Does not allow `NULL`.                         | Allows `NULL` values (one or more).           |
+| **Constraint**          | `PRIMARY KEY`                                  | `UNIQUE`                                      |
+| **Combination of Columns** | Can use one or more columns.                 | Can use one or more columns.                  |
+
+---
+
+### **Example: Multiple Unique Keys in a Table**
+
+#### **SQL Table with Primary and Unique Keys**
+```sql
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,       -- Primary Key
+    email VARCHAR(100) UNIQUE,         -- Unique Key
+    phone_number VARCHAR(15) UNIQUE    -- Another Unique Key
+);
+```
+
+- **`employee_id`**: Primary Key – Uniquely identifies each employee, no duplicates, and cannot be `NULL`.
+- **`email`**: Unique Key – Ensures email addresses are unique but can have `NULL` (if no email is provided).
+- **`phone_number`**: Another Unique Key – Ensures phone numbers are unique but can have `NULL`.
+
+#### **Inserting Data into the Table**
+```sql
+INSERT INTO employees (employee_id, email, phone_number)
+VALUES (1, 'john.doe@example.com', '1234567890'); -- Valid
+
+INSERT INTO employees (employee_id, email, phone_number)
+VALUES (2, 'jane.doe@example.com', '1234567890'); -- Fails (phone_number is duplicate)
+
+INSERT INTO employees (employee_id, email, phone_number)
+VALUES (3, NULL, '0987654321'); -- Valid (email can be NULL)
+```
+
+---
+
+### **Practical Uses**
+- **Primary Key**: For core identification of rows.
+- **Unique Key**: For business rules such as ensuring emails, usernames, or phone numbers are unique within the database.
+
+By having multiple unique keys, you can enforce data integrity without using them as the primary means of identification.
+
+---
+
 In this case, SQL Server processes the clauses in the following order: FROM -> WHERE -> GROUP BY -> SELECT -> ORDER BY
 
 
