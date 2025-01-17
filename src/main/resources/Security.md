@@ -1,5 +1,6 @@
 ---
 
+
 ### **Difference Between Authentication and Authorization**
 
 | Feature                | **Authentication**                                                      | **Authorization**                                                       |
