@@ -1,4 +1,97 @@
 ---
+### **Difference Between Authentication and Authorization**
+
+| **Aspect**             | **Authentication**                                                     | **Authorization**                                                   |
+|-------------------------|------------------------------------------------------------------------|----------------------------------------------------------------------|
+| **Definition**          | Verifying the identity of a user or entity.                          | Granting permission to access specific resources or perform actions. |
+| **Purpose**             | Confirms "Who you are."                                               | Confirms "What you are allowed to do."                              |
+| **Focus**               | Focuses on verifying credentials (e.g., username and password).       | Focuses on validating access rights for a user.                     |
+| **Process**             | Happens before authorization.                                         | Happens after authentication.                                       |
+| **HTTP Status Codes**   | `401 Unauthorized` if authentication fails.                          | `403 Forbidden` if authorization fails.                             |
+| **Examples**            | - Login page to verify username and password.                        | - Accessing an admin-only dashboard after logging in.               |
+
+---
+
+### **HTTP Status Codes for Authentication and Authorization**
+
+1. **Authentication Failure**:
+   - **HTTP Status Code**: `401 Unauthorized` (despite the misleading name).
+   - **Meaning**: The client must authenticate itself to get the requested response.
+   - **Example**: 
+     - When a user provides incorrect credentials (e.g., wrong username/password).
+     - If a client omits a required `Authorization` header.
+
+   ```http
+   HTTP/1.1 401 Unauthorized
+   WWW-Authenticate: Basic realm="Access to the secure site"
+   Content-Type: application/json
+
+   {
+       "error": "Authentication required. Please provide valid credentials."
+   }
+   ```
+
+2. **Authorization Failure**:
+   - **HTTP Status Code**: `403 Forbidden`.
+   - **Meaning**: The server understands the request but refuses to fulfill it due to insufficient permissions.
+   - **Example**:
+     - A user tries to access an admin-only resource without admin privileges.
+     - A token is valid but lacks the required permissions for the requested resource.
+
+   ```http
+   HTTP/1.1 403 Forbidden
+   Content-Type: application/json
+
+   {
+       "error": "You do not have permission to access this resource."
+   }
+   ```
+
+---
+
+### **Example: Authentication and Authorization Workflow**
+
+1. **Scenario**:
+   - A user tries to access a restricted resource `/admin-dashboard`.
+
+2. **Step 1: Authentication**:
+   - **Client Request**: Sends a request with no credentials or incorrect credentials.
+   - **Server Response**: Returns `401 Unauthorized`.
+     ```http
+     HTTP/1.1 401 Unauthorized
+     WWW-Authenticate: Bearer realm="Access requires authentication"
+     ```
+
+3. **Step 2: Authorization**:
+   - **Client Request**: Sends valid credentials but lacks sufficient permissions.
+   - **Server Response**: Returns `403 Forbidden`.
+     ```http
+     HTTP/1.1 403 Forbidden
+     Content-Type: application/json
+
+     {
+         "error": "You are authenticated but not authorized to access this resource."
+     }
+     ```
+
+4. **Step 3: Success**:
+   - **Client Request**: Sends valid credentials with the required permissions.
+   - **Server Response**: Returns `200 OK` with the resource.
+     ```http
+     HTTP/1.1 200 OK
+     Content-Type: application/json
+
+     {
+         "message": "Welcome to the admin dashboard!"
+     }
+     ```
+
+---
+
+### **Key Points to Remember**
+- **401 Unauthorized**: Indicates authentication has failed or is required.
+- **403 Forbidden**: Indicates authentication succeeded, but the user does not have the necessary permissions.
+- Properly handling these codes improves API security and usability by providing clear feedback to the client.
 ---
 
 ### **Difference Between Authentication and Authorization**
