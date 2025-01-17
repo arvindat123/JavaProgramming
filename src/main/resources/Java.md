@@ -94,7 +94,150 @@ Here’s a curated list of **Java 8 interview questions** for experienced profes
 
 ---
 
-Would you like to dive deeper into any specific area or discuss solutions to these questions?
+### **How Does the `default` Method in Interfaces Work?**
+
+A `default` method in an interface is a method with a body, introduced in **Java 8**. It allows an interface to provide a **default implementation** for a method, enabling backward compatibility and reducing boilerplate code.
+
+#### **Key Points:**
+1. A `default` method is defined in an interface using the `default` keyword.
+2. Classes implementing the interface can:
+   - Use the default implementation as-is.
+   - Override the `default` method with a custom implementation.
+
+---
+
+### **Why Was `default` Method Introduced?**
+
+1. **Backward Compatibility:**  
+   - Before Java 8, if a new method was added to an interface, all implementing classes had to implement it.  
+   - With `default` methods, new methods can be added to interfaces without breaking existing implementations.
+
+2. **Multiple Inheritance of Behavior:**  
+   - Provides a way for interfaces to include functionality without needing abstract classes.
+
+3. **Streamlining API Evolution:**  
+   - Java collections and other libraries use `default` methods to introduce new functionalities (e.g., `forEach` in `Iterable`).
+
+---
+
+### **Example: Default Method in Interface**
+
+```java
+interface Vehicle {
+    // Abstract method
+    void start();
+
+    // Default method
+    default void stop() {
+        System.out.println("The vehicle is stopping.");
+    }
+}
+
+class Car implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Car is starting.");
+    }
+
+    // Uses the default stop() implementation from Vehicle
+}
+
+class Bike implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Bike is starting.");
+    }
+
+    // Overrides the default stop() method
+    @Override
+    public void stop() {
+        System.out.println("Bike is stopping in its own way.");
+    }
+}
+
+public class DefaultMethodDemo {
+    public static void main(String[] args) {
+        Vehicle car = new Car();
+        car.start();
+        car.stop();
+
+        Vehicle bike = new Bike();
+        bike.start();
+        bike.stop();
+    }
+}
+```
+
+---
+
+### **Output:**
+```
+Car is starting.
+The vehicle is stopping.
+Bike is starting.
+Bike is stopping in its own way.
+```
+
+---
+
+### **Explanation of the Example:**
+1. The `Vehicle` interface has:
+   - An abstract method `start()` that must be implemented by all implementing classes.
+   - A `default` method `stop()` with a predefined implementation.
+
+2. The `Car` class:
+   - Implements the `start()` method.
+   - Uses the default implementation of `stop()` from the `Vehicle` interface.
+
+3. The `Bike` class:
+   - Implements the `start()` method.
+   - Overrides the `stop()` method to provide a custom implementation.
+
+---
+
+### **Conflict Resolution with Multiple Interfaces**
+
+If a class implements multiple interfaces that provide conflicting `default` methods, the class must explicitly resolve the conflict.
+
+```java
+interface A {
+    default void greet() {
+        System.out.println("Hello from A");
+    }
+}
+
+interface B {
+    default void greet() {
+        System.out.println("Hello from B");
+    }
+}
+
+class C implements A, B {
+    @Override
+    public void greet() {
+        // Resolve the conflict explicitly
+        A.super.greet(); // or B.super.greet()
+        System.out.println("Hello from C");
+    }
+}
+
+public class ConflictResolution {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.greet();
+    }
+}
+```
+
+#### **Output:**
+```
+Hello from A
+Hello from C
+```
+
+---
+
+Would you like to explore another example, such as using default methods in the Java Collections API?
 
 
 ---
