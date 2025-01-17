@@ -1,3 +1,49 @@
+---
+
+### **Difference Between Authentication and Authorization**
+
+| Feature                | **Authentication**                                                      | **Authorization**                                                       |
+|------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Definition**         | The process of verifying the identity of a user or system.             | The process of determining what actions or resources a user/system has access to. |
+| **Focus**              | Identifies "Who are you?"                                               | Determines "What can you do?" or "What resources can you access?"      |
+| **Purpose**            | Confirms the identity of the user.                                      | Validates permissions for specific actions or resources.               |
+| **Process**            | Usually involves credentials such as username/password, biometrics, etc. | Involves checking permissions and roles assigned to the authenticated user. |
+| **Sequence**           | Always happens before authorization.                                    | Happens only after successful authentication.                          |
+| **Outcome**            | Ensures the user/system is genuine.                                     | Ensures the user/system has proper access rights.                      |
+| **Implementation Examples** | Login forms, fingerprint scans, OTP verification.                   | Role-based access control (RBAC), file permissions, access tokens.     |
+| **Level of Access**    | No access beyond proving identity.                                      | Grants or denies access to resources based on permissions.             |
+| **Technology Examples**| OAuth, OpenID, Multi-factor Authentication (MFA).                      | Access Control Lists (ACLs), RBAC, Policies.                           |
+| **Example Questions**  | "Who is trying to log in?"                                              | "Is this user allowed to view this page or perform this operation?"    |
+
+---
+
+### **Example: Authentication vs. Authorization in a Web Application**
+
+1. **Authentication**: 
+   - A user enters their **username and password** into a login form.
+   - The system verifies the credentials by checking them against stored records in the database.
+
+   **Outcome**: The system confirms the user is who they claim to be.
+
+2. **Authorization**:
+   - After login, the user tries to access an admin dashboard.
+   - The system checks if the user’s role includes "Admin" permissions.
+
+   **Outcome**: 
+   - If authorized: Access is granted to the dashboard.
+   - If unauthorized: Access is denied, even though the user is authenticated.
+
+---
+
+### **Key Analogy**
+
+Think of authentication as **showing an ID card** to enter a building (proving identity). Authorization is like **having a specific keycard or permissions** to access certain rooms inside the building. 
+
+Both are essential for secure systems but serve distinct purposes.
+
+---
+---
+
 Securing API endpoints in microservices is crucial to protect sensitive data, ensure authorized access, and maintain the integrity of the system. Below are the approaches to secure API endpoints in a microservices architecture:
 
 ---
