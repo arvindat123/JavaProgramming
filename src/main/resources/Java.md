@@ -94,6 +94,125 @@ Here’s a curated list of **Java 8 interview questions** for experienced profes
 
 ---
 
+### **What are Lambda Expressions?**
+
+A **lambda expression** in Java 8 is a concise way to represent a block of code (or behavior) that can be passed around and executed. It’s a feature that enables functional programming by treating functions as first-class citizens.
+
+---
+
+### **Syntax of a Lambda Expression**
+```java
+(parameters) -> { body }
+```
+- **Parameters:** The inputs to the lambda expression.  
+- **Arrow (->):** Separates parameters from the body of the expression.  
+- **Body:** The logic or implementation of the lambda.
+
+#### **Examples:**
+1. **Without Parameters:**
+   ```java
+   () -> System.out.println("Hello, World!");
+   ```
+2. **Single Parameter:**
+   ```java
+   name -> System.out.println("Hello, " + name);
+   ```
+3. **Multiple Parameters:**
+   ```java
+   (a, b) -> a + b;
+   ```
+4. **Block Body with Return Statement:**
+   ```java
+   (a, b) -> {
+       int sum = a + b;
+       return sum;
+   };
+   ```
+
+---
+
+### **How Lambda Expressions Differ from Anonymous Classes**
+
+| **Aspect**               | **Lambda Expression**                                      | **Anonymous Class**                                      |
+|--------------------------|-----------------------------------------------------------|---------------------------------------------------------|
+| **Syntax**               | Concise and readable                                      | Verbose, with class definition and boilerplate code     |
+| **Type Inference**       | Compiler infers the type from the context                 | Explicitly defines the type in the class               |
+| **Performance**          | More efficient (no additional class file created)         | Generates an additional class file at runtime          |
+| **Usage**                | Typically used with functional interfaces                 | Can implement any interface or extend a class          |
+| **Access to `this`**     | Refers to the enclosing scope                             | Refers to the instance of the anonymous class          |
+| **Reusability**          | Cannot have a named implementation                        | Can be reused if declared as an object                 |
+
+---
+
+### **Code Example: Lambda Expression vs Anonymous Class**
+
+#### **Using Anonymous Class:**
+```java
+import java.util.Comparator;
+
+public class AnonymousClassExample {
+    public static void main(String[] args) {
+        Comparator<Integer> comparator = new Comparator<Integer>() {
+            @Override
+            public int compare(Integer a, Integer b) {
+                return a - b;
+            }
+        };
+
+        int result = comparator.compare(10, 20);
+        System.out.println("Result using anonymous class: " + result);
+    }
+}
+```
+
+---
+
+#### **Using Lambda Expression:**
+```java
+import java.util.Comparator;
+
+public class LambdaExample {
+    public static void main(String[] args) {
+        Comparator<Integer> comparator = (a, b) -> a - b;
+
+        int result = comparator.compare(10, 20);
+        System.out.println("Result using lambda expression: " + result);
+    }
+}
+```
+
+---
+
+### **Output for Both Examples:**
+```
+Result: -10
+```
+
+---
+
+### **Key Differences Highlighted in the Examples:**
+1. **Verbosity:** The anonymous class requires more lines of code (explicitly overriding `compare`), while the lambda is a single line.
+2. **Type Inference:** The lambda infers `Integer` from the context, whereas the anonymous class explicitly declares it.
+3. **Performance:** The lambda does not generate a new `.class` file, making it more memory-efficient.
+
+---
+
+### **When to Use Lambda Expressions:**
+- When implementing functional interfaces (interfaces with a single abstract method).
+- When simplicity and readability are priorities.
+
+---
+
+### **When to Use Anonymous Classes:**
+- When implementing multiple methods of an interface.
+- When you need to access `this` as the instance of the anonymous class.
+- When extending a class and overriding methods.
+
+Would you like more examples or further clarification on functional interfaces and their relation to lambda expressions?
+
+---
+---
+
 ### **How Does the `default` Method in Interfaces Work?**
 
 A `default` method in an interface is a method with a body, introduced in **Java 8**. It allows an interface to provide a **default implementation** for a method, enabling backward compatibility and reducing boilerplate code.
