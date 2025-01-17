@@ -1,3 +1,101 @@
+---
+---
+
+Here’s a curated list of **Java 8 interview questions** for experienced professionals, focusing on key concepts, practical applications, and advanced topics:
+
+---
+
+### **1. Core Features of Java 8**
+1. What are the new features introduced in Java 8?
+2. How does the `default` method in interfaces work? Why was it introduced?
+3. What is the difference between `default` methods and `abstract` methods in interfaces?
+4. Can a class implement two interfaces with the same default method? How would you resolve the conflict?
+
+---
+
+### **2. Functional Programming and Lambda Expressions**
+5. What are lambda expressions? How do they differ from anonymous classes?
+6. How is the type of a lambda expression determined?
+7. Write a lambda expression to sort a list of strings by their length.
+8. How do you use effectively final variables inside lambda expressions?
+
+---
+
+### **3. Functional Interfaces**
+9. What are functional interfaces in Java 8? Give examples.
+10. Can you create your own functional interface? Write a small example.
+11. How does the `@FunctionalInterface` annotation help in Java 8?
+
+---
+
+### **4. Streams API**
+12. What is the purpose of the Streams API in Java 8?
+13. Explain the difference between `intermediate` and `terminal` operations in streams.
+14. How would you filter a list of integers to include only even numbers using streams?
+15. What is the difference between `map()` and `flatMap()`?
+16. Explain how parallel streams work. When would you use them?
+17. How would you count the number of occurrences of each word in a list using streams?
+
+---
+
+### **5. Optional Class**
+18. What is `Optional` in Java 8? Why is it used?
+19. How would you handle a `null` value with `Optional`?
+20. What is the difference between `Optional.of()`, `Optional.ofNullable()`, and `Optional.empty()`?
+21. How would you use `orElse()`, `orElseGet()`, and `orElseThrow()` in Optional?
+
+---
+
+### **6. Date and Time API**
+22. What is the new Date and Time API introduced in Java 8?
+23. How do `LocalDate`, `LocalTime`, and `LocalDateTime` differ?
+24. How would you add 7 days to the current date using the new API?
+25. What is the difference between `Period` and `Duration`?
+
+---
+
+### **7. Collectors**
+26. What is the role of the `Collectors` utility class?
+27. How would you use `Collectors.groupingBy()` to group elements in a list?
+28. Explain the difference between `Collectors.toList()`, `toSet()`, and `toMap()`.
+29. How does `partitioningBy()` work in Collectors?
+
+---
+
+### **8. Method References**
+30. What are method references in Java 8? How are they different from lambda expressions?
+31. Explain the types of method references with examples.
+32. When would you use a method reference instead of a lambda?
+
+---
+
+### **9. Concurrency Enhancements**
+33. What are the new concurrency enhancements introduced in Java 8?
+34. How does `CompletableFuture` work? What are its key methods?
+35. Write a code snippet to demonstrate the use of `CompletableFuture.supplyAsync()`.
+
+---
+
+### **10. Miscellaneous**
+36. How do you use the `forEach()` method in Java 8?
+37. Explain the difference between `peek()` and `map()` in streams.
+38. What are the key changes in Java 8 regarding garbage collection?
+39. How does the `Predicate` interface work? Provide an example.
+40. What is the difference between `findAny()` and `findFirst()` in streams?
+
+---
+
+### **Scenario-Based Questions**
+41. How would you use streams to remove duplicates from a list?
+42. Write a program to find the second highest number in a list using streams.
+43. How would you handle exceptions inside a stream pipeline?
+44. How do you sort a list of custom objects by multiple fields using streams?
+45. Implement a caching mechanism using `Optional` to avoid repeated computations.
+
+---
+
+Would you like to dive deeper into any specific area or discuss solutions to these questions?
+
 
 ---
 
