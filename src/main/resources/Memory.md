@@ -219,6 +219,8 @@ To analyze a heap dump, first generate one. Common methods include:
 Add JVM options to generate a dump automatically during OutOfMemoryError:
 ```bash
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path/to/dump/file.hprof
+
+JAVA_OPTS: "-XX:MaxRAMPercentage=50 -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
 ```
 
 #### **Manually:**
