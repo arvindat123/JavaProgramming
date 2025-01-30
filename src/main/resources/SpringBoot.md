@@ -1903,3 +1903,140 @@ private Queue myQueue;
 1. If you’re using Spring, prefer `@Autowired` for Spring-managed beans unless you need `@Resource` for specific scenarios like JNDI lookups.
 2. If both `@Resource` and `@Autowired` are used, `@Resource` takes precedence.
 
+
+---
+
+In Spring Boot, you can exclude a dependency from auto-configuration in multiple ways, depending on your requirements. Below are the common approaches:
+
+---
+
+### **1. Using `@SpringBootApplication(exclude = { ... })`**
+Spring Boot allows you to exclude specific auto-configuration classes using the `exclude` attribute of the `@SpringBootApplication` annotation.
+
+```java
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+```
+This is useful when you want to prevent a specific auto-configuration from being applied globally.
+
+---
+
+### **2. Using `spring.autoconfigure.exclude` in `application.properties` or `application.yml`**
+You can disable auto-configuration in the configuration files.
+
+#### **For `application.properties`**
+```properties
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+```
+
+#### **For `application.yml`**
+```yaml
+spring:
+  autoconfigure:
+    exclude: 
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+```
+
+This method is useful if you want to avoid changing Java code.
+
+---
+
+### **3. Using `@EnableAutoConfiguration(exclude = { ... })`**
+If your class is annotated with `@EnableAutoConfiguration`, you can also use the `exclude` attribute:
+
+```java
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+
+@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+```
+
+---
+
+### **4. Excluding a Dependency in `pom.xml` (Maven)**
+If you want to prevent a dependency from pulling auto-configured components, you can exclude them in your `pom.xml`.
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+Similarly, in **Gradle**:
+```gradle
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa") {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-jdbc"
+    }
+}
+```
+
+This method prevents the auto-configuration of a dependency altogether.
+
+---
+
+### **5. Using `META-INF/spring.factories` (Spring Boot 2.x)**
+In Spring Boot 2.x, you can create a file in `src/main/resources/META-INF/spring.factories` and disable specific auto-configurations.
+
+```
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+```
+
+> **Note:** This approach is deprecated in Spring Boot 3.x in favor of `META-INF/spring/aot.factories`.
+
+---
+
+### **6. Conditional Beans with `@ConditionalOnMissingBean` or `@ConditionalOnProperty`**
+If you need finer control over auto-configuration, you can use conditional annotations inside your custom configuration.
+
+```java
+@Bean
+@ConditionalOnMissingBean(DataSource.class)
+public DataSource customDataSource() {
+    return new HikariDataSource();
+}
+```
+
+Or using properties:
+```java
+@Bean
+@ConditionalOnProperty(name = "app.feature.database.enabled", havingValue = "true", matchIfMissing = true)
+public DataSource myDataSource() {
+    return new HikariDataSource();
+}
+```
+Then in `application.properties`:
+```properties
+app.feature.database.enabled=false
+```
+This allows disabling auto-configuration dynamically based on configuration.
+
+---
+
+### **Conclusion**
+- **For globally disabling an auto-configuration class**, use `@SpringBootApplication(exclude = {...})` or `spring.autoconfigure.exclude` in properties.
+- **For preventing dependency auto-configuration**, use `<exclusions>` in `pom.xml`.
+- **For fine-grained control**, use conditional annotations like `@ConditionalOnMissingBean` or `@ConditionalOnProperty`.
+
+Let me know if you need further clarification! 🚀
