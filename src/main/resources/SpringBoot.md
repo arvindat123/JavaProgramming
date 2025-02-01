@@ -2039,4 +2039,100 @@ This allows disabling auto-configuration dynamically based on configuration.
 - **For preventing dependency auto-configuration**, use `<exclusions>` in `pom.xml`.
 - **For fine-grained control**, use conditional annotations like `@ConditionalOnMissingBean` or `@ConditionalOnProperty`.
 
-Let me know if you need further clarification! 🚀
+---
+
+Here’s a list of some of the toughest **Spring Boot** interview questions for experienced professionals. These questions are designed to test deep understanding, real-world problem-solving skills, and the ability to handle complex scenarios.  
+
+---
+
+## **Spring Boot Core Concepts**
+1. **How does Spring Boot auto-configuration work internally? Can you override it?**  
+2. **How does Spring Boot manage application properties across different environments?**  
+3. **How does the Spring Boot application startup process work internally?**  
+4. **What are the different ways to define application properties in Spring Boot?**  
+5. **How would you optimize a slow-starting Spring Boot application?**  
+
+---
+
+## **Spring Boot and Microservices**
+6. **How would you design and optimize a high-performance, scalable microservices architecture using Spring Boot?**  
+7. **How do you handle distributed transactions in a Spring Boot microservices architecture?**  
+8. **What are the different ways to secure microservices in Spring Boot? Which approach do you prefer and why?**  
+9. **How would you implement an API gateway in a Spring Boot microservices system?**  
+10. **How do you handle inter-service communication in microservices (REST, Feign, Kafka, RabbitMQ)?**  
+
+---
+
+## **Spring Boot Performance Optimization**
+11. **What are the best practices for improving the performance of a Spring Boot application?**  
+12. **How does lazy loading vs. eager loading impact performance in Spring Boot?**  
+13. **How do you debug and resolve memory leaks in a Spring Boot application?**  
+14. **How do you optimize a slow-performing Spring Boot application with Hibernate and JPA?**  
+15. **How does caching work in Spring Boot, and what are the best caching strategies?**  
+
+---
+
+## **Spring Boot and Database (JPA, Hibernate, Transactions)**
+16. **What are the different transaction propagation levels in Spring Boot? How do they work?**  
+17. **How do you handle deadlocks in Spring Boot with Hibernate and JPA?**  
+18. **How would you optimize slow database queries in a Spring Boot application?**  
+19. **What are the different ways to manage database schema changes in Spring Boot?**  
+20. **How would you handle read/write database separation in a Spring Boot application?**  
+
+---
+
+## **Spring Boot Security**
+21. **What are the best practices for securing REST APIs in Spring Boot?**  
+22. **How would you implement JWT-based authentication in Spring Boot?**  
+23. **What are the differences between OAuth2 and JWT authentication?**  
+24. **How do you prevent CSRF, XSS, and SQL injection attacks in Spring Boot?**  
+25. **How do you integrate Spring Security with LDAP authentication in a Spring Boot application?**  
+
+---
+
+## **Spring Boot Logging and Monitoring**
+26. **How do you implement centralized logging in a Spring Boot microservices system?**  
+27. **How does ELK stack (Elasticsearch, Logstash, Kibana) work with Spring Boot?**  
+28. **How do you set up distributed tracing in a Spring Boot microservices system?**  
+29. **What is the role of Micrometer in Spring Boot monitoring?**  
+30. **How do you troubleshoot performance issues in a Spring Boot application using logs and metrics?**  
+
+---
+
+## **Spring Boot Deployment & CI/CD**
+31. **How would you deploy a Spring Boot application in a Kubernetes cluster?**  
+32. **What are the best practices for setting up a CI/CD pipeline for a Spring Boot application?**  
+33. **How do you configure Spring Boot for zero-downtime deployments?**  
+34. **How would you manage configuration properties securely in a cloud environment?**  
+35. **How do you handle versioning in Spring Boot REST APIs?**  
+
+---
+
+## **Spring Boot Advanced Topics**
+36. **How does Spring Boot integrate with Kafka for event-driven architecture?**  
+37. **How does Spring Boot handle circular dependencies? How would you fix one?**  
+38. **How does @Conditional work in Spring Boot? Can you give real-world use cases?**  
+39. **What is the difference between @RestController and @Controller in Spring Boot?**  
+40. **How does WebFlux differ from traditional Spring MVC? When would you use WebFlux?**  
+
+---
+
+## **Scenario-Based and System Design Questions**
+41. **You need to handle 100,000 concurrent users in your Spring Boot application. How would you design the system?**  
+42. **Your database is experiencing high CPU usage due to inefficient queries. How would you diagnose and fix it?**  
+43. **You have a Spring Boot service that needs to handle millions of transactions per second. How would you optimize it?**  
+44. **How would you implement multi-tenancy in a Spring Boot application?**  
+45. **Your Spring Boot application suddenly slows down in production. How do you debug the issue?**  
+
+---
+
+## **Hands-on Coding Challenges**
+46. **Write a Spring Boot REST API that performs bulk insert operations with optimal performance.**  
+47. **Create a custom Spring Boot starter for a hypothetical requirement.**  
+48. **Write an efficient caching mechanism for a Spring Boot microservice using Redis.**  
+49. **Implement a rate-limiting mechanism for a Spring Boot REST API.**  
+50. **Create a multi-threaded batch processing system in Spring Boot that processes millions of records efficiently.**  
+
+---
+
+Would you like detailed answers to any of these? Or do you need help preparing for a specific interview scenario? 🚀
