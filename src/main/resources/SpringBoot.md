@@ -2748,4 +2748,135 @@ We can set different log levels for each environment.
 
 ---
 
-🚀 Would you like a **working GitHub repository** with a sample project for this setup?
+### **Spring Boot Application Startup Process - Internal Workflow**
+
+When you run a **Spring Boot** application (via `main()`), multiple steps are executed internally to bootstrap the application, load configurations, and initialize beans. Below is a **step-by-step breakdown** of how the startup process works.
+
+---
+
+## **🔹 Step 1: The `main()` Method - Entry Point**
+Every Spring Boot application starts with a `main()` method, typically inside a class annotated with `@SpringBootApplication`:
+
+```java
+@SpringBootApplication
+public class MySpringBootApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MySpringBootApp.class, args);
+    }
+}
+```
+
+👉 The key method here is `SpringApplication.run()`, which initializes the **Spring Boot application context**.
+
+---
+
+## **🔹 Step 2: `SpringApplication` Initialization**
+Internally, `SpringApplication.run()` does the following:
+
+1. **Creates an instance of `SpringApplication`**:
+   ```java
+   SpringApplication application = new SpringApplication(MySpringBootApp.class);
+   ```
+2. **Determines the application type** (Servlet/WebFlux/CLI).
+3. **Loads `ApplicationContextInitializer` beans** (if any).
+4. **Loads `ApplicationListener` beans** for event handling.
+5. **Determines the main `ApplicationContext` type** (e.g., `AnnotationConfigApplicationContext` for standard applications).
+
+---
+
+## **🔹 Step 3: `SpringApplication` Execution**
+When `run()` is called, the following steps occur:
+
+1. **Publishes `ApplicationStartingEvent`** (before anything is configured).
+2. **Initializes the environment** (loads `application.properties` / `application.yml`, system properties, and environment variables).
+3. **Publishes `ApplicationEnvironmentPreparedEvent`**.
+4. **Creates an appropriate `ApplicationContext`**:
+   - `AnnotationConfigServletWebServerApplicationContext` (for web apps)
+   - `AnnotationConfigApplicationContext` (for non-web apps)
+5. **Registers `EnvironmentPostProcessor` beans** (custom property processing).
+6. **Loads Auto-Configuration classes** (`META-INF/spring.factories`).
+7. **Publishes `ApplicationContextInitializedEvent`**.
+
+---
+
+## **🔹 Step 4: Bean Creation and Dependency Injection**
+1. **Performs component scanning** (`@ComponentScan`) and detects:
+   - `@Component`, `@Service`, `@Repository`, `@Controller`, `@RestController`
+   - `@Configuration` classes
+2. **Processes `@Autowired`, `@Value`, and `@Bean` methods**.
+3. **Registers beans in the Application Context**.
+4. **Loads `CommandLineRunner` and `ApplicationRunner` beans**.
+5. **Publishes `ApplicationPreparedEvent`**.
+
+---
+
+## **🔹 Step 5: Auto-Configuration**
+Spring Boot **auto-configures** beans by:
+- **Scanning dependencies** (e.g., `spring-boot-starter-web` → Configures `Tomcat` & `DispatcherServlet`).
+- **Checking conditions** (`@ConditionalOnClass`, `@ConditionalOnProperty`).
+- **Applying configurations from `META-INF/spring.factories`**.
+
+Example (`DataSourceAutoConfiguration`):
+```java
+@Configuration
+@ConditionalOnClass(DataSource.class)
+@EnableConfigurationProperties(DataSourceProperties.class)
+public class DataSourceAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSource dataSource(DataSourceProperties properties) {
+        return properties.initializeDataSourceBuilder().build();
+    }
+}
+```
+
+---
+
+## **🔹 Step 6: Embedded Server Initialization (For Web Apps)**
+If the application is a **Spring Boot Web Application**, it initializes an **embedded server** (Tomcat, Jetty, or Undertow).
+
+1. **Creates an embedded server instance** (default: Tomcat).
+2. **Registers `DispatcherServlet`**.
+3. **Loads Spring MVC components**.
+4. **Publishes `ServletWebServerInitializedEvent`**.
+
+---
+
+## **🔹 Step 7: Application Startup Completion**
+1. **Publishes `ApplicationStartedEvent`**.
+2. **Calls `CommandLineRunner` and `ApplicationRunner` Beans**.
+3. **Publishes `ApplicationReadyEvent`** (indicating the application is fully initialized).
+4. **Listens for shutdown signals (`SIGTERM`, `SIGINT`)**.
+
+---
+
+## **🔹 Step 8: Graceful Shutdown (On Exit)**
+When the application shuts down:
+1. **Publishes `ApplicationFailedEvent`** (if an error occurs).
+2. **Calls `@PreDestroy` methods** to clean up resources.
+3. **Stops the Embedded Server** (if applicable).
+4. **Closes the Application Context**.
+
+---
+
+## **🔹 Summary of the Startup Lifecycle**
+| **Phase** | **Event Published** |
+|-----------|---------------------|
+| Application starts | `ApplicationStartingEvent` |
+| Environment prepared | `ApplicationEnvironmentPreparedEvent` |
+| Context initialized | `ApplicationContextInitializedEvent` |
+| Context refreshed | `ApplicationPreparedEvent` |
+| Auto-configuration applied | - |
+| Embedded server starts | `ServletWebServerInitializedEvent` |
+| Application fully started | `ApplicationStartedEvent` |
+| Ready for requests | `ApplicationReadyEvent` |
+| Shutdown | `ApplicationFailedEvent` (if error) |
+
+---
+
+## **🚀 Conclusion**
+✔ **Spring Boot startup process** involves initialization, configuration loading, component scanning, dependency injection, auto-configuration, and starting an embedded server (if applicable).  
+✔ Uses **Spring events** to track startup progress (`ApplicationStartedEvent`, `ApplicationReadyEvent`).  
+✔ Allows **customizing startup behavior** using `ApplicationListener`, `CommandLineRunner`, and `@Bean` definitions.  
+
+Would you like a **detailed flowchart or debugging tips for slow startups**? 🚀
