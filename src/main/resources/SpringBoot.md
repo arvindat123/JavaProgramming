@@ -2135,4 +2135,126 @@ Here’s a list of some of the toughest **Spring Boot** interview questions for 
 
 ---
 
-Would you like detailed answers to any of these? Or do you need help preparing for a specific interview scenario? 🚀
+## **How Spring Boot Auto-Configuration Works Internally?**
+
+Spring Boot **auto-configuration** is one of its core features that automatically configures beans based on dependencies found in the classpath and properties provided by the user. It eliminates the need for manually configuring beans in most cases.
+
+#### **1. Auto-Configuration Process**
+1. **Spring Boot Application Starts**  
+   - When a Spring Boot application starts, it initializes the `SpringApplication` class, which triggers the auto-configuration process.
+   
+2. **Component Scanning & Configuration Classes**  
+   - Spring Boot scans the classpath for `@Component`, `@Service`, `@Repository`, and `@Configuration` annotated classes.
+   - It loads configuration classes marked with `@SpringBootApplication` (which internally includes `@EnableAutoConfiguration` and `@ComponentScan`).
+
+3. **EnableAutoConfiguration Loads Configurations**  
+   - The `@EnableAutoConfiguration` annotation triggers the **SpringFactoriesLoader**, which loads auto-configuration classes defined in:
+     ```
+     META-INF/spring.factories
+     ```
+     Example from **spring-boot-autoconfigure.jar**:
+     ```properties
+     org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+     org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+     org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration,\
+     org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
+     ```
+
+4. **Conditional Checks**  
+   - Each auto-configuration class is annotated with `@ConditionalOnClass`, `@ConditionalOnProperty`, or `@ConditionalOnMissingBean` to determine whether it should be loaded.
+   - Example:
+     ```java
+     @Configuration
+     @ConditionalOnClass(DataSource.class)
+     @EnableConfigurationProperties(DataSourceProperties.class)
+     public class DataSourceAutoConfiguration {
+         @Bean
+         @ConditionalOnMissingBean
+         public DataSource dataSource(DataSourceProperties properties) {
+             return properties.initializeDataSourceBuilder().build();
+         }
+     }
+     ```
+
+5. **Beans are Registered**  
+   - If the conditions are met, Spring Boot registers the beans automatically.
+   - If a bean is already present (e.g., manually configured by the user), Spring Boot **does not override it**.
+
+---
+
+### **How to Override Auto-Configuration?**
+
+You can override Spring Boot’s auto-configuration in multiple ways:
+
+#### **1. Define Your Own Bean**
+- If you define a bean manually, Spring Boot **does not** create an auto-configured bean.
+- Example: Overriding the default `DataSource`:
+  ```java
+  @Bean
+  public DataSource customDataSource() {
+      HikariDataSource dataSource = new HikariDataSource();
+      dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/customdb");
+      dataSource.setUsername("user");
+      dataSource.setPassword("pass");
+      return dataSource;
+  }
+  ```
+  
+#### **2. Exclude Specific Auto-Configurations**
+- You can disable auto-configuration using `@SpringBootApplication(exclude = {AutoConfigurationClass.class})`:
+  ```java
+  @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
+  public class MyApplication {
+  }
+  ```
+- You can also use `spring.autoconfigure.exclude` in `application.properties`:
+  ```properties
+  spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  ```
+
+#### **3. Use `@ConditionalOnMissingBean`**
+- If Spring Boot’s auto-configuration is adding a bean that conflicts with yours, ensure that your bean takes priority using `@Primary`:
+  ```java
+  @Bean
+  @Primary
+  public DataSource customDataSource() {
+      return new HikariDataSource();
+  }
+  ```
+
+#### **4. Modify Auto-Configured Properties**
+- You can modify the behavior of auto-configured beans using `application.properties`:
+  ```properties
+  spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+  spring.datasource.username=root
+  spring.datasource.password=root
+  ```
+
+#### **5. Implement a Custom Auto-Configuration**
+- You can create your own auto-configuration by defining a class annotated with `@Configuration` and `@ConditionalOnClass`:
+  ```java
+  @Configuration
+  @ConditionalOnClass(MyService.class)
+  public class MyServiceAutoConfiguration {
+      @Bean
+      public MyService myService() {
+          return new MyService();
+      }
+  }
+  ```
+- Register it in `META-INF/spring.factories`:
+  ```
+  org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.example.config.MyServiceAutoConfiguration
+  ```
+
+---
+
+### **Summary**
+✔ **Spring Boot Auto-Configuration** works by scanning dependencies, checking conditions, and registering beans automatically.  
+✔ You can **override auto-configuration** by:
+   - Defining your own beans  
+   - Excluding specific auto-configurations  
+   - Modifying properties  
+   - Creating custom auto-configuration  
+
+Would you like a deeper dive into any of these points? 🚀
