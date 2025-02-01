@@ -2257,4 +2257,495 @@ You can override Spring Boot’s auto-configuration in multiple ways:
    - Modifying properties  
    - Creating custom auto-configuration  
 
-Would you like a deeper dive into any of these points? 🚀
+---
+
+### **How Does Spring Boot Manage Application Properties Across Different Environments?**  
+
+Spring Boot provides multiple ways to manage **configuration properties** for different environments (e.g., **dev, test, prod**). These configurations allow developers to **define environment-specific settings**, such as database credentials, API keys, or logging levels, without hardcoding them into the application.
+
+---
+
+## **1. Using `application.properties` or `application.yml` Files**
+Spring Boot **automatically loads** configuration properties from:  
+- `src/main/resources/application.properties`
+- `src/main/resources/application.yml`
+
+For **environment-specific configurations**, use the following files:  
+```
+application-dev.properties
+application-test.properties
+application-prod.properties
+```
+Example (`application-dev.properties`):  
+```properties
+server.port=8081
+spring.datasource.url=jdbc:mysql://localhost:3306/devdb
+spring.datasource.username=dev_user
+spring.datasource.password=dev_pass
+```
+Example (`application-prod.properties`):  
+```properties
+server.port=9090
+spring.datasource.url=jdbc:mysql://prod-db-server:3306/proddb
+spring.datasource.username=prod_user
+spring.datasource.password=prod_pass
+```
+### **How to Activate an Environment?**
+1. **Using Command Line Argument:**
+   ```shell
+   java -jar myapp.jar --spring.profiles.active=prod
+   ```
+2. **Using Environment Variables:**
+   ```shell
+   export SPRING_PROFILES_ACTIVE=prod
+   ```
+3. **Using `application.properties`:**
+   ```properties
+   spring.profiles.active=prod
+   ```
+
+---
+
+## **2. Using `@Profile` Annotation (Java-Based Configuration)**
+Spring Boot allows defining **Java-based configurations** per environment using the `@Profile` annotation.
+
+Example:
+```java
+@Configuration
+@Profile("dev")
+public class DevConfig {
+    @Bean
+    public DataSource devDataSource() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:mysql://localhost:3306/devdb");
+        ds.setUsername("dev_user");
+        ds.setPassword("dev_pass");
+        return ds;
+    }
+}
+```
+
+```java
+@Configuration
+@Profile("prod")
+public class ProdConfig {
+    @Bean
+    public DataSource prodDataSource() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:mysql://prod-db-server:3306/proddb");
+        ds.setUsername("prod_user");
+        ds.setPassword("prod_pass");
+        return ds;
+    }
+}
+```
+When `spring.profiles.active=prod` is set, Spring Boot will use `ProdConfig` instead of `DevConfig`.
+
+---
+
+## **3. Using `@Value` to Read Properties**
+Spring Boot allows you to inject values directly from `application.properties` using `@Value`.
+
+Example:
+```java
+@Value("${server.port}")
+private int port;
+```
+
+You can also provide **default values**:
+```java
+@Value("${app.timeout:5000}") // Default is 5000 if not specified in properties
+private int timeout;
+```
+
+---
+
+## **4. Using `@ConfigurationProperties` for Grouped Configurations**
+If you have multiple related properties, you can group them using `@ConfigurationProperties`.
+
+### **Example in `application.yml`:**
+```yaml
+app:
+  name: MyApplication
+  security:
+    enabled: true
+    key: secret-key
+```
+
+### **Java Class for Configuration Binding:**
+```java
+@Component
+@ConfigurationProperties(prefix = "app")
+public class AppConfig {
+    private String name;
+    private Security security;
+
+    public static class Security {
+        private boolean enabled;
+        private String key;
+
+        // Getters and Setters
+    }
+
+    // Getters and Setters
+}
+```
+This avoids using `@Value` multiple times and ensures **better readability and maintainability**.
+
+---
+
+## **5. Externalized Configuration: Using Environment Variables and System Properties**
+Spring Boot supports **externalized configurations**, meaning properties can be loaded from:
+
+### **1️⃣ Environment Variables**
+Example:
+```shell
+export SERVER_PORT=8085
+export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/customdb
+```
+Spring Boot will automatically **override** values from `application.properties` with environment variables.
+
+### **2️⃣ System Properties**
+You can pass properties while running the application:
+```shell
+java -Dserver.port=9091 -jar myapp.jar
+```
+
+---
+
+## **6. Using `.env` Files (For Docker & Cloud Environments)**
+If you are running a Spring Boot application inside a **Docker container**, you can use an **`.env` file**.
+
+Example (`.env` file):
+```
+SPRING_PROFILES_ACTIVE=prod
+DATABASE_URL=jdbc:mysql://mysql:3306/mydb
+```
+
+Docker Compose Example:
+```yaml
+version: '3'
+services:
+  app:
+    image: my-spring-boot-app
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:mysql://mysql:3306/mydb
+```
+
+---
+
+## **7. Using Spring Cloud Config (For Distributed Systems)**
+For **microservices**, a centralized configuration service like **Spring Cloud Config** is recommended.
+
+### **How It Works?**
+- Spring Cloud Config Server stores configurations in a **Git repository**.
+- Microservices fetch configuration based on their `spring.profiles.active`.
+
+### **Example of Config File Stored in Git (`myapp-prod.yml`):**
+```yaml
+server:
+  port: 9090
+spring:
+  datasource:
+    url: jdbc:mysql://prod-db-server:3306/proddb
+    username: prod_user
+    password: prod_pass
+```
+
+### **How to Fetch Configurations?**
+1. Start Spring Cloud Config Server.
+2. Client Applications (Spring Boot Services) fetch properties dynamically using:
+   ```properties
+   spring.config.import=optional:configserver:http://config-server-url
+   ```
+
+---
+
+## **8. Order of Property Resolution**
+Spring Boot resolves properties in the following order (from **highest priority** to **lowest**):
+
+1. **Command-line arguments** (`--server.port=9090`)
+2. **System properties** (`-Dserver.port=9090`)
+3. **Environment variables** (`export SERVER_PORT=9090`)
+4. **Spring Cloud Config properties** (if using Spring Cloud)
+5. **`application-{profile}.properties`** (e.g., `application-prod.properties`)
+6. **`application.properties`** (or `application.yml`)
+7. **Defaults provided in the code (`@Value` with default values)**
+
+---
+
+## **Summary**
+✔ Spring Boot provides multiple ways to manage configurations for different environments:  
+- `application-{profile}.properties`
+- `@Profile` annotation
+- `@Value` and `@ConfigurationProperties`
+- External configurations via **Environment Variables, System Properties, `.env` files**
+- **Spring Cloud Config** for distributed systems  
+
+✔ **Profile Activation** can be done via:  
+- `spring.profiles.active`  
+- Command-line arguments (`--spring.profiles.active=prod`)  
+- Environment variables (`export SPRING_PROFILES_ACTIVE=prod`)  
+
+---
+
+### **Real-World Configuration Setup for Different Environments in Spring Boot**
+
+Let's consider a real-world Spring Boot application deployed across **three environments**:  
+
+- **Development (`dev`)** → Local machine  
+- **Testing (`test`)** → QA/Staging  
+- **Production (`prod`)** → Live system  
+
+We'll configure **database connections, logging, API keys, and security settings** differently for each environment.
+
+---
+
+## **1️⃣ Folder Structure**
+```
+src/main/resources/
+ ├── application.properties
+ ├── application-dev.properties
+ ├── application-test.properties
+ ├── application-prod.properties
+ ├── logback-spring.xml
+ ├── config/
+ │     ├── DatabaseConfig.java
+ │     ├── SecurityConfig.java
+```
+
+---
+
+## **2️⃣ `application.properties` (Common Properties)**
+```properties
+spring.application.name=MyApp
+spring.profiles.active=dev  # Default Profile (Override in Deployment)
+```
+
+---
+
+## **3️⃣ Environment-Specific Configuration Files**
+
+### **Development (`application-dev.properties`)**
+```properties
+server.port=8080
+spring.datasource.url=jdbc:mysql://localhost:3306/devdb
+spring.datasource.username=dev_user
+spring.datasource.password=dev_pass
+
+logging.level.root=DEBUG
+app.api.key=dev-api-key-1234
+```
+
+### **Testing (`application-test.properties`)**
+```properties
+server.port=8081
+spring.datasource.url=jdbc:mysql://test-db-server:3306/testdb
+spring.datasource.username=test_user
+spring.datasource.password=test_pass
+
+logging.level.root=INFO
+app.api.key=test-api-key-5678
+```
+
+### **Production (`application-prod.properties`)**
+```properties
+server.port=9090
+spring.datasource.url=jdbc:mysql://prod-db-server:3306/proddb
+spring.datasource.username=prod_user
+spring.datasource.password=prod_pass
+
+logging.level.root=WARN
+app.api.key=prod-api-key-9999
+
+# Disable debugging in production
+management.endpoint.health.show-details=never
+management.endpoint.info.enabled=false
+```
+
+---
+
+## **4️⃣ Activating Profiles**
+
+You can activate the correct profile using **three different ways**:
+
+### **Method 1: Using Command Line (Recommended for Deployment)**
+```shell
+java -jar myapp.jar --spring.profiles.active=prod
+```
+
+### **Method 2: Using Environment Variable**
+```shell
+export SPRING_PROFILES_ACTIVE=prod
+```
+
+### **Method 3: Using System Property (While Running Locally)**
+```shell
+-Dspring.profiles.active=prod
+```
+
+---
+
+## **5️⃣ Using `@Value` to Access Properties in Java**
+We can inject properties dynamically based on the active profile.
+
+```java
+@Value("${app.api.key}")
+private String apiKey;
+```
+
+Example:
+```java
+@RestController
+@RequestMapping("/config")
+public class ConfigController {
+    @Value("${app.api.key}")
+    private String apiKey;
+
+    @GetMapping("/api-key")
+    public String getApiKey() {
+        return "Active API Key: " + apiKey;
+    }
+}
+```
+
+**Output (when `spring.profiles.active=prod`)**  
+```
+Active API Key: prod-api-key-9999
+```
+
+---
+
+## **6️⃣ Using `@Profile` for Java-Based Configurations**
+
+We can define beans that are **only loaded for a specific profile**.
+
+### **Database Configuration Using `@Profile`**
+```java
+@Configuration
+@Profile("dev")
+public class DevDatabaseConfig {
+    @Bean
+    public DataSource devDataSource() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:mysql://localhost:3306/devdb");
+        ds.setUsername("dev_user");
+        ds.setPassword("dev_pass");
+        return ds;
+    }
+}
+```
+
+```java
+@Configuration
+@Profile("prod")
+public class ProdDatabaseConfig {
+    @Bean
+    public DataSource prodDataSource() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:mysql://prod-db-server:3306/proddb");
+        ds.setUsername("prod_user");
+        ds.setPassword("prod_pass");
+        return ds;
+    }
+}
+```
+
+When `spring.profiles.active=prod`, only `ProdDatabaseConfig` is used.
+
+---
+
+## **7️⃣ External Configuration via `.env` File for Docker**
+
+If deploying with **Docker**, use an `.env` file:
+
+**`.env`**
+```
+SPRING_PROFILES_ACTIVE=prod
+DATABASE_URL=jdbc:mysql://mysql:3306/mydb
+```
+
+Then, in `docker-compose.yml`:
+```yaml
+version: '3'
+services:
+  app:
+    image: my-spring-boot-app
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:mysql://mysql:3306/mydb
+```
+
+---
+
+## **8️⃣ Centralized Configuration with Spring Cloud Config (For Microservices)**
+If managing multiple microservices, use **Spring Cloud Config Server**.
+
+1. Store configurations in a **Git repository**:
+```
+my-config-repo/
+ ├── myapp-dev.yml
+ ├── myapp-prod.yml
+```
+
+2. **Example: `myapp-prod.yml`**
+```yaml
+server:
+  port: 9090
+spring:
+  datasource:
+    url: jdbc:mysql://prod-db-server:3306/proddb
+    username: prod_user
+    password: prod_pass
+```
+
+3. **Configure Spring Boot Microservices to Fetch Configurations**
+```properties
+spring.config.import=optional:configserver:http://config-server-url
+```
+
+---
+
+## **9️⃣ Logging Configuration (`logback-spring.xml`)**
+We can set different log levels for each environment.
+
+```xml
+<configuration>
+    <springProfile name="dev">
+        <logger name="com.myapp" level="DEBUG"/>
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder><pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern></encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.myapp" level="WARN"/>
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>logs/myapp.log</file>
+            <encoder><pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern></encoder>
+        </appender>
+    </springProfile>
+</configuration>
+```
+
+---
+
+## **🔹 Final Summary**
+| Feature                    | Dev | Test | Prod |
+|----------------------------|-----|------|------|
+| **Port**                   | 8080 | 8081 | 9090 |
+| **Database URL**           | localhost | test-db-server | prod-db-server |
+| **Logging Level**          | DEBUG | INFO | WARN |
+| **API Key**                | dev-api-key | test-api-key | prod-api-key |
+
+**✔ Best Practices:**  
+✅ Use `application-{profile}.properties` for environment-specific settings  
+✅ Use `@Profile` for Java-based conditional configurations  
+✅ Use **environment variables** for production secrets (**DO NOT** hardcode passwords)  
+✅ Use **Spring Cloud Config** for microservices  
+✅ Use **Docker `.env` files** for containerized deployments  
+
+---
+
+🚀 Would you like a **working GitHub repository** with a sample project for this setup?
