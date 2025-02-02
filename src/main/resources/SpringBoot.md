@@ -4520,4 +4520,227 @@ public class RestExceptionHandler {
 ### **Conclusion**
 Spring's **stereotype annotations** simplify component detection, registration, and dependency injection. These annotations help structure the application by separating concerns into **Service**, **Repository**, and **Controller** layers, making the application more maintainable.
 
-Would you like a **detailed example using all these annotations** in a Spring Boot project? 🚀
+---
+
+### **List of Annotations in Spring and Spring Boot**
+Spring and Spring Boot provide a wide range of annotations to support **dependency injection, configuration, bean management, AOP, MVC, security, transactions, and more**.
+
+---
+
+## **1. Core Spring Annotations**
+These annotations are fundamental to the Spring Framework and are used for dependency injection, component scanning, and bean configuration.
+
+| Annotation                 | Purpose |
+|---------------------------|---------|
+| `@Component`              | Generic stereotype annotation for Spring-managed components |
+| `@Service`                | Specialized `@Component` for service layer |
+| `@Repository`             | Specialized `@Component` for data access layer, enables exception translation |
+| `@Controller`             | Specialized `@Component` for Spring MVC controllers |
+| `@RestController`         | Combination of `@Controller` + `@ResponseBody`, used for REST APIs |
+| `@ComponentScan`          | Enables component scanning for Spring beans |
+| `@Autowired`              | Injects a bean automatically |
+| `@Qualifier`              | Specifies which bean to inject when multiple beans exist |
+| `@Primary`                | Marks a bean as the primary choice when multiple candidates exist |
+| `@Value`                  | Injects values from properties files or environment variables |
+| `@Scope`                  | Defines bean scope (e.g., `singleton`, `prototype`) |
+
+✅ **Example of Dependency Injection:**
+```java
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Service
+public class MyService {
+    @Autowired
+    private MyRepository repository;
+}
+```
+
+---
+
+## **2. Spring Configuration Annotations**
+These annotations are used to define and configure beans in Spring.
+
+| Annotation             | Purpose |
+|-----------------------|---------|
+| `@Configuration`      | Marks a class as a configuration class |
+| `@Bean`              | Declares a Spring-managed bean |
+| `@Import`            | Imports additional configuration classes |
+| `@ImportResource`    | Imports XML configuration files |
+| `@PropertySource`    | Loads properties from external `.properties` files |
+| `@EnableAutoConfiguration` | Enables automatic configuration in Spring Boot |
+| `@SpringBootApplication` | Combines `@Configuration`, `@EnableAutoConfiguration`, and `@ComponentScan` |
+
+✅ **Example of Java-based Configuration:**
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+```
+
+---
+
+## **3. Spring Boot Annotations**
+Spring Boot provides additional annotations for auto-configuration and simplifying development.
+
+| Annotation                     | Purpose |
+|--------------------------------|---------|
+| `@SpringBootApplication`      | Main annotation for a Spring Boot application |
+| `@EnableAutoConfiguration`    | Enables automatic configuration based on dependencies |
+| `@SpringBootTest`             | Used for testing Spring Boot applications |
+| `@ConfigurationProperties`    | Binds external configuration properties to a Java class |
+| `@EnableScheduling`           | Enables scheduling tasks using `@Scheduled` |
+| `@EnableAsync`                | Enables asynchronous method execution |
+| `@EnableCaching`              | Enables caching in Spring Boot |
+| `@SpringBootConfiguration`    | Alternative to `@Configuration` in Spring Boot |
+
+✅ **Example of Externalized Configuration:**
+```java
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "app")
+public class AppConfig {
+    private String name;
+    private int version;
+
+    // Getters and Setters
+}
+```
+**`application.properties`**
+```properties
+app.name=MyApplication
+app.version=1
+```
+
+---
+
+## **4. Spring MVC and REST Annotations**
+These annotations help in building web applications and REST APIs.
+
+| Annotation            | Purpose |
+|----------------------|---------|
+| `@RequestMapping`   | Maps HTTP requests to controller methods |
+| `@GetMapping`       | Maps GET requests |
+| `@PostMapping`      | Maps POST requests |
+| `@PutMapping`       | Maps PUT requests |
+| `@DeleteMapping`    | Maps DELETE requests |
+| `@PatchMapping`     | Maps PATCH requests |
+| `@RequestParam`     | Extracts request parameters from the URL |
+| `@PathVariable`     | Extracts variables from the URL path |
+| `@RequestBody`      | Binds request body to a Java object |
+| `@ResponseBody`     | Serializes response to JSON or XML |
+| `@RestControllerAdvice` | Global exception handling for REST controllers |
+
+✅ **Example of a REST API:**
+```java
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable int id) {
+        return "User ID: " + id;
+    }
+}
+```
+
+---
+
+## **5. Spring AOP (Aspect-Oriented Programming) Annotations**
+These annotations are used for cross-cutting concerns like logging, security, and transactions.
+
+| Annotation            | Purpose |
+|----------------------|---------|
+| `@Aspect`          | Defines an aspect class |
+| `@Before`          | Executes advice before a method execution |
+| `@After`           | Executes advice after a method execution |
+| `@AfterReturning`  | Executes advice after a method returns successfully |
+| `@AfterThrowing`   | Executes advice after a method throws an exception |
+| `@Around`          | Wraps around a method execution |
+
+✅ **Example of Logging Aspect:**
+```java
+import org.aspectj.lang.annotation.*;
+
+@Aspect
+public class LoggingAspect {
+    @Before("execution(* com.example.service.*.*(..))")
+    public void logBefore() {
+        System.out.println("Executing method...");
+    }
+}
+```
+
+---
+
+## **6. Spring Security Annotations**
+Spring Security provides annotations for authentication and authorization.
+
+| Annotation             | Purpose |
+|-----------------------|---------|
+| `@EnableWebSecurity`  | Enables Spring Security in the application |
+| `@EnableGlobalMethodSecurity` | Enables method-level security |
+| `@PreAuthorize`       | Restricts access to a method based on roles |
+| `@PostAuthorize`      | Evaluates access after a method executes |
+| `@Secured`           | Specifies roles for method access |
+| `@RolesAllowed`      | Defines allowed roles |
+
+✅ **Example of Securing an API:**
+```java
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/dashboard")
+    public String getAdminDashboard() {
+        return "Admin Dashboard";
+    }
+}
+```
+
+---
+
+## **7. Spring Transaction Management Annotations**
+These annotations help in managing database transactions.
+
+| Annotation        | Purpose |
+|------------------|---------|
+| `@Transactional` | Marks a method or class as transactional |
+| `@EnableTransactionManagement` | Enables annotation-driven transaction management |
+
+✅ **Example of Transaction Management:**
+```java
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PaymentService {
+
+    @Transactional
+    public void processPayment() {
+        // Database operations
+    }
+}
+```
+
+---
+
+## **Conclusion**
+Spring and Spring Boot provide powerful annotations for **dependency injection, configuration, web development, AOP, security, transactions, and more**. These annotations simplify application development by reducing boilerplate code.
+
+Would you like detailed explanations or working examples for any specific annotations? 🚀
