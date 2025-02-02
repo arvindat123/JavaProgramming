@@ -3815,4 +3815,87 @@ mvn -Pnative package
 
 ---
 
+### **Evaluation Report, Positive Matches, and Negative Matches in Spring Boot**  
+
+In **Spring Boot**, when the application starts, it performs **Auto-Configuration** to configure beans automatically based on the classpath, environment settings, and property files. As part of this process, Spring Boot generates an **evaluation report** that helps developers understand which configurations were applied and why.  
+
+---
+
+## **1. What is an Evaluation Report in Spring Boot?**  
+Spring Boot provides a detailed **Auto-Configuration Report** when you enable **debug logging**. This report helps in understanding:  
+- Which configurations were successfully applied (**Positive Matches**).  
+- Which configurations were skipped (**Negative Matches**) and why.  
+
+To enable this report, you can add the following to your `application.properties` file:  
+```properties
+debug=true
+```
+Or set the logging level in `application.yml`:  
+```yaml
+logging:
+  level:
+    org.springframework.boot.autoconfigure: DEBUG
+```
+After enabling this, when the application starts, Spring Boot will print an **evaluation report** in the logs, showing positive and negative matches.
+
+---
+
+## **2. What are Positive Matches in Spring Boot?**  
+A **positive match** occurs when a particular auto-configuration condition is met, and Spring Boot applies the configuration.  
+
+### **Example of a Positive Match**
+When using Spring Boot with a database, if **H2 Database** is found in the classpath, Spring Boot will **automatically configure an in-memory database**.  
+
+#### **Log Output (Example)**
+```
+Positive matches:
+-----------------
+   DataSourceAutoConfiguration matched:
+      - @ConditionalOnClass found required classes 'javax.sql.DataSource'
+      - @ConditionalOnMissingBean (types: javax.sql.DataSource) did not find any beans
+```
+👉 This means Spring Boot **successfully configured** a `DataSource` because the required class `javax.sql.DataSource` was found.
+
+---
+
+## **3. What are Negative Matches in Spring Boot?**  
+A **negative match** occurs when an auto-configuration condition is **not met**, so Spring Boot **skips** that configuration.  
+
+### **Example of a Negative Match**
+If the application does not have **JPA dependencies**, then the auto-configuration for `JpaRepositoriesAutoConfiguration` will not be applied.
+
+#### **Log Output (Example)**
+```
+Negative matches:
+-----------------
+   JpaRepositoriesAutoConfiguration:
+      - @ConditionalOnClass did not find required class 'javax.persistence.EntityManager'
+```
+👉 This means Spring Boot **did not configure JPA repositories** because `EntityManager` was missing from the classpath.
+
+---
+
+## **4. How to Use This Information?**
+1. **Debugging Auto-Configuration Issues**  
+   - If a feature is not working, check the **negative matches** to see if an expected configuration was skipped.  
+   - Example: If `JpaRepositoriesAutoConfiguration` is skipped, you might need to add `spring-boot-starter-data-jpa`.  
+
+2. **Performance Optimization**  
+   - If you see an **unwanted auto-configuration applied**, exclude it using:  
+     ```java
+     @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+     ```
+
+3. **Customizing Auto-Configuration**  
+   - You can modify conditions using **Spring Profiles**, `@ConditionalOnProperty`, or `@ConditionalOnClass` annotations.
+
+---
+
+### **Summary**
+| Term | Meaning |
+|------|---------|
+| **Evaluation Report** | The report that shows which auto-configurations were applied or skipped. |
+| **Positive Match** | A configuration was applied because all conditions were met. |
+| **Negative Match** | A configuration was skipped because the required conditions were not met. |
+
 
