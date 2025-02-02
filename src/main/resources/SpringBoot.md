@@ -4128,3 +4128,185 @@ Spring Boot can read configurations from:
 ## **Conclusion**
 Spring Boot provides a flexible way to customize default configurations using properties files, environment variables, Java code, profiles, and external sources. You can choose the best approach based on your application's needs.
 
+---
+
+### **Stereotype Annotations in Spring Framework**
+Stereotype annotations in Spring Framework are used to define and register Spring-managed beans automatically in the application context. These annotations provide metadata that helps Spring identify which classes should be instantiated, injected, and managed as beans.
+
+---
+
+## **Key Stereotype Annotations in Spring**
+Spring provides four main stereotype annotations:
+
+1. **`@Component`** – Generic component for any Spring-managed bean.
+2. **`@Service`** – Specialized for service layer classes.
+3. **`@Repository`** – Specialized for data access (DAO) layer.
+4. **`@Controller`** – Specialized for Spring MVC controllers.
+
+Each of these annotations is a specialization of `@Component` and is detected automatically by **component scanning**.
+
+---
+
+## **1. `@Component` – Generic Spring Bean**
+The `@Component` annotation is used to mark a class as a Spring-managed component.
+
+### **Example**
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyComponent {
+    public void greet() {
+        System.out.println("Hello from MyComponent!");
+    }
+}
+```
+
+---
+
+## **2. `@Service` – Service Layer**
+The `@Service` annotation is a specialized form of `@Component` used for business logic and service classes.
+
+### **Example**
+```java
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+    public String process() {
+        return "Processing business logic in MyService";
+    }
+}
+```
+
+---
+
+## **3. `@Repository` – Data Access Layer (DAO)**
+The `@Repository` annotation is used for database-related operations. It provides additional benefits, such as automatic translation of database exceptions.
+
+### **Example**
+```java
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class MyRepository {
+    public String fetchData() {
+        return "Fetching data from database";
+    }
+}
+```
+
+---
+
+## **4. `@Controller` – Spring MVC Controller**
+The `@Controller` annotation is used in Spring MVC to define controller classes that handle web requests.
+
+### **Example**
+```java
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class MyController {
+
+    @GetMapping("/hello")
+    @ResponseBody
+    public String sayHello() {
+        return "Hello from MyController!";
+    }
+}
+```
+
+---
+
+## **How Does Spring Detect These Annotations?**
+Spring automatically detects and registers beans annotated with `@Component`, `@Service`, `@Repository`, and `@Controller` **if component scanning is enabled**.
+
+### **Enable Component Scanning**
+Spring Boot automatically enables component scanning in the `@SpringBootApplication` class.
+
+```java
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MyApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApp.class, args);
+    }
+}
+```
+
+If you are using a non-Spring Boot project, explicitly enable component scanning:
+```java
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages = "com.example")  // Scan specified package
+public class AppConfig {
+}
+```
+
+---
+
+## **Example: Using All Stereotype Annotations Together**
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+
+@Controller
+public class UserController {
+    @Autowired
+    private UserService userService;
+
+    public void displayUser() {
+        System.out.println(userService.getUser());
+    }
+}
+
+@Service
+class UserService {
+    @Autowired
+    private UserRepository userRepository;
+
+    public String getUser() {
+        return userRepository.fetchUser();
+    }
+}
+
+@Repository
+class UserRepository {
+    public String fetchUser() {
+        return "User fetched from database";
+    }
+}
+
+@Component
+class UtilityComponent {
+    public String getUtility() {
+        return "Utility Component Working";
+    }
+}
+```
+
+### **Spring will automatically register and inject these beans.**
+
+---
+
+## **Key Benefits of Stereotype Annotations**
+1. **Automatic Bean Registration** – No need to manually define beans in configuration files.
+2. **Clear Separation of Layers** – Helps in maintaining clean architecture (Service, Repository, Controller).
+3. **Component Scanning Support** – Beans are detected automatically with `@ComponentScan`.
+4. **Better Readability and Maintainability** – Improves code organization and reduces boilerplate.
+
+---
+
+## **Conclusion**
+Spring stereotype annotations (`@Component`, `@Service`, `@Repository`, and `@Controller`) help define and manage Spring beans efficiently. These annotations enable Spring to automatically detect, instantiate, and inject beans using **component scanning**, reducing manual configurations.
+
+Would you like a more in-depth example with a working Spring Boot project? 🚀
