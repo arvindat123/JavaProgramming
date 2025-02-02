@@ -3899,3 +3899,232 @@ Negative matches:
 | **Negative Match** | A configuration was skipped because the required conditions were not met. |
 
 
+---
+
+Spring Boot provides multiple ways to customize its default configuration, allowing you to tailor your application based on your requirements. Here are some key approaches to customizing default configurations:
+
+---
+
+## 1. **Using `application.properties` or `application.yml`**
+Spring Boot reads configuration properties from `application.properties` or `application.yml`, which can be used to override default settings.
+
+Example (`application.properties`):
+```properties
+server.port=8081
+spring.application.name=my-app
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=secret
+```
+
+Example (`application.yml`):
+```yaml
+server:
+  port: 8081
+spring:
+  application:
+    name: my-app
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: secret
+```
+
+---
+
+## 2. **Using Command-Line Arguments**
+You can override default properties at runtime by passing command-line arguments.
+
+Example:
+```sh
+java -jar myapp.jar --server.port=9090 --spring.application.name=custom-app
+```
+
+---
+
+## 3. **Using Environment Variables**
+Spring Boot allows configuration via system environment variables.
+
+Example (Linux/macOS):
+```sh
+export SERVER_PORT=9090
+export SPRING_APPLICATION_NAME=my-custom-app
+```
+
+Example (Windows PowerShell):
+```powershell
+$env:SERVER_PORT="9090"
+$env:SPRING_APPLICATION_NAME="my-custom-app"
+```
+
+---
+
+## 4. **Using `@Value` Annotation in Java Code**
+You can inject properties into your Spring beans using `@Value`.
+
+Example:
+```java
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyBean {
+
+    @Value("${server.port}")
+    private int serverPort;
+
+    @Value("${spring.application.name}")
+    private String appName;
+
+    public void printConfig() {
+        System.out.println("App Name: " + appName);
+        System.out.println("Server Port: " + serverPort);
+    }
+}
+```
+
+---
+
+## 5. **Using `@ConfigurationProperties`**
+For structured configuration, use `@ConfigurationProperties` to map properties to a Java class.
+
+Example (`application.yml`):
+```yaml
+app:
+  name: my-app
+  version: 1.0.0
+  featureEnabled: true
+```
+
+Java class:
+```java
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "app")
+public class AppConfig {
+    private String name;
+    private String version;
+    private boolean featureEnabled;
+
+    // Getters and Setters
+}
+```
+
+Enable in `main` class:
+```java
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+@EnableConfigurationProperties(AppConfig.class)
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+```
+
+---
+
+## 6. **Using `@Bean` in `@Configuration` Classes**
+Spring Boot allows overriding default beans by defining custom beans.
+
+Example:
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class CustomConfig {
+
+    @Bean
+    public MyService myService() {
+        return new MyCustomServiceImpl();
+    }
+}
+```
+
+---
+
+## 7. **Using Profiles for Environment-Specific Configurations**
+Spring Boot supports multiple profiles for different environments.
+
+Example:
+- `application-dev.properties`
+- `application-prod.properties`
+
+Activate a profile:
+```sh
+java -jar myapp.jar --spring.profiles.active=dev
+```
+
+OR in `application.properties`:
+```properties
+spring.profiles.active=dev
+```
+
+---
+
+## 8. **Overriding Auto-Configuration with `@ConditionalOnMissingBean`**
+Spring Boot’s auto-configuration can be overridden by providing custom beans.
+
+Example:
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+
+@Configuration
+public class MyConfig {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MyService myService() {
+        return new DefaultMyService();
+    }
+}
+```
+
+---
+
+## 9. **Modifying Embedded Tomcat Configuration**
+You can modify embedded Tomcat properties in `application.properties`:
+
+```properties
+server.port=9090
+server.tomcat.max-threads=200
+server.tomcat.accept-count=100
+```
+
+Or in Java:
+```java
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomTomcatConfig implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
+
+    @Override
+    public void customize(ConfigurableWebServerFactory factory) {
+        factory.setPort(9090);
+    }
+}
+```
+
+---
+
+## 10. **Using Externalized Configuration Sources**
+Spring Boot can read configurations from:
+- External `.properties` or `.yml` files
+- Database properties (`spring.datasource`)
+- Cloud Config Server (`spring.cloud.config.uri`)
+
+---
+
+## **Conclusion**
+Spring Boot provides a flexible way to customize default configurations using properties files, environment variables, Java code, profiles, and external sources. You can choose the best approach based on your application's needs.
+
