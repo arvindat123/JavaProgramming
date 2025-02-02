@@ -4309,4 +4309,215 @@ class UtilityComponent {
 ## **Conclusion**
 Spring stereotype annotations (`@Component`, `@Service`, `@Repository`, and `@Controller`) help define and manage Spring beans efficiently. These annotations enable Spring to automatically detect, instantiate, and inject beans using **component scanning**, reducing manual configurations.
 
-Would you like a more in-depth example with a working Spring Boot project? 🚀
+---
+
+### **List of Stereotype Annotations in Spring**  
+
+Spring provides several **stereotype annotations** to indicate that a class is a Spring-managed component. These annotations help in automatic bean detection and dependency injection.  
+
+---
+
+### **1. `@Component` (Generic Spring Bean)**
+- A generic annotation used to define any Spring-managed component.
+- It is the parent annotation of `@Service`, `@Repository`, and `@Controller`.
+
+✅ **Example:**
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyComponent {
+    public void doSomething() {
+        System.out.println("Component Bean is working");
+    }
+}
+```
+
+---
+
+### **2. `@Service` (Business Logic Layer)**
+- Specialized annotation for service layer classes.
+- Used to indicate business logic-related components.
+
+✅ **Example:**
+```java
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+    public String process() {
+        return "Processing data in MyService";
+    }
+}
+```
+
+---
+
+### **3. `@Repository` (Data Access Layer)**
+- Specialized annotation for DAO (Data Access Object) or repository layer.
+- Enables automatic exception translation for database operations.
+
+✅ **Example:**
+```java
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class MyRepository {
+    public String fetchData() {
+        return "Data fetched from database";
+    }
+}
+```
+
+---
+
+### **4. `@Controller` (Web Layer in Spring MVC)**
+- Specialized annotation for Spring MVC controllers.
+- It is used to handle HTTP requests in a web application.
+
+✅ **Example:**
+```java
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class MyController {
+    
+    @GetMapping("/hello")
+    @ResponseBody
+    public String sayHello() {
+        return "Hello from MyController!";
+    }
+}
+```
+
+---
+
+### **5. `@RestController` (Spring MVC REST Controller)**
+- A combination of `@Controller` and `@ResponseBody`.
+- Used for RESTful web services, where the response is directly returned as JSON.
+
+✅ **Example:**
+```java
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MyRestController {
+    
+    @GetMapping("/api/data")
+    public String getData() {
+        return "Data from REST API";
+    }
+}
+```
+
+**🔹 Difference between `@Controller` and `@RestController`**  
+- `@Controller` requires `@ResponseBody` to return response data.
+- `@RestController` automatically applies `@ResponseBody` to all handler methods.
+
+---
+
+### **6. `@Indexed` (For Faster Component Scanning)**
+- Introduced in Spring 5.
+- Improves component scanning performance by indexing annotated classes.
+
+✅ **Example:**
+```java
+import org.springframework.stereotype.Component;
+import org.springframework.core.annotation.Indexed;
+
+@Component
+@Indexed
+public class IndexedComponent {
+}
+```
+
+**🔹 Benefit:** Improves startup time for large applications.
+
+---
+
+### **7. `@Configuration` (Configuration Class)**
+- Indicates that a class declares one or more `@Bean` methods.
+- Used for Java-based configuration.
+
+✅ **Example:**
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+    
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+```
+
+---
+
+### **8. `@ControllerAdvice` (Global Exception Handling for Spring MVC)**
+- Provides centralized exception handling across multiple controllers.
+
+✅ **Example:**
+```java
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.ResponseEntity;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        return ResponseEntity.status(500).body("Internal Server Error: " + e.getMessage());
+    }
+}
+```
+
+---
+
+### **9. `@RestControllerAdvice` (Global Exception Handling for REST Controllers)**
+- A combination of `@ControllerAdvice` and `@ResponseBody`.
+- Used for handling exceptions in REST APIs.
+
+✅ **Example:**
+```java
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.ResponseEntity;
+
+@RestControllerAdvice
+public class RestExceptionHandler {
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+        return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+    }
+}
+```
+
+---
+
+### **Summary Table of Spring Stereotype Annotations**
+| Annotation              | Purpose |
+|-------------------------|---------|
+| `@Component`           | Generic component, superclass for `@Service`, `@Repository`, `@Controller` |
+| `@Service`             | Defines service layer classes (business logic) |
+| `@Repository`          | Defines DAO (data access) components, enables exception translation |
+| `@Controller`          | Defines Spring MVC controller for handling web requests |
+| `@RestController`      | Defines RESTful controller (combination of `@Controller` + `@ResponseBody`) |
+| `@Indexed`             | Optimizes component scanning (Spring 5) |
+| `@Configuration`       | Defines Java-based configuration class |
+| `@ControllerAdvice`    | Global exception handling for controllers |
+| `@RestControllerAdvice` | Global exception handling for REST APIs |
+
+---
+
+### **Conclusion**
+Spring's **stereotype annotations** simplify component detection, registration, and dependency injection. These annotations help structure the application by separating concerns into **Service**, **Repository**, and **Controller** layers, making the application more maintainable.
+
+Would you like a **detailed example using all these annotations** in a Spring Boot project? 🚀
