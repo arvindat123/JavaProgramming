@@ -4743,4 +4743,183 @@ public class PaymentService {
 ## **Conclusion**
 Spring and Spring Boot provide powerful annotations for **dependency injection, configuration, web development, AOP, security, transactions, and more**. These annotations simplify application development by reducing boilerplate code.
 
-Would you like detailed explanations or working examples for any specific annotations? 🚀
+---
+
+# **Dependency Injection in Spring**
+### **What is Dependency Injection (DI)?**
+Dependency Injection (DI) is a **design pattern** used in Spring to manage object dependencies automatically. Instead of creating objects manually within a class, **Spring injects** the required dependencies at runtime, making the application **loosely coupled, maintainable, and testable**.
+
+---
+
+## **Types of Dependency Injection in Spring**
+1. **Constructor Injection** – Dependencies are injected through the class constructor.
+2. **Setter Injection** – Dependencies are injected via setter methods.
+3. **Field Injection** – Dependencies are injected directly into fields using `@Autowired`.
+
+---
+
+## **1. Constructor Injection Example**
+This approach injects dependencies via the constructor.
+
+### **Example**
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    @Autowired  // Constructor Injection
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is running...");
+    }
+}
+```
+
+✅ **Advantages of Constructor Injection**  
+- Ensures dependencies are initialized when the object is created.
+- Helps with **immutability** (no accidental modifications of dependencies).
+
+---
+
+## **2. Setter Injection Example**
+This approach injects dependencies via setter methods.
+
+### **Example**
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private Engine engine;
+
+    @Autowired  // Setter Injection
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is running...");
+    }
+}
+```
+
+✅ **Advantages of Setter Injection**  
+- Allows optional dependencies.
+- More flexible (dependency can be changed at runtime).
+
+---
+
+## **3. Field Injection Example**
+This approach injects dependencies directly into fields.
+
+### **Example**
+```java
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    @Autowired  // Field Injection
+    private Engine engine;
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is running...");
+    }
+}
+```
+
+✅ **Disadvantages of Field Injection**  
+- Makes unit testing harder (mocking dependencies is more difficult).
+- Hides dependencies (less clarity on what the class depends on).
+
+---
+
+## **How Spring Injects Dependencies?**
+1. Spring scans the application for components using `@ComponentScan` (enabled by `@SpringBootApplication`).
+2. It detects beans annotated with `@Component`, `@Service`, `@Repository`, or `@Controller`.
+3. It automatically injects dependencies where `@Autowired` is used.
+
+---
+
+## **Running the Application**
+### **Spring Boot Main Class**
+```java
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class SpringDiApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(SpringDiApplication.class, args);
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+### **Output**
+```
+Engine started...
+Car is running...
+```
+
+---
+
+## **Which Dependency Injection Method is Best?**
+| Injection Type      | Pros | Cons |
+|--------------------|------|------|
+| **Constructor Injection** | Best for mandatory dependencies, ensures immutability | Requires more boilerplate code |
+| **Setter Injection** | Allows optional dependencies, more flexible | Can lead to inconsistent state |
+| **Field Injection** | Less boilerplate code | Harder to test, not recommended for large projects |
+
+🔹 **Best Practice:** Use **constructor injection** for mandatory dependencies and **setter injection** for optional dependencies.
+
+---
+
+## **Conclusion**
+Dependency Injection in Spring simplifies object creation and management, making applications **loosely coupled, scalable, and testable**. Spring supports **constructor, setter, and field injection**, with **constructor injection being the preferred approach**.
+
+Would you like a detailed example with multiple dependencies and a real-world scenario? 🚀
