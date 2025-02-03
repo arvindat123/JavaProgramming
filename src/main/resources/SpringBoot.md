@@ -5515,4 +5515,121 @@ public class ServerConfig {
 
 ### **✅ Best Practice: Always Prefer `@ConfigurationProperties` for Maintainability.**
 
-Would you like an example of **dynamic configuration reloading**? 🚀
+---
+
+### **What is Bean Scope in Spring?**  
+In Spring, **bean scope** defines the lifecycle and visibility of a bean—how and when a bean is created, how long it lives, and how it is shared within the application context.  
+
+Spring provides different types of bean scopes, which determine whether a new instance of a bean is created or the same instance is reused.
+
+---
+
+### **Types of Bean Scopes in Spring**  
+
+#### **1. Singleton (Default Scope)**
+- **Definition**: A single shared instance of the bean is created and stored in the Spring container.
+- **Lifecycle**: Created once per Spring container and shared across all requests.
+- **Usage**: Used for stateless beans.
+- **Example:**
+  ```java
+  @Bean
+  @Scope("singleton") // or just omit @Scope since singleton is the default
+  public MyService myService() {
+      return new MyService();
+  }
+  ```
+- **Behavior**: Every time the bean is requested, the same instance is returned.
+
+---
+
+#### **2. Prototype**
+- **Definition**: A new instance of the bean is created each time it is requested.
+- **Lifecycle**: Created on demand and not managed after initialization.
+- **Usage**: Used for stateful beans or beans that hold temporary data.
+- **Example:**
+  ```java
+  @Bean
+  @Scope("prototype")
+  public MyService myService() {
+      return new MyService();
+  }
+  ```
+- **Behavior**: Each request for the bean creates a new instance.
+
+---
+
+#### **3. Request (Web Application Scope)**
+- **Definition**: A new instance of the bean is created for each HTTP request.
+- **Lifecycle**: Created at the start of an HTTP request and destroyed after the request is completed.
+- **Usage**: Used in web applications for request-scoped data.
+- **Example:**
+  ```java
+  @Bean
+  @Scope("request")
+  public MyService myService() {
+      return new MyService();
+  }
+  ```
+- **Behavior**: Each HTTP request gets a new bean instance.
+
+---
+
+#### **4. Session (Web Application Scope)**
+- **Definition**: A new instance of the bean is created for each HTTP session.
+- **Lifecycle**: Created at the beginning of an HTTP session and destroyed when the session ends.
+- **Usage**: Used for user session-related data.
+- **Example:**
+  ```java
+  @Bean
+  @Scope("session")
+  public MyService myService() {
+      return new MyService();
+  }
+  ```
+- **Behavior**: Same instance is shared across multiple requests within the same session.
+
+---
+
+#### **5. Application (Web Application Scope)**
+- **Definition**: A single instance of the bean is created per `ServletContext`.
+- **Lifecycle**: Created once per web application and exists as long as the application is running.
+- **Usage**: Used for shared resources across the whole application.
+- **Example:**
+  ```java
+  @Bean
+  @Scope("application")
+  public MyService myService() {
+      return new MyService();
+  }
+  ```
+- **Behavior**: Single instance shared across the entire application.
+
+---
+
+#### **6. WebSocket (Web Application Scope)**
+- **Definition**: A new instance of the bean is created per WebSocket session.
+- **Lifecycle**: Created when a WebSocket session is established and destroyed when it ends.
+- **Usage**: Used in WebSocket-based applications.
+- **Example:**
+  ```java
+  @Bean
+  @Scope("websocket")
+  public MyService myService() {
+      return new MyService();
+  }
+  ```
+- **Behavior**: Shared across WebSocket interactions of a single session.
+
+---
+
+### **Summary Table**
+| Scope       | Instance Per | Lifecycle | Use Case |
+|------------|------------|----------|----------|
+| **Singleton** | Application Context | Till application shutdown | Stateless shared beans (e.g., services, repositories) |
+| **Prototype** | Each request | New instance per request | Stateful beans, temporary objects |
+| **Request** | Each HTTP request | Request completion | Request-scoped data (e.g., user input handling) |
+| **Session** | Each HTTP session | Session expiration | User session-specific data (e.g., shopping cart) |
+| **Application** | Web Application | Application shutdown | Global shared resources (e.g., application-wide configurations) |
+| **WebSocket** | Each WebSocket session | Session end | WebSocket communication |
+
+Would you like more in-depth examples or explanations for any of these scopes? 🚀
