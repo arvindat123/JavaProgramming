@@ -4922,4 +4922,144 @@ Car is running...
 ## **Conclusion**
 Dependency Injection in Spring simplifies object creation and management, making applications **loosely coupled, scalable, and testable**. Spring supports **constructor, setter, and field injection**, with **constructor injection being the preferred approach**.
 
-Would you like a detailed example with multiple dependencies and a real-world scenario? 🚀
+---
+
+# **`@PostConstruct` Annotation in Spring**  
+
+## **What is `@PostConstruct`?**  
+`@PostConstruct` is a **Java EE annotation** (part of **Jakarta EE**) used in Spring to execute a method **after the bean has been initialized** (i.e., after dependency injection is completed).  
+
+- It is used to **perform initialization logic** after the Spring container instantiates a bean.  
+- The annotated method runs **only once** after the dependency injection is complete.  
+
+---
+
+## **Why is `@PostConstruct` Used?**
+- To **initialize resources** (e.g., setting up connections, loading configurations).
+- To **run logic after dependencies are injected** (e.g., validating properties).
+- To **avoid using constructors** for complex logic.
+- To **ensure execution before the bean is used**.
+
+---
+
+## **Example of `@PostConstruct`**
+```java
+import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
+
+@Component
+public class MyService {
+    
+    public MyService() {
+        System.out.println("Constructor: MyService Bean Created!");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("PostConstruct: Initializing resources...");
+    }
+
+    public void doSomething() {
+        System.out.println("Business logic executed!");
+    }
+}
+```
+
+### **Spring Boot Main Class**
+```java
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class PostConstructExampleApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(PostConstructExampleApplication.class, args);
+        MyService myService = context.getBean(MyService.class);
+        myService.doSomething();
+    }
+}
+```
+
+### **Output**
+```
+Constructor: MyService Bean Created!
+PostConstruct: Initializing resources...
+Business logic executed!
+```
+**Explanation:**
+1. **Constructor executes first** → The bean is created.
+2. **`@PostConstruct` method executes next** → Runs after the bean is initialized.
+3. **`doSomething()` executes last** → Normal method execution.
+
+---
+
+## **Key Points About `@PostConstruct`**
+✔ Runs **once** after dependency injection is completed.  
+✔ Works only on **Spring-managed beans** (annotated with `@Component`, `@Service`, etc.).  
+✔ Used for **initialization logic** like resource setup, configuration loading, etc.  
+✔ Alternative to **`@Bean(initMethod="initMethodName")`** in Java config.  
+
+---
+
+## **Real-World Use Cases**
+🔹 **Loading Configuration on Startup**  
+```java
+import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
+
+@Component
+public class AppConfigLoader {
+
+    @PostConstruct
+    public void loadConfig() {
+        System.out.println("Loading application configurations...");
+    }
+}
+```
+
+🔹 **Connecting to External Services**  
+```java
+import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
+
+@Service
+public class EmailService {
+
+    @PostConstruct
+    public void setupConnection() {
+        System.out.println("Setting up email server connection...");
+    }
+}
+```
+
+---
+
+## **Alternatives to `@PostConstruct`**
+If `@PostConstruct` is not available (e.g., Java 17+ removed `jakarta.annotation` from JDK), you can use:
+1. **`@Bean(initMethod="init")`** in configuration classes.
+2. **Implementing `InitializingBean` and overriding `afterPropertiesSet()`**.
+
+### **Example Using `@Bean(initMethod="init")`**
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+    
+    @Bean(initMethod = "init")
+    public MyService myService() {
+        return new MyService();
+    }
+}
+```
+
+---
+
+## **Conclusion**
+✅ `@PostConstruct` is a **lifecycle callback** method used for **initializing resources** in Spring-managed beans.  
+✅ It ensures that logic runs **after dependency injection** and **before the bean is used**.  
+✅ In modern Spring Boot applications, **use alternative approaches** if `@PostConstruct` is unavailable.  
+
+Would you like an example demonstrating its use in **Spring Boot microservices**? 🚀
