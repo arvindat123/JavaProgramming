@@ -5298,4 +5298,221 @@ public class MyService {
 - ✅ **Use environment variables for dynamic, cloud-based deployments**.
 - ✅ **Use `config/` folder for auto-loading without code changes**.
 
-Would you like an example for **loading configurations dynamically at runtime**? 🚀
+---
+
+# **How to Bind Configuration Properties to a Java Object in Spring Boot?**
+Spring Boot allows you to **bind configuration properties** (from `application.properties` or `application.yml`) directly to **Java objects** using `@ConfigurationProperties` or `@Value`.
+
+---
+
+## **1️⃣ Using `@ConfigurationProperties` (Best Practice)**
+The `@ConfigurationProperties` annotation binds external properties to a **POJO** (Plain Old Java Object).
+
+### **🔹 Step 1: Define Configuration in `application.yml` or `application.properties`**
+#### **Using `application.yml`**
+```yaml
+app:
+  name: MySpringApp
+  version: 1.0.0
+  author:
+    name: John Doe
+    email: johndoe@example.com
+```
+#### **Using `application.properties`**
+```properties
+app.name=MySpringApp
+app.version=1.0.0
+app.author.name=John Doe
+app.author.email=johndoe@example.com
+```
+
+---
+
+### **🔹 Step 2: Create a POJO for Property Binding**
+```java
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "app") // Prefix maps to properties starting with "app"
+public class AppConfig {
+
+    private String name;
+    private String version;
+    private Author author;
+
+    // Nested class for author details
+    public static class Author {
+        private String name;
+        private String email;
+
+        // Getters & Setters
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+    }
+
+    // Getters & Setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getVersion() { return version; }
+    public void setVersion(String version) { this.version = version; }
+
+    public Author getAuthor() { return author; }
+    public void setAuthor(Author author) { this.author = author; }
+}
+```
+
+---
+
+### **🔹 Step 3: Enable Configuration Binding**
+In **Spring Boot 2.2+**, `@ConfigurationProperties` classes need to be registered using `@EnableConfigurationProperties` (or by using `@Component` annotation).
+
+#### **Approach 1: Using `@Component` (Auto-detected)**
+Since we used `@Component`, Spring automatically registers `AppConfig`.
+
+#### **Approach 2: Using `@EnableConfigurationProperties` (Explicit)**
+```java
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableConfigurationProperties(AppConfig.class) // Explicitly register configuration class
+public class AppConfigLoader {
+}
+```
+
+---
+
+### **🔹 Step 4: Access Configuration in a Service**
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+
+    private final AppConfig appConfig;
+
+    @Autowired
+    public MyService(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
+    public void printConfig() {
+        System.out.println("App Name: " + appConfig.getName());
+        System.out.println("Version: " + appConfig.getVersion());
+        System.out.println("Author: " + appConfig.getAuthor().getName() + " (" + appConfig.getAuthor().getEmail() + ")");
+    }
+}
+```
+
+---
+
+### **🔹 Step 5: Run the Spring Boot Application**
+```java
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class ConfigBindingExampleApplication {
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(ConfigBindingExampleApplication.class, args);
+        MyService myService = context.getBean(MyService.class);
+        myService.printConfig();
+    }
+}
+```
+
+---
+
+### **📌 Output**
+```
+App Name: MySpringApp
+Version: 1.0.0
+Author: John Doe (johndoe@example.com)
+```
+---
+
+## **2️⃣ Using `@Value` (For Simple Use Cases)**
+`@Value` is useful for **injecting single properties** but does not support complex/nested objects.
+
+### **Example: Inject Single Properties**
+```java
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SimpleConfig {
+
+    @Value("${app.name}")
+    private String appName;
+
+    @Value("${app.version}")
+    private String appVersion;
+
+    public void printConfig() {
+        System.out.println("App Name: " + appName);
+        System.out.println("Version: " + appVersion);
+    }
+}
+```
+### **❌ Limitations of `@Value`**
+- Cannot bind **nested** properties (e.g., `app.author.name`).
+- Requires explicit property name in every field.
+- Difficult to **test and manage**.
+
+✅ **Use `@ConfigurationProperties` for structured configurations.**  
+✅ **Use `@Value` only for simple values.**
+
+---
+
+## **3️⃣ Binding Lists and Maps in `@ConfigurationProperties`**
+Spring Boot also allows **lists and maps** inside the configuration.
+
+### **Example: Binding a List of Servers**
+#### **🔹 `application.yml`**
+```yaml
+servers:
+  - name: Server1
+    ip: 192.168.1.1
+  - name: Server2
+    ip: 192.168.1.2
+```
+#### **🔹 Java Class**
+```java
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import java.util.List;
+
+@Component
+@ConfigurationProperties(prefix = "servers")
+public class ServerConfig {
+    private List<Server> servers;
+
+    public static class Server {
+        private String name;
+        private String ip;
+        
+        // Getters & Setters
+    }
+
+    // Getters & Setters
+}
+```
+
+---
+
+## **🔹 Summary: Which Approach to Use?**
+| Approach                  | Use Case |
+|---------------------------|----------|
+| `@ConfigurationProperties` | Best for structured, complex configurations, lists, and nested properties. |
+| `@Value`                  | Best for injecting **single properties** but not for complex objects. |
+
+### **✅ Best Practice: Always Prefer `@ConfigurationProperties` for Maintainability.**
+
+Would you like an example of **dynamic configuration reloading**? 🚀
