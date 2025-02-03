@@ -5121,4 +5121,181 @@ spring:
 - **YAML is preferred** for structured configuration.
 - If both are used, **YAML overrides `.properties`** values.
 
-Would you like an example where both files are used dynamically? 🚀
+---
+
+# **How to Load External Configuration in Spring Boot?**
+Spring Boot provides multiple ways to **load external configuration files** such as `.properties` or `.yml` files from **outside** the application (e.g., from an external location, cloud storage, environment variables, etc.).
+
+---
+
+## **1️⃣ Using `spring.config.location` (Command Line or Environment Variable)**
+You can specify an **external properties or YAML file location** using:
+- **Command-line arguments**
+- **Environment variables**
+
+### **Command-line Approach**
+Run the application with:
+```sh
+java -jar myapp.jar --spring.config.location=file:/path/to/config/application.properties
+```
+OR  
+```sh
+java -jar myapp.jar --spring.config.location=file:/path/to/config/
+```
+✅ **Supports multiple locations** (comma-separated):
+```sh
+java -jar myapp.jar --spring.config.location=file:/config/,classpath:/custom-config/
+```
+✅ **Supports URLs**:
+```sh
+java -jar myapp.jar --spring.config.location=https://example.com/config/application.yml
+```
+
+---
+
+## **2️⃣ Using `@PropertySource` in Java Configuration**
+Use `@PropertySource` to load external properties into the Spring **Environment**.
+
+```java
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+@Configuration
+@PropertySource("file:/path/to/config/application.properties")
+public class AppConfig {
+}
+```
+✅ **Limitations**:  
+- Works only with **`.properties` files** (not `.yml`).
+- Doesn't support **profiles (`application-dev.properties`)**.
+- Requires explicit `@Value` injection.
+
+---
+
+## **3️⃣ Using `spring.config.import` in `application.properties`**
+In **Spring Boot 2.4+**, use `spring.config.import` to import external files.
+
+### **Example (`application.properties`)**
+```properties
+spring.config.import=file:/path/to/external-config.properties
+```
+
+### **Example (`application.yml`)**
+```yaml
+spring:
+  config:
+    import: file:/path/to/external-config.yml
+```
+
+✅ **Supports:**  
+- File paths (`file:/path/to/config.yml`)
+- URLs (`https://example.com/config.yml`)
+- Multiple files
+
+---
+
+## **4️⃣ Loading Configuration from an External Folder (`config/`)**
+Spring Boot **automatically loads** configurations from these external locations **(in order of priority):**
+1. `config/` directory in the application’s root (`./config/application.properties`)
+2. External directory (`/opt/app/config/`)
+3. Home directory (`~/.appconfig/`)
+
+✅ If you place `application.properties` or `application.yml` in `config/`, it gets loaded **automatically**:
+```
+myapp/
+ ├── config/
+ │    ├── application.properties
+ ├── target/
+ ├── myapp.jar
+```
+Run:
+```sh
+java -jar myapp.jar
+```
+Spring Boot **automatically picks up** `config/application.properties`!
+
+---
+
+## **5️⃣ Environment Variables & System Properties**
+Spring Boot allows configuration using **environment variables**.
+
+### **Example**
+Set an environment variable:
+```sh
+export SERVER_PORT=8085
+```
+Or pass it as a system property:
+```sh
+java -jar myapp.jar -Dserver.port=8085
+```
+✅ **Spring reads environment variables automatically**  
+✅ **Overrides configuration files**
+
+---
+
+## **6️⃣ Using `@ConfigurationProperties` for External Configuration Binding**
+Spring Boot **binds properties** from an external file to a Java class.
+
+### **Step 1: External Config File (`config/app.yml`)**
+```yaml
+app:
+  name: ExternalApp
+  version: 1.0.0
+```
+
+### **Step 2: Java Class for Binding**
+```java
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Component
+@ConfigurationProperties(prefix = "app")
+public class AppConfig {
+    private String name;
+    private String version;
+
+    // Getters and Setters
+}
+```
+
+### **Step 3: Access Configuration in a Service**
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+
+    @Autowired
+    private AppConfig config;
+
+    public void printConfig() {
+        System.out.println("App Name: " + config.getName());
+        System.out.println("Version: " + config.getVersion());
+    }
+}
+```
+✅ **Best for structured configurations**  
+✅ **Auto-binds external configuration to POJOs**
+
+---
+
+## **Summary: Best Ways to Load External Configurations**
+| Approach | Supports `.properties` | Supports `.yml` | Supports Profiles | Dynamic Reload |
+|----------|-----------------|-----------------|----------------|----------------|
+| `spring.config.location` (CLI) | ✅ | ✅ | ✅ | ❌ |
+| `@PropertySource` | ✅ | ❌ | ❌ | ❌ |
+| `spring.config.import` | ✅ | ✅ | ✅ | ✅ |
+| `config/` folder | ✅ | ✅ | ✅ | ❌ |
+| Environment Variables | ✅ | ✅ | ✅ | ✅ |
+| `@ConfigurationProperties` | ✅ | ✅ | ✅ | ✅ |
+
+---
+
+## **Conclusion**
+- ✅ **Use `spring.config.location` for externalized configs** from a specific location.
+- ✅ **Use `@ConfigurationProperties` for structured binding**.
+- ✅ **Use environment variables for dynamic, cloud-based deployments**.
+- ✅ **Use `config/` folder for auto-loading without code changes**.
+
+Would you like an example for **loading configurations dynamically at runtime**? 🚀
