@@ -5062,4 +5062,63 @@ public class AppConfig {
 ✅ It ensures that logic runs **after dependency injection** and **before the bean is used**.  
 ✅ In modern Spring Boot applications, **use alternative approaches** if `@PostConstruct` is unavailable.  
 
-Would you like an example demonstrating its use in **Spring Boot microservices**? 🚀
+---
+
+In a **Spring Boot** application, both `application.properties` and `application.yml` (YAML) files can be used for configuration. However, **YAML files take precedence over `.properties` files** by default.  
+
+---
+
+## **Order of Property File Loading in Spring Boot**
+Spring Boot **automatically** loads configuration files in the following order:
+
+1. **`application.properties` (if present)**  
+2. **`application.yml` (if present, overrides `.properties`)**
+
+### **Which One Loads First?**
+- **Spring loads both files** if both `application.properties` and `application.yml` exist.
+- However, **YAML properties override `.properties` values** due to Spring Boot’s built-in preference for YAML.
+
+### **Example**
+#### **application.properties**
+```properties
+server.port=8080
+app.name=SpringApp
+```
+
+#### **application.yml**
+```yaml
+server:
+  port: 9090
+app:
+  name: SpringYAMLApp
+```
+
+#### **Result**
+If both files are present, **Spring Boot takes values from `application.yml`**, and the final configuration will be:
+```properties
+server.port=9090
+app.name=SpringYAMLApp
+```
+
+---
+
+## **Explicit File Priority Using `spring.config.import`**
+If you want to **explicitly load `application.properties` first**, you can use:
+```properties
+spring.config.import=application.properties
+```
+or in YAML:
+```yaml
+spring:
+  config:
+    import: application.properties
+```
+
+---
+
+## **Best Practice**
+- Use **only one format (`.properties` OR `.yml`)** for consistency.
+- **YAML is preferred** for structured configuration.
+- If both are used, **YAML overrides `.properties`** values.
+
+Would you like an example where both files are used dynamically? 🚀
