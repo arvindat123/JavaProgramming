@@ -6332,3 +6332,78 @@ Each method serves different use cases:
 - Use **ForkJoinPool** for parallel computation.
 - Use **CompletableFuture** for asynchronous tasks.
 - Use **Callable** if you need results or exception handling.
+
+---
+
+Both `SynchronizedHashMap` and `ConcurrentHashMap` are used for thread-safe operations on maps in Java, but they have key differences in their performance and behavior. Choosing between them depends on your use case.
+
+---
+
+## **1. SynchronizedHashMap**
+A `SynchronizedHashMap` is simply a `HashMap` that is wrapped with synchronization using `Collections.synchronizedMap()`. 
+
+```java
+Map<String, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+```
+
+### **When to Use SynchronizedHashMap**
+- **Low concurrency needs** – If multiple threads only occasionally access the map, this approach might be sufficient.
+- **External synchronization possible** – Iterating over a `SynchronizedHashMap` requires external synchronization to avoid `ConcurrentModificationException`.
+- **Small-scale applications** – If performance is not a concern, but you still need thread safety, this is a simple option.
+
+### **Drawbacks**
+- Synchronizes the entire map for every read/write operation, leading to poor performance under high concurrency.
+- Requires explicit synchronization during iteration.
+
+Example of required external synchronization:
+```java
+synchronized(syncMap) {
+    for (Map.Entry<String, String> entry : syncMap.entrySet()) {
+        System.out.println(entry.getKey() + " => " + entry.getValue());
+    }
+}
+```
+
+---
+
+## **2. ConcurrentHashMap**
+`ConcurrentHashMap` is a more sophisticated thread-safe alternative designed for high-concurrency scenarios.
+
+```java
+Map<String, String> concurrentMap = new ConcurrentHashMap<>();
+```
+
+### **When to Use ConcurrentHashMap**
+- **High concurrency needs** – Multiple threads frequently read/write to the map.
+- **Better performance** – Uses a segmented locking mechanism (instead of locking the entire map).
+- **Iteration without explicit synchronization** – Uses weakly consistent iterators, which do not throw `ConcurrentModificationException`.
+
+### **Advantages**
+- **Lock-free read operations** – Read operations do not block.
+- **Fine-grained locking** – Updates lock only specific segments rather than the entire map.
+- **Higher throughput under multi-threading** – Significantly faster than `SynchronizedHashMap` in concurrent environments.
+
+### **Limitations**
+- Does **not** allow `null` keys or values.
+- Is **not** a direct replacement for `HashMap` if full consistency is required (since iterators are weakly consistent).
+
+---
+
+## **Comparison Table**
+
+| Feature               | SynchronizedHashMap                              | ConcurrentHashMap                             |
+|----------------------|--------------------------------|--------------------------------|
+| **Thread Safety**   | Yes (full synchronization)    | Yes (fine-grained locks)      |
+| **Performance**     | Slower due to full locking    | Faster due to segment-level locking |
+| **Concurrency**     | Low to moderate               | High                           |
+| **Iteration**       | Needs external synchronization | No explicit synchronization needed (Weakly Consistent Iterator) |
+| **Null Keys/Values** | Allowed                        | Not allowed                    |
+| **Use Case**        | Simple multi-threaded apps    | High-performance concurrent applications |
+
+---
+
+### **Final Recommendation**
+- Use **`SynchronizedHashMap`** when you have low concurrency and need simple synchronization.
+- Use **`ConcurrentHashMap`** for high-concurrency environments where multiple threads frequently modify the map.
+
+Would you like a code example comparing their performance? 🚀
