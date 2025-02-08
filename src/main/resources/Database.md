@@ -1,3 +1,59 @@
+---
+---
+
+Yes, a table can have **more than one unique key**. However, there can only be **one primary key**.
+
+---
+
+### **Key Differences Between Primary Key and Unique Key**
+
+| **Aspect**             | **Primary Key**                                 | **Unique Key**                                 |
+|-------------------------|------------------------------------------------|------------------------------------------------|
+| **Purpose**             | Uniquely identifies each row in the table.      | Ensures uniqueness for a column or a set of columns. |
+| **Number of Keys**      | Only one primary key per table.                 | Can have multiple unique keys in a table.      |
+| **Null Values**         | Does not allow `NULL`.                         | Allows `NULL` values (one or more).           |
+| **Constraint**          | `PRIMARY KEY`                                  | `UNIQUE`                                      |
+| **Combination of Columns** | Can use one or more columns.                 | Can use one or more columns.                  |
+
+---
+
+### **Example: Multiple Unique Keys in a Table**
+
+#### **SQL Table with Primary and Unique Keys**
+```sql
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,       -- Primary Key
+    email VARCHAR(100) UNIQUE,         -- Unique Key
+    phone_number VARCHAR(15) UNIQUE    -- Another Unique Key
+);
+```
+
+- **`employee_id`**: Primary Key – Uniquely identifies each employee, no duplicates, and cannot be `NULL`.
+- **`email`**: Unique Key – Ensures email addresses are unique but can have `NULL` (if no email is provided).
+- **`phone_number`**: Another Unique Key – Ensures phone numbers are unique but can have `NULL`.
+
+#### **Inserting Data into the Table**
+```sql
+INSERT INTO employees (employee_id, email, phone_number)
+VALUES (1, 'john.doe@example.com', '1234567890'); -- Valid
+
+INSERT INTO employees (employee_id, email, phone_number)
+VALUES (2, 'jane.doe@example.com', '1234567890'); -- Fails (phone_number is duplicate)
+
+INSERT INTO employees (employee_id, email, phone_number)
+VALUES (3, NULL, '0987654321'); -- Valid (email can be NULL)
+```
+
+---
+
+### **Practical Uses**
+- **Primary Key**: For core identification of rows.
+- **Unique Key**: For business rules such as ensuring emails, usernames, or phone numbers are unique within the database.
+
+By having multiple unique keys, you can enforce data integrity without using them as the primary means of identification.
+
+---
+
 In this case, SQL Server processes the clauses in the following order: FROM -> WHERE -> GROUP BY -> SELECT -> ORDER BY
 
 
@@ -910,3 +966,418 @@ Analyze the query execution plan to identify bottlenecks:
 
 ### **Conclusion**
 Efficient tuning of a `SELECT` statement with millions of records involves using proper indexing, analyzing execution plans, filtering data early, limiting data retrieval, and leveraging caching and partitioning techniques. Combine these methods with continuous monitoring to ensure optimal performance.
+
+---
+
+SQL (Structured Query Language) and NoSQL (Not Only SQL) databases are two types of database management systems designed for different use cases and types of data. Here are the key differences:
+
+### 1. **Data Structure**
+   - **SQL Databases**:
+     - Use structured tables with predefined schemas.
+     - Each table has rows (records) and columns (fields).
+     - Schema enforces strict data types and relationships.
+     - Example: MySQL, PostgreSQL, Oracle DB, Microsoft SQL Server.
+
+   - **NoSQL Databases**:
+     - Use flexible data models like key-value pairs, documents, wide-column stores, or graphs.
+     - Schema is often dynamic, allowing unstructured or semi-structured data.
+     - Example: MongoDB (document-based), Cassandra (wide-column), Redis (key-value), Neo4j (graph-based).
+
+### 2. **Schema**
+   - **SQL**: Schema is fixed and must be defined before inserting data. Altering schema can be complex and time-consuming.
+   - **NoSQL**: Schema is flexible. You can add fields to documents or records without affecting existing data.
+
+### 3. **Scalability**
+   - **SQL**: Typically scaled vertically by upgrading the server's hardware.
+   - **NoSQL**: Typically scaled horizontally by adding more servers to distribute the data.
+
+### 4. **Query Language**
+   - **SQL**: Use SQL as a standardized query language. Highly expressive and suited for complex queries and joins.
+   - **NoSQL**: Querying methods vary by database type. Often use APIs or custom query languages like MongoDB’s query syntax.
+
+### 5. **Consistency**
+   - **SQL**: Follow ACID (Atomicity, Consistency, Isolation, Durability) properties, ensuring strong consistency.
+   - **NoSQL**: Often follow BASE (Basically Available, Soft state, Eventual consistency), sacrificing strong consistency for availability and scalability.
+
+### 6. **Performance**
+   - **SQL**: May be slower for large-scale distributed systems due to its strict consistency requirements.
+   - **NoSQL**: Optimized for large-scale, high-speed operations, especially for unstructured or semi-structured data.
+
+### 7. **Use Cases**
+   - **SQL**:
+     - Suitable for applications requiring complex queries, transactions, and data integrity.
+     - Examples: Banking, e-commerce systems, CRM tools.
+   - **NoSQL**:
+     - Suitable for applications needing high scalability and flexibility with semi-structured or unstructured data.
+     - Examples: Social media, real-time analytics, IoT applications.
+
+### 8. **Examples of Databases**
+   - **SQL**: MySQL, PostgreSQL, SQLite, Microsoft SQL Server, Oracle.
+   - **NoSQL**: MongoDB, Cassandra, Redis, Couchbase, Neo4j.
+
+### Summary Table
+
+| Feature           | SQL                        | NoSQL                      |
+|--------------------|----------------------------|----------------------------|
+| Schema            | Fixed                      | Flexible                   |
+| Data Structure    | Tables                     | Key-value, Document, etc.  |
+| Query Language    | SQL                        | Varies by DB               |
+| Scalability       | Vertical                   | Horizontal                 |
+| Consistency       | Strong (ACID)              | Eventual (BASE)            |
+| Performance       | Better for complex queries | Better for large-scale ops |
+| Use Cases         | Transactional systems      | Big data, real-time apps   |
+
+Each type has its strengths and is suited to different scenarios, so the choice depends on your specific application requirements.
+
+---
+
+In a microservices architecture where **Apigee** is acting as an API gateway, the microservice can determine whether a request is coming from **Apigee** through various mechanisms:
+
+### 1. **Custom Headers (Recommended Approach)**
+   - Apigee can inject custom headers into the request before forwarding it to the microservice.
+   - Example:
+     - Apigee adds a header like:  
+       ```http
+       X-Forwarded-By: Apigee
+       ```
+     - The microservice checks for this header to verify that the request originated from Apigee.
+
+   - **Implementation in Spring Boot** (Java):
+     ```java
+     @RestController
+     public class MyController {
+         @GetMapping("/secure-endpoint")
+         public ResponseEntity<String> handleRequest(@RequestHeader(value = "X-Forwarded-By", required = false) String forwardedBy) {
+             if ("Apigee".equalsIgnoreCase(forwardedBy)) {
+                 return ResponseEntity.ok("Request received from Apigee");
+             } else {
+                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized source");
+             }
+         }
+     }
+     ```
+
+---
+
+### 2. **API Key or OAuth Token Validation**
+   - Apigee can enforce authentication using **API keys** or **OAuth tokens** before forwarding requests.
+   - The microservice validates the token using a security filter.
+
+   - **Example with Spring Security (JWT Validation)**
+     ```java
+     @Component
+     public class JwtFilter extends OncePerRequestFilter {
+         @Override
+         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+                 throws ServletException, IOException {
+             String token = request.getHeader("Authorization");
+             
+             if (token == null || !token.startsWith("Bearer ")) {
+                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid token");
+                 return;
+             }
+             
+             // Validate the token (Assuming Apigee-issued JWT)
+             boolean isValid = validateJwt(token.substring(7));
+             if (!isValid) {
+                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                 return;
+             }
+             
+             chain.doFilter(request, response);
+         }
+         
+         private boolean validateJwt(String token) {
+             // Implement JWT validation logic (e.g., verify signature, expiration)
+             return true; // Placeholder
+         }
+     }
+     ```
+
+---
+
+### 3. **IP Whitelisting (Less Flexible)**
+   - The microservice can allow requests only from **Apigee IP ranges**.
+   - Spring Boot can retrieve the client IP from `X-Forwarded-For` and allow only whitelisted IPs.
+
+   - **Example**:
+     ```java
+     @RestController
+     public class SecureController {
+         private static final List<String> ALLOWED_IPS = List.of("192.168.1.1", "34.78.100.50"); // Apigee IPs
+         
+         @GetMapping("/validate-ip")
+         public ResponseEntity<String> validateIp(HttpServletRequest request) {
+             String clientIp = request.getHeader("X-Forwarded-For");
+             if (clientIp == null || !ALLOWED_IPS.contains(clientIp)) {
+                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+             }
+             return ResponseEntity.ok("Request from Apigee allowed");
+         }
+     }
+     ```
+
+---
+
+### 4. **mTLS (Mutual TLS) Between Apigee and Microservice**
+   - Apigee can use **mutual TLS (mTLS)** to authenticate itself to the microservice.
+   - The microservice verifies Apigee’s certificate before accepting requests.
+   - This ensures only Apigee can access the service.
+
+---
+
+### Conclusion
+- **Best Practice:** Use a combination of **custom headers** (`X-Forwarded-By`), **JWT token validation**, and **mutual TLS** for robust security.
+- **Less secure options** include relying solely on IP whitelisting.
+
+---
+
+If there is **no connection pool limit** and a new database connection is created for every request, the following problems will occur:
+
+### 🔴 **1. Exhaustion of Database Connections**
+- Each new request creates a **new connection** without reusing existing ones.
+- The database has a **maximum allowed connections** limit (e.g., 100-500).
+- If too many requests arrive simultaneously, the database will **run out of connections**.
+- New requests will **fail** with an error like:
+  ```
+  Too many connections
+  Connection refused: max connections reached
+  ```
+
+---
+
+### 🔴 **2. Increased Latency (Slow Performance)**
+- Creating a new database connection is **expensive** and takes **time** (100ms–500ms).
+- If each request creates a new connection, the response time increases significantly.
+- The system slows down under load.
+
+---
+
+### 🔴 **3. High Resource Utilization (Memory & CPU Overhead)**
+- Each connection consumes **memory and CPU** (both on the application and database servers).
+- Unused connections remain **open** and **consume database server resources**.
+- Eventually, the database server **crashes or becomes unresponsive**.
+
+---
+
+### 🔴 **4. Risk of Connection Leaks**
+- If connections are not properly **closed**, they **stay open indefinitely**.
+- Over time, the system may **run out of available connections**, causing failures.
+
+---
+
+### 🔴 **5. Scalability Issues**
+- Without a connection pool, the system **does not scale efficiently**.
+- A **burst in traffic** will create thousands of connections, overwhelming the database.
+- Applications may **fail to handle concurrent users**.
+
+---
+
+## ✅ **Solution: Use a Connection Pool (Recommended)**
+A **connection pool** maintains a **fixed number** of reusable connections instead of creating new ones every time.
+
+### 🔹 How Connection Pooling Works:
+1. A **fixed pool of connections** (e.g., 10–50) is created.
+2. Requests **borrow** connections from the pool.
+3. Once done, the connection is **returned** to the pool instead of closing it.
+4. If all connections are in use, new requests **wait** for an available one.
+
+### 🔹 Example: Configuring Connection Pool in Spring Boot (HikariCP)
+Spring Boot uses **HikariCP** as the default connection pool.
+
+```properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=secret
+
+# HikariCP connection pool settings
+spring.datasource.hikari.minimum-idle=5    # Minimum connections
+spring.datasource.hikari.maximum-pool-size=20  # Max connections
+spring.datasource.hikari.idle-timeout=30000    # 30 seconds idle timeout
+spring.datasource.hikari.max-lifetime=1800000  # 30 minutes max lifetime
+spring.datasource.hikari.connection-timeout=30000  # 30 seconds connection timeout
+```
+
+---
+
+## ✅ **Benefits of Connection Pooling**
+✔ **Faster Response Times** – No need to create a new connection every time.  
+✔ **Efficient Resource Usage** – Reuses connections instead of creating/destroying them.  
+✔ **Prevents Connection Exhaustion** – Limits connections to a safe number.  
+✔ **Better Scalability** – Handles high traffic efficiently.  
+
+---
+
+If there is **no connection pool limit** and a new database connection is created for every request, the following problems will occur:
+
+### 🔴 **1. Exhaustion of Database Connections**
+- Each new request creates a **new connection** without reusing existing ones.
+- The database has a **maximum allowed connections** limit (e.g., 100-500).
+- If too many requests arrive simultaneously, the database will **run out of connections**.
+- New requests will **fail** with an error like:
+  ```
+  Too many connections
+  Connection refused: max connections reached
+  ```
+
+---
+
+### 🔴 **2. Increased Latency (Slow Performance)**
+- Creating a new database connection is **expensive** and takes **time** (100ms–500ms).
+- If each request creates a new connection, the response time increases significantly.
+- The system slows down under load.
+
+---
+
+### 🔴 **3. High Resource Utilization (Memory & CPU Overhead)**
+- Each connection consumes **memory and CPU** (both on the application and database servers).
+- Unused connections remain **open** and **consume database server resources**.
+- Eventually, the database server **crashes or becomes unresponsive**.
+
+---
+
+### 🔴 **4. Risk of Connection Leaks**
+- If connections are not properly **closed**, they **stay open indefinitely**.
+- Over time, the system may **run out of available connections**, causing failures.
+
+---
+
+### 🔴 **5. Scalability Issues**
+- Without a connection pool, the system **does not scale efficiently**.
+- A **burst in traffic** will create thousands of connections, overwhelming the database.
+- Applications may **fail to handle concurrent users**.
+
+---
+
+## ✅ **Solution: Use a Connection Pool (Recommended)**
+A **connection pool** maintains a **fixed number** of reusable connections instead of creating new ones every time.
+
+### 🔹 How Connection Pooling Works:
+1. A **fixed pool of connections** (e.g., 10–50) is created.
+2. Requests **borrow** connections from the pool.
+3. Once done, the connection is **returned** to the pool instead of closing it.
+4. If all connections are in use, new requests **wait** for an available one.
+
+### 🔹 Example: Configuring Connection Pool in Spring Boot (HikariCP)
+Spring Boot uses **HikariCP** as the default connection pool.
+
+```properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=secret
+
+# HikariCP connection pool settings
+spring.datasource.hikari.minimum-idle=5    # Minimum connections
+spring.datasource.hikari.maximum-pool-size=20  # Max connections
+spring.datasource.hikari.idle-timeout=30000    # 30 seconds idle timeout
+spring.datasource.hikari.max-lifetime=1800000  # 30 minutes max lifetime
+spring.datasource.hikari.connection-timeout=30000  # 30 seconds connection timeout
+```
+
+---
+
+## ✅ **Benefits of Connection Pooling**
+✔ **Faster Response Times** – No need to create a new connection every time.  
+✔ **Efficient Resource Usage** – Reuses connections instead of creating/destroying them.  
+✔ **Prevents Connection Exhaustion** – Limits connections to a safe number.  
+✔ **Better Scalability** – Handles high traffic efficiently.  
+
+---
+
+If there are **10 connections** in the connection pool and the **database gets restarted**, the following will happen:
+
+---
+
+## 🔴 **1. Existing Connections Become Stale (Broken)**
+- The **pooled connections** are still present in the application.
+- But since the **database restarted**, these connections are **no longer valid**.
+- Any request using these connections will **fail** with an error like:
+  ```
+  Communications link failure
+  Connection is closed
+  Broken pipe
+  ```
+
+---
+
+## 🔴 **2. Connection Pool Will Not Immediately Know**
+- The connection pool **does not instantly realize** that the database restarted.
+- It may try to use stale connections and fail.
+
+---
+
+## ✅ **How to Handle This Gracefully?**
+### **Solution 1: Use Connection Validation (Health Check)**
+Most connection pools (like **HikariCP**, **Apache DBCP**, **C3P0**) have **validation mechanisms** to detect and replace stale connections.
+
+### 🔹 **HikariCP Configuration for Auto-Recovery**
+Modify `application.properties`:
+
+```properties
+# Validate connections before giving them to the application
+spring.datasource.hikari.validation-timeout=5000
+
+# Test connection before using (prevents broken connections)
+spring.datasource.hikari.test-on-borrow=true
+
+# Automatically evict idle connections (prevents stale connections)
+spring.datasource.hikari.idle-timeout=30000
+
+# Maximum lifetime of a connection before replacing it
+spring.datasource.hikari.max-lifetime=1800000
+
+# Reconnect automatically after database restart
+spring.datasource.hikari.auto-commit=true
+```
+
+✅ **This ensures:**
+- **Before a connection is given** to the app, it is checked.
+- If the connection is **stale (invalid)**, it is **removed and replaced** with a new one.
+
+---
+
+### **Solution 2: Handle Connection Failures Gracefully**
+If the database restarts, the app should:
+1. **Catch Connection Errors**  
+   Example in Java (Spring Boot with JDBC):
+   ```java
+   try (Connection conn = dataSource.getConnection()) {
+       // Use the connection
+   } catch (SQLException e) {
+       // Handle database restart scenario
+       System.out.println("Database connection lost, retrying...");
+   }
+   ```
+
+2. **Retry Logic for Critical Services**  
+   If your service depends on a DB connection, implement **retry logic** with exponential backoff.
+
+---
+
+### **Solution 3: Use Database Connection Keep-Alive**
+Some connection pools support **keep-alive queries** that run periodically to keep connections healthy.
+
+Example for HikariCP:
+```properties
+spring.datasource.hikari.keepalive-time=30000  # Run a keep-alive query every 30s
+spring.datasource.hikari.connection-test-query=SELECT 1  # MySQL/PostgreSQL
+```
+✅ **This prevents stale connections from being used.**
+
+---
+
+## 🔄 **What Happens After the Database Comes Back Up?**
+1. **Application Tries to Use a Connection → Fails** (If stale)
+2. **Connection Pool Detects Failure → Closes Stale Connections**
+3. **New Connections Are Created → Requests Are Served Normally**
+
+---
+
+## ✅ **Final Recommendations**
+- **Enable connection validation** (`test-on-borrow`, `connection-test-query`).
+- **Use retry logic** for critical database operations.
+- **Ensure connection pool settings** allow auto-reconnection.
+
+

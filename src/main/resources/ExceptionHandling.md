@@ -1,3 +1,64 @@
+```java
+
+@PropertySource("classpath:/error_messages.properties")
+@ControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+public GlobalExceptionHandler() { super();}
+
+@ExceptionHandler(GekkoAPIValidationException.class)
+public ResponseEntity<ErrorMessageDetails> handleAPIValidationException(
+		GekkoAPIValidationException gekkoAPIValidationException) {
+	ErrorMessageDetails errorResponse = new ErrorMessageDetails(
+			DateUtils.getCurrentDateTime(),
+			gekkoAPIValidationException.getStatusCode(),
+			gekkoAPIValidationException.getMessages(),
+			gekkoAPIValidationException.getErrorCode()
+	);
+	return new ResponseEntity<>(errorResponse, gekkoAPIValidationException.getHttpStatus());
+}
+
+
+}
+
+public class GekkoAPIValidationException extends RuntimeException {	
+private static final long serialVersionUID = -4559697804079915339L;
+	private final int statusCode;
+	private final List<String> messages;
+	private final String errorCode;
+	private final HttpStatus httpStatus;
+
+	public GekkoAPIValidationException(int statusCode, List<String> messages, String errorCode,
+                                       HttpStatus httpStatus) {
+		super();
+		this.statusCode = statusCode;
+		this.messages = messages;
+		this.errorCode = errorCode;
+		this.httpStatus = httpStatus;
+	}
+}
+
+public class ErrorMessageDetails {
+
+	public ErrorMessageDetails() { }
+	
+	private String timestamp;	
+	private int statusCode;
+	private List<String> messages;
+	private String details;
+
+	public ErrorMessageDetails(String currentDateTime, int string, List<String> messages, String details) {
+		this.timestamp = currentDateTime;
+		this.statusCode = string;
+		this.messages = messages;
+		this.details = details;
+	}
+}
+
+```
+
+
+
 # Here are some common Java exception interview questions along with brief answers:
 
 ### 1. **What is an Exception in Java?**

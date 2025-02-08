@@ -1,3 +1,1369 @@
+---
+---
+
+Here’s a curated list of **Java 8 interview questions** for experienced professionals, focusing on key concepts, practical applications, and advanced topics:
+
+---
+
+### **1. Core Features of Java 8**
+1. What are the new features introduced in Java 8?
+2. How does the `default` method in interfaces work? Why was it introduced?
+3. What is the difference between `default` methods and `abstract` methods in interfaces?
+4. Can a class implement two interfaces with the same default method? How would you resolve the conflict?
+
+---
+
+### **2. Functional Programming and Lambda Expressions**
+5. What are lambda expressions? How do they differ from anonymous classes?
+6. How is the type of a lambda expression determined?
+7. Write a lambda expression to sort a list of strings by their length.
+8. How do you use effectively final variables inside lambda expressions?
+
+---
+
+### **3. Functional Interfaces**
+9. What are functional interfaces in Java 8? Give examples.
+10. Can you create your own functional interface? Write a small example.
+11. How does the `@FunctionalInterface` annotation help in Java 8?
+
+---
+
+### **4. Streams API**
+12. What is the purpose of the Streams API in Java 8?
+13. Explain the difference between `intermediate` and `terminal` operations in streams.
+14. How would you filter a list of integers to include only even numbers using streams?
+15. What is the difference between `map()` and `flatMap()`?
+16. Explain how parallel streams work. When would you use them?
+17. How would you count the number of occurrences of each word in a list using streams?
+
+---
+
+### **5. Optional Class**
+18. What is `Optional` in Java 8? Why is it used?
+19. How would you handle a `null` value with `Optional`?
+20. What is the difference between `Optional.of()`, `Optional.ofNullable()`, and `Optional.empty()`?
+21. How would you use `orElse()`, `orElseGet()`, and `orElseThrow()` in Optional?
+
+---
+
+### **6. Date and Time API**
+22. What is the new Date and Time API introduced in Java 8?
+23. How do `LocalDate`, `LocalTime`, and `LocalDateTime` differ?
+24. How would you add 7 days to the current date using the new API?
+25. What is the difference between `Period` and `Duration`?
+
+---
+
+### **7. Collectors**
+26. What is the role of the `Collectors` utility class?
+27. How would you use `Collectors.groupingBy()` to group elements in a list?
+28. Explain the difference between `Collectors.toList()`, `toSet()`, and `toMap()`.
+29. How does `partitioningBy()` work in Collectors?
+
+---
+
+### **8. Method References**
+30. What are method references in Java 8? How are they different from lambda expressions?
+31. Explain the types of method references with examples.
+32. When would you use a method reference instead of a lambda?
+
+---
+
+### **9. Concurrency Enhancements**
+33. What are the new concurrency enhancements introduced in Java 8?
+34. How does `CompletableFuture` work? What are its key methods?
+35. Write a code snippet to demonstrate the use of `CompletableFuture.supplyAsync()`.
+
+---
+
+### **10. Miscellaneous**
+36. How do you use the `forEach()` method in Java 8?
+37. Explain the difference between `peek()` and `map()` in streams.
+38. What are the key changes in Java 8 regarding garbage collection?
+39. How does the `Predicate` interface work? Provide an example.
+40. What is the difference between `findAny()` and `findFirst()` in streams?
+
+---
+
+### **Scenario-Based Questions**
+41. How would you use streams to remove duplicates from a list?
+42. Write a program to find the second highest number in a list using streams.
+43. How would you handle exceptions inside a stream pipeline?
+44. How do you sort a list of custom objects by multiple fields using streams?
+45. Implement a caching mechanism using `Optional` to avoid repeated computations.
+
+---
+
+### **What are Lambda Expressions?**
+
+A **lambda expression** in Java 8 is a concise way to represent a block of code (or behavior) that can be passed around and executed. It’s a feature that enables functional programming by treating functions as first-class citizens.
+
+---
+
+### **Syntax of a Lambda Expression**
+```java
+(parameters) -> { body }
+```
+- **Parameters:** The inputs to the lambda expression.  
+- **Arrow (->):** Separates parameters from the body of the expression.  
+- **Body:** The logic or implementation of the lambda.
+
+#### **Examples:**
+1. **Without Parameters:**
+   ```java
+   () -> System.out.println("Hello, World!");
+   ```
+2. **Single Parameter:**
+   ```java
+   name -> System.out.println("Hello, " + name);
+   ```
+3. **Multiple Parameters:**
+   ```java
+   (a, b) -> a + b;
+   ```
+4. **Block Body with Return Statement:**
+   ```java
+   (a, b) -> {
+       int sum = a + b;
+       return sum;
+   };
+   ```
+
+---
+
+### **How Lambda Expressions Differ from Anonymous Classes**
+
+| **Aspect**               | **Lambda Expression**                                      | **Anonymous Class**                                      |
+|--------------------------|-----------------------------------------------------------|---------------------------------------------------------|
+| **Syntax**               | Concise and readable                                      | Verbose, with class definition and boilerplate code     |
+| **Type Inference**       | Compiler infers the type from the context                 | Explicitly defines the type in the class               |
+| **Performance**          | More efficient (no additional class file created)         | Generates an additional class file at runtime          |
+| **Usage**                | Typically used with functional interfaces                 | Can implement any interface or extend a class          |
+| **Access to `this`**     | Refers to the enclosing scope                             | Refers to the instance of the anonymous class          |
+| **Reusability**          | Cannot have a named implementation                        | Can be reused if declared as an object                 |
+
+---
+
+### **Code Example: Lambda Expression vs Anonymous Class**
+
+#### **Using Anonymous Class:**
+```java
+import java.util.Comparator;
+
+public class AnonymousClassExample {
+    public static void main(String[] args) {
+        Comparator<Integer> comparator = new Comparator<Integer>() {
+            @Override
+            public int compare(Integer a, Integer b) {
+                return a - b;
+            }
+        };
+
+        int result = comparator.compare(10, 20);
+        System.out.println("Result using anonymous class: " + result);
+    }
+}
+```
+
+---
+
+#### **Using Lambda Expression:**
+```java
+import java.util.Comparator;
+
+public class LambdaExample {
+    public static void main(String[] args) {
+        Comparator<Integer> comparator = (a, b) -> a - b;
+
+        int result = comparator.compare(10, 20);
+        System.out.println("Result using lambda expression: " + result);
+    }
+}
+```
+
+---
+
+### **Output for Both Examples:**
+```
+Result: -10
+```
+
+---
+
+### **Key Differences Highlighted in the Examples:**
+1. **Verbosity:** The anonymous class requires more lines of code (explicitly overriding `compare`), while the lambda is a single line.
+2. **Type Inference:** The lambda infers `Integer` from the context, whereas the anonymous class explicitly declares it.
+3. **Performance:** The lambda does not generate a new `.class` file, making it more memory-efficient.
+
+---
+
+### **When to Use Lambda Expressions:**
+- When implementing functional interfaces (interfaces with a single abstract method).
+- When simplicity and readability are priorities.
+
+---
+
+### **When to Use Anonymous Classes:**
+- When implementing multiple methods of an interface.
+- When you need to access `this` as the instance of the anonymous class.
+- When extending a class and overriding methods.
+
+Would you like more examples or further clarification on functional interfaces and their relation to lambda expressions?
+
+---
+---
+
+### **How Does the `default` Method in Interfaces Work?**
+
+A `default` method in an interface is a method with a body, introduced in **Java 8**. It allows an interface to provide a **default implementation** for a method, enabling backward compatibility and reducing boilerplate code.
+
+#### **Key Points:**
+1. A `default` method is defined in an interface using the `default` keyword.
+2. Classes implementing the interface can:
+   - Use the default implementation as-is.
+   - Override the `default` method with a custom implementation.
+
+---
+
+### **Why Was `default` Method Introduced?**
+
+1. **Backward Compatibility:**  
+   - Before Java 8, if a new method was added to an interface, all implementing classes had to implement it.  
+   - With `default` methods, new methods can be added to interfaces without breaking existing implementations.
+
+2. **Multiple Inheritance of Behavior:**  
+   - Provides a way for interfaces to include functionality without needing abstract classes.
+
+3. **Streamlining API Evolution:**  
+   - Java collections and other libraries use `default` methods to introduce new functionalities (e.g., `forEach` in `Iterable`).
+
+---
+
+### **Example: Default Method in Interface**
+
+```java
+interface Vehicle {
+    // Abstract method
+    void start();
+
+    // Default method
+    default void stop() {
+        System.out.println("The vehicle is stopping.");
+    }
+}
+
+class Car implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Car is starting.");
+    }
+
+    // Uses the default stop() implementation from Vehicle
+}
+
+class Bike implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Bike is starting.");
+    }
+
+    // Overrides the default stop() method
+    @Override
+    public void stop() {
+        System.out.println("Bike is stopping in its own way.");
+    }
+}
+
+public class DefaultMethodDemo {
+    public static void main(String[] args) {
+        Vehicle car = new Car();
+        car.start();
+        car.stop();
+
+        Vehicle bike = new Bike();
+        bike.start();
+        bike.stop();
+    }
+}
+```
+
+---
+
+### **Output:**
+```
+Car is starting.
+The vehicle is stopping.
+Bike is starting.
+Bike is stopping in its own way.
+```
+
+---
+
+### **Explanation of the Example:**
+1. The `Vehicle` interface has:
+   - An abstract method `start()` that must be implemented by all implementing classes.
+   - A `default` method `stop()` with a predefined implementation.
+
+2. The `Car` class:
+   - Implements the `start()` method.
+   - Uses the default implementation of `stop()` from the `Vehicle` interface.
+
+3. The `Bike` class:
+   - Implements the `start()` method.
+   - Overrides the `stop()` method to provide a custom implementation.
+
+---
+
+### **Conflict Resolution with Multiple Interfaces**
+
+If a class implements multiple interfaces that provide conflicting `default` methods, the class must explicitly resolve the conflict.
+
+```java
+interface A {
+    default void greet() {
+        System.out.println("Hello from A");
+    }
+}
+
+interface B {
+    default void greet() {
+        System.out.println("Hello from B");
+    }
+}
+
+class C implements A, B {
+    @Override
+    public void greet() {
+        // Resolve the conflict explicitly
+        A.super.greet(); // or B.super.greet()
+        System.out.println("Hello from C");
+    }
+}
+
+public class ConflictResolution {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.greet();
+    }
+}
+```
+
+#### **Output:**
+```
+Hello from A
+Hello from C
+```
+
+---
+
+Would you like to explore another example, such as using default methods in the Java Collections API?
+
+
+---
+
+### **What is an Immutable Class in Java?**
+
+An **immutable class** is a class whose objects cannot be modified after they are created. Once an object is constructed, its state (data) cannot be changed. Immutable classes are widely used in Java, such as `String`, `Integer`, and `BigDecimal`.
+
+---
+
+### **Characteristics of an Immutable Class**
+
+1. **Final Class**: The class should be declared as `final` to prevent subclassing, which could compromise immutability.
+2. **Final Fields**: All fields should be declared as `private` and `final` to ensure they cannot be modified after initialization.
+3. **No Setter Methods**: The class should not have any methods to modify the state of the object.
+4. **Initialize Fields in Constructor**: All fields must be initialized via the constructor.
+5. **Defensive Copies**: If a field is mutable (like a `Date` or `List`), return a copy instead of the original object to prevent external modification.
+
+---
+
+### **Steps to Create an Immutable Class in Java**
+
+1. Declare the class as `final`.
+2. Declare all instance variables as `private` and `final`.
+3. Initialize all fields through a constructor.
+4. Do not provide setters.
+5. Provide getters that return a copy of mutable fields (if any).
+6. Ensure that any mutable objects passed to the constructor are deeply copied to prevent external references.
+
+---
+
+### **Example of an Immutable Class**
+
+```java
+import java.util.Date;
+
+public final class ImmutableClass {
+    private final String name;
+    private final int age;
+    private final Date birthDate; // Mutable field
+
+    // Constructor
+    public ImmutableClass(String name, int age, Date birthDate) {
+        this.name = name;
+        this.age = age;
+
+        // Defensive copy of mutable object
+        this.birthDate = new Date(birthDate.getTime());
+    }
+
+    // Getter for name
+    public String getName() {
+        return name;
+    }
+
+    // Getter for age
+    public int getAge() {
+        return age;
+    }
+
+    // Getter for birthDate (return a copy)
+    public Date getBirthDate() {
+        return new Date(birthDate.getTime());
+    }
+
+    public static void main(String[] args) {
+        Date birthDate = new Date();
+        ImmutableClass person = new ImmutableClass("John", 25, birthDate);
+
+        System.out.println("Name: " + person.getName());
+        System.out.println("Age: " + person.getAge());
+        System.out.println("BirthDate: " + person.getBirthDate());
+
+        // Attempt to modify birthDate
+        birthDate.setTime(0);
+        System.out.println("Modified BirthDate: " + person.getBirthDate()); // Original date remains unchanged
+    }
+}
+```
+
+---
+
+### **Explanation of the Example**
+
+1. **`final`**** Keyword**:
+
+   - The class is declared as `final` to prevent inheritance.
+   - All instance variables (`name`, `age`, and `birthDate`) are marked as `final`.
+
+2. **Defensive Copy**:
+
+   - The `birthDate` field is mutable (`Date`), so a defensive copy is created in the constructor and in the getter.
+
+3. **No Setters**:
+
+   - No setter methods are provided, ensuring the object's state cannot be changed.
+
+4. **Immutability Guaranteed**:
+
+   - External attempts to modify the `birthDate` object do not affect the internal state of the `ImmutableClass` object.
+
+---
+
+### **Advantages of Immutable Classes**
+
+1. **Thread-Safety**: Immutable objects are inherently thread-safe as their state cannot change.
+2. **Cache-Friendly**: Can be safely shared and reused without copying, reducing memory usage.
+3. **Simplified Testing and Debugging**: Since their state cannot change, bugs related to state modification are eliminated.
+
+---
+
+### **Common Mistakes to Avoid**
+
+1. **Allowing Direct Access to Mutable Fields**:
+
+   ```java
+   public Date getBirthDate() {
+       return birthDate; // Exposes internal state
+   }
+   ```
+
+   **Solution**: Return a defensive copy.
+
+2. **Not Marking the Class as ****`final`**:
+   If the class is not `final`, a subclass can override its behavior and compromise immutability.
+
+3. **Not Copying Mutable Parameters in the Constructor**:
+
+   ```java
+   this.birthDate = birthDate; // Retains reference to the mutable object
+   ```
+
+   **Solution**: Use `new Date(birthDate.getTime())` for defensive copying.
+
+---
+
+### **Real-Life Examples**
+
+1. **`String`**** Class**:
+   The `String` class in Java is immutable. Any operation that modifies a `String` creates a new instance rather than changing the existing one.
+
+2. **Custom Immutable Class for Configuration**:
+   Immutable objects are commonly used for configuration or settings in applications where the state should remain constant after initialization.
+
+By following these principles, you can create robust, immutable classes in Java that are easy to use and maintain.
+
+
+---
+---
+
+### **List of Java Constructor Interview Questions with Detailed Answers and Examples**
+
+---
+
+### **1. What is a Constructor in Java?**
+**Answer:**
+A constructor is a special method in Java used to initialize an object when it is created. It has the same name as the class and no return type (not even `void`).
+
+**Example:**
+```java
+public class Example {
+    private String message;
+
+    // Constructor
+    public Example(String message) {
+        this.message = message;
+    }
+
+    public void printMessage() {
+        System.out.println("Message: " + message);
+    }
+
+    public static void main(String[] args) {
+        Example example = new Example("Hello, Constructor!");
+        example.printMessage(); // Output: Message: Hello, Constructor!
+    }
+}
+```
+
+---
+
+### **2. What are the Types of Constructors in Java?**
+**Answer:**
+There are two types of constructors:
+1. **Default Constructor**: A no-argument constructor provided by Java if no constructors are explicitly defined.
+2. **Parameterized Constructor**: A constructor with parameters to initialize objects with specific values.
+
+**Example:**
+```java
+class Example {
+    private int number;
+
+    // Default Constructor
+    public Example() {
+        this.number = 0;
+    }
+
+    // Parameterized Constructor
+    public Example(int number) {
+        this.number = number;
+    }
+
+    public void display() {
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example defaultExample = new Example();
+        Example parameterizedExample = new Example(10);
+
+        defaultExample.display();         // Output: Number: 0
+        parameterizedExample.display();  // Output: Number: 10
+    }
+}
+```
+
+---
+
+### **3. What is the Difference Between a Constructor and a Method?**
+**Answer:**
+
+| Feature               | Constructor                         | Method                                |
+|-----------------------|-------------------------------------|---------------------------------------|
+| Name                  | Same as the class name             | Can have any name                     |
+| Return Type           | No return type (not even `void`)   | Must have a return type               |
+| Purpose               | Initialize an object               | Perform a task                        |
+| Invocation            | Called automatically during object creation | Called explicitly                     |
+
+**Example:**
+```java
+class Example {
+    private String text;
+
+    // Constructor
+    public Example(String text) {
+        this.text = text;
+    }
+
+    // Method
+    public void display() {
+        System.out.println("Text: " + text);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example example = new Example("Hello");
+        example.display(); // Output: Text: Hello
+    }
+}
+```
+
+---
+
+### **4. Can a Constructor be Overloaded?**
+**Answer:**
+Yes, constructors can be overloaded by defining multiple constructors with different parameter lists.
+
+**Example:**
+```java
+class OverloadExample {
+    private int number;
+
+    // Default Constructor
+    public OverloadExample() {
+        this.number = 0;
+    }
+
+    // Parameterized Constructor
+    public OverloadExample(int number) {
+        this.number = number;
+    }
+
+    public void display() {
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        OverloadExample obj1 = new OverloadExample();
+        OverloadExample obj2 = new OverloadExample(42);
+
+        obj1.display(); // Output: Number: 0
+        obj2.display(); // Output: Number: 42
+    }
+}
+```
+
+---
+
+### **5. Can a Constructor Call Another Constructor in the Same Class?**
+**Answer:**
+Yes, a constructor can call another constructor using the `this()` keyword. This is known as **constructor chaining**.
+
+**Example:**
+```java
+class ChainingExample {
+    private int number;
+
+    // Constructor 1
+    public ChainingExample() {
+        this(10); // Calls Constructor 2
+    }
+
+    // Constructor 2
+    public ChainingExample(int number) {
+        this.number = number;
+    }
+
+    public void display() {
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ChainingExample obj = new ChainingExample();
+        obj.display(); // Output: Number: 10
+    }
+}
+```
+
+---
+
+### **6. Can a Constructor be Private in Java?**
+**Answer:**
+Yes, a constructor can be private. This is typically used in the **Singleton Design Pattern** to restrict object creation from outside the class.
+
+**Example:**
+```java
+class Singleton {
+    private static Singleton instance;
+
+    // Private Constructor
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Singleton obj1 = Singleton.getInstance();
+        Singleton obj2 = Singleton.getInstance();
+
+        System.out.println(obj1 == obj2); // Output: true
+    }
+}
+```
+
+---
+
+### **7. Can a Constructor Have a Return Statement?**
+**Answer:**
+A constructor cannot have a return type (not even `void`), but it can use the `return` keyword to exit early.
+
+**Example:**
+```java
+class Example {
+    public Example(String text) {
+        if (text == null || text.isEmpty()) {
+            System.out.println("Invalid input. Exiting constructor.");
+            return;
+        }
+        System.out.println("Text: " + text);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new Example("");        // Output: Invalid input. Exiting constructor.
+        new Example("Hello!");  // Output: Text: Hello!
+    }
+}
+```
+
+---
+
+### **8. What Happens if a Class Does Not Have a Constructor?**
+**Answer:**
+If a class does not define any constructor, Java provides a **default constructor**. This constructor is parameterless and initializes instance variables to their default values.
+
+**Example:**
+```java
+class DefaultConstructorExample {
+    int number;
+    String text;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        DefaultConstructorExample obj = new DefaultConstructorExample();
+        System.out.println("Number: " + obj.number); // Output: Number: 0
+        System.out.println("Text: " + obj.text);     // Output: Text: null
+    }
+}
+```
+
+---
+
+### **9. Can a Constructor Throw an Exception?**
+**Answer:**
+Yes, a constructor can throw exceptions using the `throws` keyword.
+
+**Example:**
+```java
+class ExceptionExample {
+    public ExceptionExample(int number) throws Exception {
+        if (number < 0) {
+            throw new Exception("Number cannot be negative");
+        }
+        System.out.println("Number: " + number);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        try {
+            new ExceptionExample(-1); // Throws Exception
+        } catch (Exception e) {
+            System.out.println(e.getMessage()); // Output: Number cannot be negative
+        }
+    }
+}
+```
+
+---
+
+### **10. Can You Use `super()` and `this()` Together in a Constructor?**
+**Answer:**
+No, `super()` and `this()` cannot be used together in the same constructor. They must be the first statement, and only one of them can be used.
+
+**Example:**
+```java
+class Parent {
+    public Parent() {
+        System.out.println("Parent Constructor");
+    }
+}
+
+class Child extends Parent {
+    public Child() {
+        super(); // Calls Parent Constructor
+        System.out.println("Child Constructor");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new Child();
+        // Output:
+        // Parent Constructor
+        // Child Constructor
+    }
+}
+```
+
+---
+
+These questions cover the most common aspects of Java constructors and provide practical examples to illustrate their usage.
+---
+---
+
+A **memory leak** occurs when an application fails to release memory that is no longer needed, causing the application to consume increasing amounts of memory over time. In a monolith application, memory leaks can lead to **performance degradation**, **high CPU utilization (due to frequent garbage collection)**, and eventually **application crashes** due to `OutOfMemoryError`.
+
+---
+
+### **Common Causes of Memory Leaks**
+1. **Unreleased Object References**:
+   - Objects are held in memory due to lingering references, even though they are no longer needed.
+   - **Example**: Adding objects to a collection (e.g., `List` or `Map`) but never removing them.
+
+2. **Static Variables**:
+   - Static variables have a lifecycle tied to the application's lifespan and may hold objects unnecessarily.
+   - **Example**: A `static Map` storing data that grows indefinitely.
+
+3. **Listener or Callback References**:
+   - Event listeners or callbacks are registered but never unregistered, causing objects to stay in memory.
+   - **Example**: Registering listeners in GUIs or event-driven frameworks without proper cleanup.
+
+4. **Thread Local Variables**:
+   - Improper use of `ThreadLocal` variables can cause memory to linger beyond the intended scope.
+   - **Example**: Thread-local data not cleared after thread execution.
+
+5. **Caching Without Eviction**:
+   - Caching strategies that do not remove stale or unused entries.
+   - **Example**: A cache (like `HashMap`) growing without size limits.
+
+6. **Custom Class Loaders**:
+   - Improper handling of class loaders can cause memory leaks, especially in applications that reload modules (e.g., web applications in servlet containers).
+   - **Example**: Retaining references to objects from the previous class loader after redeployment.
+
+7. **Poorly Managed Collections**:
+   - Collections that grow indefinitely without cleanup.
+   - **Example**: Accumulating logs or temporary data in an unbounded collection.
+
+8. **Finalizer or Shutdown Hooks**:
+   - Objects waiting for finalization or shutdown hooks can stay in memory longer than necessary.
+   - **Example**: Using `finalize()` improperly instead of explicit resource cleanup.
+
+9. **Improper Use of Weak/Soft References**:
+   - Weak or soft references not managed properly, leading to unintentional retention of objects.
+   - **Example**: Misusing `WeakHashMap` without understanding its behavior.
+
+---
+
+### **How to Detect Memory Leaks**
+1. **Monitoring Tools**:
+   - Use tools like **JVM monitoring tools** (VisualVM, JConsole) or APM tools (AppDynamics, Dynatrace) to track memory usage over time.
+
+2. **Heap Dumps**:
+   - Capture heap dumps using tools like `jmap` or built-in profilers and analyze them with tools like Eclipse MAT (Memory Analyzer Tool).
+
+3. **Garbage Collection Logs**:
+   - Enable and analyze GC logs to check for frequent garbage collections and excessive memory usage.
+
+4. **Profilers**:
+   - Use profilers (e.g., YourKit, JProfiler) to monitor object retention and identify the source of leaks.
+
+---
+
+### **How to Fix and Prevent Memory Leaks**
+1. **Release References**:
+   - Ensure unused objects are dereferenced.
+   - **Example**: Remove entries from collections like `Map` or `List` when they are no longer needed.
+
+2. **Use Weak or Soft References**:
+   - Use `WeakReference` or `SoftReference` for objects that can be garbage collected when not strongly referenced.
+
+3. **Unregister Listeners**:
+   - Properly unregister listeners or callbacks when they are no longer needed.
+   - **Example**: `eventSource.removeListener(listener)`.
+
+4. **Use Thread Pools Properly**:
+   - Avoid creating too many threads or improperly handling `ThreadLocal` variables. Clear thread-local values explicitly after use.
+
+5. **Optimize Caching**:
+   - Use cache libraries like **Guava Cache** or **Caffeine** with eviction policies.
+   - Set size limits and expiration times for cache entries.
+
+6. **Static Variables**:
+   - Be cautious with `static` variables. Use them sparingly and only when necessary.
+
+7. **Avoid Finalize**:
+   - Do not rely on `finalize()` for resource cleanup; use `try-with-resources` or explicit cleanup methods.
+
+8. **Class Loader Management**:
+   - Avoid holding references to objects loaded by previous class loaders when reloading modules.
+
+9. **Use Tools for Analysis**:
+   - Integrate heap dump analysis into the debugging process to proactively identify leaks.
+
+---
+
+### **Example of a Memory Leak in Java**
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakExample {
+    private static List<Object> memoryLeakList = new ArrayList<>();
+
+    public static void main(String[] args) {
+        while (true) {
+            Object obj = new Object();
+            memoryLeakList.add(obj); // Object added but never removed
+        }
+    }
+}
+```
+
+**Fix**:
+Use a bounded collection or properly clear the list when objects are no longer needed:
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemoryLeakFixed {
+    private static List<Object> memorySafeList = new ArrayList<>();
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) { // Limit the size of the list
+            Object obj = new Object();
+            memorySafeList.add(obj);
+        }
+    }
+}
+```
+
+---
+
+By being proactive with coding practices, profiling, and regular monitoring, you can minimize the risk of memory leaks in your monolith application.
+
+---
+---
+High CPU utilization in a running monolith application can stem from various causes. Here are some common reasons and their explanations:
+---
+
+### 1. **Inefficient Code or Algorithm**
+   - **Description**: Suboptimal algorithms or inefficient loops can consume excessive CPU resources.
+   - **Example**: A poorly implemented sorting algorithm or an unnecessary nested loop can lead to high computational overhead.
+
+---
+
+### 2. **High Concurrency/Threading Issues**
+   - **Description**: Excessive concurrent threads or thread contention for shared resources can lead to high CPU usage.
+   - **Example**: A thread pool with an unbounded number of threads or improper synchronization leading to CPU spinning.
+
+---
+
+### 3. **High Request Load**
+   - **Description**: If the monolith is under heavy traffic, the application server may struggle to handle the increased number of incoming requests.
+   - **Example**: High API call volume during peak traffic times or unexpected spikes in user activity.
+
+---
+
+### 4. **Inefficient Database Queries**
+   - **Description**: Poorly written or unoptimized queries can lead to excessive CPU usage on the application side if processing large datasets.
+   - **Example**: Loading too much data into memory or executing complex joins without proper indexing.
+
+---
+
+### 5. **Excessive Logging**
+   - **Description**: Verbose logging, especially at debug or trace levels, can consume significant CPU resources.
+   - **Example**: Logging every incoming request and response payload during high traffic.
+
+---
+
+### 6. **Memory Leaks**
+   - **Description**: Memory leaks can trigger frequent garbage collection, leading to high CPU utilization.
+   - **Example**: Accumulating objects in memory that are never released due to bad references.
+
+---
+
+### 7. **Garbage Collection Overhead**
+   - **Description**: Inefficient garbage collection settings or excessive object creation can lead to high CPU utilization by the JVM garbage collector.
+   - **Example**: Using default GC settings without tuning them for high load scenarios.
+
+---
+
+### 8. **Improper Configuration**
+   - **Description**: Misconfigured thread pools, caching layers, or other system resources can cause bottlenecks.
+   - **Example**: A thread pool with too few threads causing tasks to pile up.
+
+---
+
+### 9. **CPU-Intensive Operations**
+   - **Description**: Certain operations are inherently CPU-intensive, such as encryption, compression, or image/video processing.
+   - **Example**: Encoding a large video file on the server.
+
+---
+
+### 10. **Third-Party Library Issues**
+   - **Description**: Bugs or inefficiencies in third-party libraries used by the application.
+   - **Example**: Using a library that has known performance issues with certain inputs.
+
+---
+
+### 11. **Deadlocks or Infinite Loops**
+   - **Description**: Threads stuck in a deadlock or infinite loop can hog CPU resources.
+   - **Example**: A misconfigured retry mechanism causing infinite retries.
+
+---
+
+### How to Diagnose?
+1. **Monitor Metrics**:
+   - Use monitoring tools (e.g., ELK, Grafana, Prometheus) to track CPU usage.
+2. **Thread Dump Analysis**:
+   - Use `jstack` or similar tools to analyze thread behavior.
+3. **Profiling**:
+   - Use profilers like VisualVM, JProfiler, or YourKit to identify hotspots.
+4. **Database Query Analysis**:
+   - Monitor slow queries and analyze execution plans.
+5. **Log Analysis**:
+   - Check logs for excessive or unnecessary entries.
+
+---
+
+### How to Mitigate?
+- Optimize the code and algorithms.
+- Tune thread pool and GC configurations.
+- Optimize database queries and indexing.
+- Reduce logging levels in production.
+- Implement caching for frequently used data.
+- Scale the application horizontally (e.g., via load balancers).
+
+Let me know if you'd like deeper insights into any of these causes or solutions!
+---
+---
+Java EE (Java Platform, Enterprise Edition) and Jakarta EE (Jakarta Platform, Enterprise Edition) are both platforms for building enterprise-level applications in Java. However, they differ primarily in governance, branding, and evolution. Here's a breakdown:
+
+---
+
+### 1. **Governance and Ownership**
+   - **Java EE**:
+     - Was developed and maintained by Sun Microsystems, and later Oracle Corporation after it acquired Sun.
+     - Oracle controlled the platform's specifications, implementation, and branding.
+
+   - **Jakarta EE**:
+     - Jakarta EE is the successor to Java EE, now governed by the **Eclipse Foundation**.
+     - The transition happened after Oracle decided to donate Java EE to the Eclipse Foundation in 2017.
+     - The community-driven approach under the Eclipse Foundation fosters greater transparency and collaboration.
+
+---
+
+### 2. **Branding and Naming**
+   - **Java EE**:
+     - The "Java" name is a trademark of Oracle, and the platform was branded under the "Java" family.
+     - The naming rights remained with Oracle.
+
+   - **Jakarta EE**:
+     - Oracle retained the "Java" trademark, so the platform was rebranded as "Jakarta EE."
+     - The new name was chosen to reflect its fresh direction under the Eclipse Foundation.
+
+---
+
+### 3. **Evolution**
+   - **Java EE**:
+     - Java EE had a slower release cycle under Oracle.
+     - Major versions were infrequent, and updates took longer due to corporate decision-making processes.
+
+   - **Jakarta EE**:
+     - Jakarta EE is designed to have a faster, more agile release cycle under the community-driven model.
+     - The goal is to respond more quickly to technological advancements and developer needs.
+
+---
+
+### 4. **Specifications and Compatibility**
+   - **Java EE**:
+     - The last release was **Java EE 8** in 2017, which included technologies like Servlet 4.0, JSON-B, and improvements to CDI and JAX-RS.
+
+   - **Jakarta EE**:
+     - Jakarta EE 8 was functionally identical to Java EE 8 to ensure a seamless transition for developers and vendors.
+     - Subsequent versions, such as **Jakarta EE 9**, introduced namespace changes (from `javax.*` to `jakarta.*`) as part of its evolution.
+     - **Jakarta EE 10** introduced new features, modern APIs, and better support for cloud-native architectures.
+
+---
+
+### 5. **Namespace Changes**
+   - One of the most significant differences is the change in package namespaces:
+     - **Java EE**: Used `javax.*` (e.g., `javax.servlet`, `javax.persistence`).
+     - **Jakarta EE**: Moved to `jakarta.*` (e.g., `jakarta.servlet`, `jakarta.persistence`) starting from Jakarta EE 9.
+
+---
+
+### 6. **Community and Ecosystem**
+   - **Java EE**:
+     - Was largely controlled by Oracle, with limited input from the broader community.
+
+   - **Jakarta EE**:
+     - Open to contributions from a wide range of individuals, organizations, and vendors.
+     - Aims to modernize the platform for cloud-native and microservices-based applications.
+
+---
+
+### Summary Table
+
+| Aspect            | Java EE                     | Jakarta EE                  |
+|--------------------|-----------------------------|-----------------------------|
+| Governance         | Oracle                     | Eclipse Foundation          |
+| Branding           | "Java" (Oracle-owned)      | "Jakarta" (community-driven)|
+| Namespace          | `javax.*`                  | `jakarta.*`                 |
+| Evolution Speed    | Slower                     | Faster                      |
+| Release Example    | Java EE 8                  | Jakarta EE 10               |
+| Ecosystem          | Corporate-driven           | Community-driven            |
+
+---
+
+### Conclusion
+Jakarta EE is the modern evolution of Java EE, focused on agility, innovation, and community collaboration. If you're starting a new enterprise project or maintaining an existing one, transitioning to Jakarta EE is recommended for its up-to-date features and community support.
+---
+
+### What is a Marker Interface?
+
+A **Marker Interface** in Java is an interface that does not contain any methods or fields and serves as a *tag* or *marker* to indicate that a class possesses some special property or behavior. Marker interfaces provide metadata to the Java runtime or framework, signaling that classes implementing these interfaces should be treated differently.
+
+#### Examples of Marker Interfaces in Java
+1. **Serializable**: Marks a class as capable of being serialized.
+2. **Cloneable**: Marks a class as capable of being cloned.
+3. **Remote**: Marks a class for use in Java RMI (Remote Method Invocation).
+
+### Use Case of Marker Interfaces
+Marker interfaces are used to indicate or tag that a class qualifies for a certain behavior or capability. The decision of whether a class should exhibit the marked behavior is usually made by:
+1. JVM or frameworks during runtime.
+2. Custom logic checking for the presence of the interface using `instanceof` or reflection.
+
+---
+
+### How to Write a Custom Marker Interface
+A custom marker interface can be created by defining an interface without any methods or fields.
+
+#### Steps to Create a Custom Marker Interface
+
+1. Define an empty interface.
+2. Use it to mark classes.
+3. Add logic to check if a class implements the marker interface.
+
+#### Example: Custom Marker Interface for Auditing
+
+1. **Define the Marker Interface**
+   ```java
+   public interface Auditable {
+   }
+   ```
+
+2. **Use the Marker Interface in Classes**
+   ```java
+   public class User implements Auditable {
+       private String name;
+       private String email;
+
+       // Constructor, Getters, and Setters
+       public User(String name, String email) {
+           this.name = name;
+           this.email = email;
+       }
+
+       // Getters and Setters
+       public String getName() {
+           return name;
+       }
+
+       public void setName(String name) {
+           this.name = name;
+       }
+
+       public String getEmail() {
+           return email;
+       }
+
+       public void setEmail(String email) {
+           this.email = email;
+       }
+   }
+   ```
+
+3. **Add Logic to Check for Marker Interface**
+   ```java
+   public class MarkerInterfaceExample {
+
+       public static void main(String[] args) {
+           User user = new User("Alice", "alice@example.com");
+
+           if (user instanceof Auditable) {
+               System.out.println("This class is auditable. Perform auditing logic here.");
+           } else {
+               System.out.println("This class is not auditable.");
+           }
+       }
+   }
+   ```
+
+---
+
+### Key Points
+- Marker interfaces are typically used for classification and metadata.
+- They are checked during runtime, either using `instanceof` or reflection.
+- In modern Java, **annotations** are often preferred over marker interfaces because they offer more flexibility and readability. 
+
+#### Example Using Annotation (Preferred Approach)
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Auditable {
+}
+```
+You can then use the `@Auditable` annotation and check it using reflection.
+---
+### In Java, both the `Comparable` and `Comparator` interfaces are used to compare objects, but they serve different purposes and are implemented in different ways. Here's a detailed comparison:
+
+### 1. **Comparable Interface:**
+   - **Purpose:** Used to define the natural ordering of objects. It provides a single method `compareTo()` that compares the current object with the specified object.
+   - **Usage:** A class implements `Comparable` to impose a natural order on its objects. This ordering is typically the "default" or "natural" way that objects of this class should be compared.
+   - **Method:** 
+     - `public int compareTo(T o);`
+     - It returns:
+       - A negative integer if the current object is less than the specified object.
+       - Zero if the current object is equal to the specified object.
+       - A positive integer if the current object is greater than the specified object.
+
+   - **Example:**
+     ```java
+     class Student implements Comparable<Student> {
+         int rollNo;
+         String name;
+
+         public Student(int rollNo, String name) {
+             this.rollNo = rollNo;
+             this.name = name;
+         }
+
+         @Override
+         public int compareTo(Student other) {
+             return this.rollNo - other.rollNo;  // Compare based on roll number
+         }
+
+         @Override
+         public String toString() {
+             return "Student{" + "rollNo=" + rollNo + ", name='" + name + '\'' + '}';
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             List<Student> students = new ArrayList<>();
+             students.add(new Student(3, "John"));
+             students.add(new Student(1, "Alice"));
+             students.add(new Student(2, "Bob"));
+
+             Collections.sort(students);  // Uses compareTo to sort by roll number
+             System.out.println(students);
+         }
+     }
+     ```
+   - **Output:**
+     ```
+     [Student{rollNo=1, name='Alice'}, Student{rollNo=2, name='Bob'}, Student{rollNo=3, name='John'}]
+     ```
+
+### 2. **Comparator Interface:**
+   - **Purpose:** Used to define an external, custom ordering of objects. It allows you to create multiple ways to compare objects, unlike `Comparable` which provides a single comparison method.
+   - **Usage:** You create a separate class or an anonymous inner class to implement `Comparator`. It’s particularly useful when you cannot modify the class whose objects you want to sort, or when you need multiple ways of comparing the same type of object.
+   - **Method:** 
+     - `public int compare(T o1, T o2);`
+     - It returns:
+       - A negative integer if `o1` is less than `o2`.
+       - Zero if `o1` is equal to `o2`.
+       - A positive integer if `o1` is greater than `o2`.
+
+   - **Example:**
+     ```java
+     import java.util.*;
+
+     class Student {
+         int rollNo;
+         String name;
+
+         public Student(int rollNo, String name) {
+             this.rollNo = rollNo;
+             this.name = name;
+         }
+
+         @Override
+         public String toString() {
+             return "Student{" + "rollNo=" + rollNo + ", name='" + name + '\'' + '}';
+         }
+     }
+
+     class RollNoComparator implements Comparator<Student> {
+         @Override
+         public int compare(Student s1, Student s2) {
+             return s1.rollNo - s2.rollNo;  // Compare by roll number
+         }
+     }
+
+     class NameComparator implements Comparator<Student> {
+         @Override
+         public int compare(Student s1, Student s2) {
+             return s1.name.compareTo(s2.name);  // Compare by name
+         }
+     }
+
+     public class Main {
+         public static void main(String[] args) {
+             List<Student> students = new ArrayList<>();
+             students.add(new Student(3, "John"));
+             students.add(new Student(1, "Alice"));
+             students.add(new Student(2, "Bob"));
+
+             // Sort by roll number using RollNoComparator
+             Collections.sort(students, new RollNoComparator());
+             System.out.println("Sorted by roll number: " + students);
+
+             // Sort by name using NameComparator
+             Collections.sort(students, new NameComparator());
+             System.out.println("Sorted by name: " + students);
+         }
+     }
+     ```
+   - **Output:**
+     ```
+     Sorted by roll number: [Student{rollNo=1, name='Alice'}, Student{rollNo=2, name='Bob'}, Student{rollNo=3, name='John'}]
+     Sorted by name: [Student{rollNo=1, name='Alice'}, Student{rollNo=2, name='Bob'}, Student{rollNo=3, name='John'}]
+     ```
+
+### Key Differences:
+
+| Aspect               | Comparable                           | Comparator                          |
+|----------------------|--------------------------------------|-------------------------------------|
+| **Method**           | `compareTo()`                        | `compare()`                         |
+| **Location of Logic**| Inside the class itself              | Outside the class (in a separate class) |
+| **Modification**     | Must modify the class to implement it| No need to modify the class         |
+| **Number of Comparison Strategies** | Single natural order          | Multiple custom orders              |
+| **Used in**          | `Collections.sort()` or `Arrays.sort()` | `Collections.sort()` or `Arrays.sort()` with Comparator |
+
+### When to Use:
+- Use `Comparable` when you have a natural ordering that should be part of the class itself (e.g., sorting by an ID or name in a consistent way).
+- Use `Comparator` when you need to provide multiple sorting strategies or when you can't modify the class you’re sorting (e.g., sorting by multiple attributes like age or salary).
+
+---
 Why cloneable is called marker interface when we must override clone method if implementing cloneable  marker interface but the same is not applicable for serializable
 The difference between **`Cloneable`** and **`Serializable`** as marker interfaces, despite both being marker interfaces, lies in their **purpose** and **implementation**. Let's break this down:
 
@@ -4966,3 +6332,78 @@ Each method serves different use cases:
 - Use **ForkJoinPool** for parallel computation.
 - Use **CompletableFuture** for asynchronous tasks.
 - Use **Callable** if you need results or exception handling.
+
+---
+
+Both `SynchronizedHashMap` and `ConcurrentHashMap` are used for thread-safe operations on maps in Java, but they have key differences in their performance and behavior. Choosing between them depends on your use case.
+
+---
+
+## **1. SynchronizedHashMap**
+A `SynchronizedHashMap` is simply a `HashMap` that is wrapped with synchronization using `Collections.synchronizedMap()`. 
+
+```java
+Map<String, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+```
+
+### **When to Use SynchronizedHashMap**
+- **Low concurrency needs** – If multiple threads only occasionally access the map, this approach might be sufficient.
+- **External synchronization possible** – Iterating over a `SynchronizedHashMap` requires external synchronization to avoid `ConcurrentModificationException`.
+- **Small-scale applications** – If performance is not a concern, but you still need thread safety, this is a simple option.
+
+### **Drawbacks**
+- Synchronizes the entire map for every read/write operation, leading to poor performance under high concurrency.
+- Requires explicit synchronization during iteration.
+
+Example of required external synchronization:
+```java
+synchronized(syncMap) {
+    for (Map.Entry<String, String> entry : syncMap.entrySet()) {
+        System.out.println(entry.getKey() + " => " + entry.getValue());
+    }
+}
+```
+
+---
+
+## **2. ConcurrentHashMap**
+`ConcurrentHashMap` is a more sophisticated thread-safe alternative designed for high-concurrency scenarios.
+
+```java
+Map<String, String> concurrentMap = new ConcurrentHashMap<>();
+```
+
+### **When to Use ConcurrentHashMap**
+- **High concurrency needs** – Multiple threads frequently read/write to the map.
+- **Better performance** – Uses a segmented locking mechanism (instead of locking the entire map).
+- **Iteration without explicit synchronization** – Uses weakly consistent iterators, which do not throw `ConcurrentModificationException`.
+
+### **Advantages**
+- **Lock-free read operations** – Read operations do not block.
+- **Fine-grained locking** – Updates lock only specific segments rather than the entire map.
+- **Higher throughput under multi-threading** – Significantly faster than `SynchronizedHashMap` in concurrent environments.
+
+### **Limitations**
+- Does **not** allow `null` keys or values.
+- Is **not** a direct replacement for `HashMap` if full consistency is required (since iterators are weakly consistent).
+
+---
+
+## **Comparison Table**
+
+| Feature               | SynchronizedHashMap                              | ConcurrentHashMap                             |
+|----------------------|--------------------------------|--------------------------------|
+| **Thread Safety**   | Yes (full synchronization)    | Yes (fine-grained locks)      |
+| **Performance**     | Slower due to full locking    | Faster due to segment-level locking |
+| **Concurrency**     | Low to moderate               | High                           |
+| **Iteration**       | Needs external synchronization | No explicit synchronization needed (Weakly Consistent Iterator) |
+| **Null Keys/Values** | Allowed                        | Not allowed                    |
+| **Use Case**        | Simple multi-threaded apps    | High-performance concurrent applications |
+
+---
+
+### **Final Recommendation**
+- Use **`SynchronizedHashMap`** when you have low concurrency and need simple synchronization.
+- Use **`ConcurrentHashMap`** for high-concurrency environments where multiple threads frequently modify the map.
+
+Would you like a code example comparing their performance? 🚀

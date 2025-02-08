@@ -1,6 +1,176 @@
+---
+---
+
+### **Difference Between Authentication and Authorization**
+
+| **Aspect**             | **Authentication**                                                     | **Authorization**                                                   |
+|-------------------------|------------------------------------------------------------------------|----------------------------------------------------------------------|
+| **Definition**          | Verifying the identity of a user or entity.                          | Granting permission to access specific resources or perform actions. |
+| **Purpose**             | Confirms "Who you are."                                               | Confirms "What you are allowed to do."                              |
+| **Focus**               | Focuses on verifying credentials (e.g., username and password).       | Focuses on validating access rights for a user.                     |
+| **Process**             | Happens before authorization.                                         | Happens after authentication.                                       |
+| **HTTP Status Codes**   | `401 Unauthorized` if authentication fails.                          | `403 Forbidden` if authorization fails.                             |
+| **Examples**            | - Login page to verify username and password.                        | - Accessing an admin-only dashboard after logging in.               |
+
+---
+
+### **HTTP Status Codes for Authentication and Authorization**
+
+1. **Authentication Failure**:
+   - **HTTP Status Code**: `401 Unauthorized` (despite the misleading name).
+   - **Meaning**: The client must authenticate itself to get the requested response.
+   - **Example**: 
+     - When a user provides incorrect credentials (e.g., wrong username/password).
+     - If a client omits a required `Authorization` header.
+
+   ```http
+   HTTP/1.1 401 Unauthorized
+   WWW-Authenticate: Basic realm="Access to the secure site"
+   Content-Type: application/json
+
+   {
+       "error": "Authentication required. Please provide valid credentials."
+   }
+   ```
+
+2. **Authorization Failure**:
+   - **HTTP Status Code**: `403 Forbidden`.
+   - **Meaning**: The server understands the request but refuses to fulfill it due to insufficient permissions.
+   - **Example**:
+     - A user tries to access an admin-only resource without admin privileges.
+     - A token is valid but lacks the required permissions for the requested resource.
+
+   ```http
+   HTTP/1.1 403 Forbidden
+   Content-Type: application/json
+
+   {
+       "error": "You do not have permission to access this resource."
+   }
+   ```
+
+---
+
+### **Example: Authentication and Authorization Workflow**
+
+1. **Scenario**:
+   - A user tries to access a restricted resource `/admin-dashboard`.
+
+2. **Step 1: Authentication**:
+   - **Client Request**: Sends a request with no credentials or incorrect credentials.
+   - **Server Response**: Returns `401 Unauthorized`.
+     ```http
+     HTTP/1.1 401 Unauthorized
+     WWW-Authenticate: Bearer realm="Access requires authentication"
+     ```
+
+3. **Step 2: Authorization**:
+   - **Client Request**: Sends valid credentials but lacks sufficient permissions.
+   - **Server Response**: Returns `403 Forbidden`.
+     ```http
+     HTTP/1.1 403 Forbidden
+     Content-Type: application/json
+
+     {
+         "error": "You are authenticated but not authorized to access this resource."
+     }
+     ```
+
+4. **Step 3: Success**:
+   - **Client Request**: Sends valid credentials with the required permissions.
+   - **Server Response**: Returns `200 OK` with the resource.
+     ```http
+     HTTP/1.1 200 OK
+     Content-Type: application/json
+
+     {
+         "message": "Welcome to the admin dashboard!"
+     }
+     ```
+
+---
+
+### **Key Points to Remember**
+- **401 Unauthorized**: Indicates authentication has failed or is required.
+- **403 Forbidden**: Indicates authentication succeeded, but the user does not have the necessary permissions.
+- Properly handling these codes improves API security and usability by providing clear feedback to the client.
+---
+
+### **Difference Between Authentication and Authorization**
+
+| Feature                | **Authentication**                                                      | **Authorization**                                                       |
+|------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Definition**         | The process of verifying the identity of a user or system.             | The process of determining what actions or resources a user/system has access to. |
+| **Focus**              | Identifies "Who are you?"                                               | Determines "What can you do?" or "What resources can you access?"      |
+| **Purpose**            | Confirms the identity of the user.                                      | Validates permissions for specific actions or resources.               |
+| **Process**            | Usually involves credentials such as username/password, biometrics, etc. | Involves checking permissions and roles assigned to the authenticated user. |
+| **Sequence**           | Always happens before authorization.                                    | Happens only after successful authentication.                          |
+| **Outcome**            | Ensures the user/system is genuine.                                     | Ensures the user/system has proper access rights.                      |
+| **Implementation Examples** | Login forms, fingerprint scans, OTP verification.                   | Role-based access control (RBAC), file permissions, access tokens.     |
+| **Level of Access**    | No access beyond proving identity.                                      | Grants or denies access to resources based on permissions.             |
+| **Technology Examples**| OAuth, OpenID, Multi-factor Authentication (MFA).                      | Access Control Lists (ACLs), RBAC, Policies.                           |
+| **Example Questions**  | "Who is trying to log in?"                                              | "Is this user allowed to view this page or perform this operation?"    |
+
+---
+
+### **Example: Authentication vs. Authorization in a Web Application**
+
+1. **Authentication**: 
+   - A user enters their **username and password** into a login form.
+   - The system verifies the credentials by checking them against stored records in the database.
+
+   **Outcome**: The system confirms the user is who they claim to be.
+
+2. **Authorization**:
+   - After login, the user tries to access an admin dashboard.
+   - The system checks if the user’s role includes "Admin" permissions.
+
+   **Outcome**: 
+   - If authorized: Access is granted to the dashboard.
+   - If unauthorized: Access is denied, even though the user is authenticated.
+
+---
+
+### **Key Analogy**
+
+Think of authentication as **showing an ID card** to enter a building (proving identity). Authorization is like **having a specific keycard or permissions** to access certain rooms inside the building. 
+
+Both are essential for secure systems but serve distinct purposes.
+
+---
+---
+
 Securing API endpoints in microservices is crucial to protect sensitive data, ensure authorized access, and maintain the integrity of the system. Below are the approaches to secure API endpoints in a microservices architecture:
 
 ---
+- Table which store token (findByFieldNameAndSystemNameAndKmsRegion)
+- ![image](https://github.com/user-attachments/assets/0da5cf44-b704-44b0-82b7-b56c809a0dab)
+- Get token from database
+- if(encryptedSecretOptional.get().getExpiryAt().minusMinutes(5).isAfter(LocalDateTime.now())) -> token is valid
+- Token is stored in base64 encrypted format in database based on data_key
+- get Base64.getDecoder().decode(cipherText) [Decoder RFC4648]
+- pass ciphertext and datakey to AmazonHelper.decrypt() to get decrypted token
+-  ```java
+   private static SecretKeySpec decryptKey(final EnvelopeEncryptedMessage envelope) {
+		ByteBuffer encryptedKey = ByteBuffer.wrap(envelope.getEncryptedKey());
+		DecryptRequest decryptRequest = new DecryptRequest().withCiphertextBlob(encryptedKey);
+		ByteBuffer plainTextKey = getAmazonKMSClient().decrypt(decryptRequest).getPlaintext();
+		SecretKeySpec key = new SecretKeySpec(plainTextKey.array(), "AES");
+		return key;
+
+	}
+   ```
+- After getting access token, send it to partner system
+- To generate token
+  - get client id and secret key from AWS secret manager and tokenURL from config server and transaction id of request
+  -     HttpPost httpPost = new HttpPost(postUri);
+        String base64Credentials = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
+        httpPost.setHeader("Authorization", "Basic " + base64Credentials);
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("Connection", "keep-alive");
+        CloseableHttpResponse response = HTTP_CLIENT.execute(httpPost);
+- get access token from response and encrypt it using Amazon KMS and generate one data_key and save to database
+- If token is not expired and required to send request to partner system and refresh token with current time and extend expiry_at with expiry time given by partner system
 
 ### **1. Authentication and Authorization**
 
@@ -482,3 +652,101 @@ Client → [Access Resource] → Resource Server
 
 ### **Conclusion**
 OAuth 2.0 is a powerful and flexible framework for secure authorization. By separating roles and relying on tokens for access, it enables third-party applications to interact with resource servers without compromising user credentials. It is the backbone of modern API-driven systems, especially in microservices, cloud-based platforms, and distributed systems.
+
+---
+
+Authorization in microservices ensures that only authenticated users or services can access specific resources. There are multiple ways to handle authorization in microservices, commonly using **OAuth 2.0, JWT, API Gateway, Role-Based Access Control (RBAC), and Attribute-Based Access Control (ABAC)**. Below are the main strategies:
+
+---
+
+### 1. **Token-Based Authorization (OAuth 2.0 & JWT)**
+A centralized **Identity Provider (IdP)** issues a token that services use to verify authorization.
+
+#### **Steps:**
+1. **User authentication:** A user logs in through an **Authorization Server** (e.g., Keycloak, Okta, Auth0).
+2. **Token issuance:** A token (e.g., JWT) is issued upon successful authentication.
+3. **Token propagation:** The token is sent in API requests (`Authorization: Bearer <token>`).
+4. **Microservice validation:** Each microservice validates the token using a public key (for JWT) or by calling an authorization server.
+5. **Access granted/denied:** Based on claims in the token (e.g., roles, permissions), access is granted or denied.
+
+#### **Example:**
+A user wants to access an order service:
+   - The user logs in and receives a **JWT token**.
+   - The frontend sends a request with the **JWT token** in the header.
+   - The order service validates the token using the authentication server’s public key.
+   - If valid, it checks the user’s roles/permissions before granting access.
+
+---
+
+### 2. **API Gateway-Based Authorization**
+The **API Gateway** (e.g., Kong, Zuul, API Gateway in AWS) acts as an entry point, handling authorization before forwarding requests.
+
+#### **Steps:**
+1. **Token validation:** The API Gateway verifies the token.
+2. **Request forwarding:** If valid, it forwards the request to the respective microservice.
+3. **Fine-grained authorization:** The microservice can apply additional role-based or attribute-based checks.
+
+#### **Advantages:**
+- Reduces duplication of authentication logic across microservices.
+- Centralized security enforcement.
+- Rate-limiting, logging, and monitoring can be applied.
+
+---
+
+### 3. **Role-Based Access Control (RBAC)**
+RBAC ensures access control based on predefined roles (e.g., **Admin, User, Manager**).
+
+#### **How it Works?**
+- Each user has roles.
+- Each role has a set of permissions.
+- Microservices enforce authorization based on the user’s role.
+
+**Example:**
+- **Admin** can create, update, and delete users.
+- **User** can only view their own data.
+
+JWT tokens often store roles in claims, like:
+```json
+{
+  "sub": "user123",
+  "roles": ["ROLE_USER"]
+}
+```
+Microservices check the role before granting access.
+
+---
+
+### 4. **Attribute-Based Access Control (ABAC)**
+ABAC extends RBAC by considering **attributes** like user location, department, time of access, etc.
+
+#### **Example:**
+- A **manager** can access financial reports **only from office hours**.
+- A **doctor** can access patient records **only for assigned patients**.
+
+Policies are defined using **Policy Enforcement Points (PEP)** and **Policy Decision Points (PDP)**.
+
+---
+
+### 5. **Service-to-Service Authorization (mTLS & OAuth 2.0)**
+Microservices may need to communicate securely. Service-to-service authorization can be handled using:
+
+1. **Mutual TLS (mTLS):** Services authenticate each other using certificates.
+2. **OAuth 2.0 Client Credentials Flow:** One microservice authenticates with another using OAuth tokens.
+
+**Example:**
+- Order service calls the Payment service using an OAuth 2.0 client token.
+- Payment service verifies the token before processing the request.
+
+---
+
+### **Best Practices for Authorization in Microservices**
+✅ **Centralized Authentication** – Use an identity provider (e.g., Keycloak, Okta).  
+✅ **Use JWT for Stateless Authorization** – Avoid session-based authentication.  
+✅ **Limit API Exposure** – Use API Gateway for centralized security policies.  
+✅ **Adopt RBAC or ABAC** – Define clear roles and permissions.  
+✅ **Service-to-Service Security** – Use OAuth 2.0, mTLS, or service mesh (Istio).  
+✅ **Least Privilege Access** – Grant only necessary permissions.  
+
+---
+
+Would you like code examples for implementing any of these approaches? 🚀

@@ -1,5 +1,79 @@
 Here are some advanced Java collections interview questions along with answers that would be helpful for experienced professionals:
 
+In Java, `HashMap`, `SynchronizedMap`, and `ConcurrentHashMap` are part of the Java Collections Framework, and they serve different purposes depending on the need for thread safety and performance. Here's how you can create and use each:
+
+### 1. **HashMap**
+`HashMap` is not thread-safe and should be used only in single-threaded environments or where thread safety is handled externally.
+
+```java
+import java.util.HashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>();
+        hashMap.put(1, "Value1");
+        hashMap.put(2, "Value2");
+        System.out.println(hashMap);
+    }
+}
+```
+
+### 2. **SynchronizedMap**
+`SynchronizedMap` wraps a `HashMap` to make it thread-safe. Use it when you need thread-safe operations but can tolerate lower performance due to synchronized methods.
+
+```java
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, String> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
+        synchronizedMap.put(1, "Value1");
+        synchronizedMap.put(2, "Value2");
+
+        // Synchronize block when iterating
+        synchronized (synchronizedMap) {
+            for (Map.Entry<Integer, String> entry : synchronizedMap.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+        }
+    }
+}
+```
+
+### 3. **ConcurrentHashMap**
+`ConcurrentHashMap` is thread-safe and designed for high concurrency. It uses a fine-grained locking mechanism to allow concurrent reads and writes.
+
+```java
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        ConcurrentHashMap<Integer, String> concurrentHashMap = new ConcurrentHashMap<>();
+        concurrentHashMap.put(1, "Value1");
+        concurrentHashMap.put(2, "Value2");
+
+        concurrentHashMap.forEach((key, value) -> {
+            System.out.println(key + ": " + value);
+        });
+    }
+}
+```
+
+### Key Differences:
+| Feature                  | HashMap         | SynchronizedMap                     | ConcurrentHashMap               |
+|--------------------------|-----------------|-------------------------------------|---------------------------------|
+| **Thread Safety**        | No              | Yes (single lock for all operations) | Yes (fine-grained locks)       |
+| **Performance**          | High            | Low (due to global lock)            | High (due to concurrent locks) |
+| **Null Keys/Values**     | Allows 1 null key and multiple null values | Same as `HashMap`                | No null keys or values allowed |
+| **Concurrency Level**    | N/A             | Single-threaded operations          | Multiple threads concurrently  |
+
+Choose the appropriate map type based on your use case:
+- Use `HashMap` for single-threaded applications.
+- Use `SynchronizedMap` for simple thread-safe needs.
+- Use `ConcurrentHashMap` for high-performance, thread-safe applications.
+
 ### 1. **What is the difference between `HashMap` and `ConcurrentHashMap`?**
    - **Answer**: 
       - `HashMap` is not thread-safe, meaning it is not designed for concurrent access. If multiple threads modify it simultaneously, it can lead to unpredictable behavior, like data corruption.
@@ -98,6 +172,79 @@ public class SynchronizedHashMapExample {
 **Output:**
 The synchronized map ensures consistent and safe outputs even with multiple threads accessing it.
 
+---
+The **load factor** in a `HashMap` is a measure of how full the hash table can get before it needs to be resized. It plays a crucial role in the performance and efficiency of the `HashMap`.
+
+### Key Points About Load Factor:
+1. **Definition**:
+   The load factor is a fraction that determines the threshold for resizing. It is calculated as:
+   \[
+   \text{Load Factor} = \frac{\text{Number of Entries in the Map}}{\text{Capacity of the Hash Table}}
+   \]
+
+2. **Default Load Factor**:
+   - The default load factor in Java's `HashMap` is **0.75**.
+   - This means the hash table will resize (i.e., double its capacity) when the map is 75% full.
+
+3. **Resizing**:
+   - When the number of entries exceeds the product of the current capacity and the load factor, the hash table is resized.
+   - Resizing involves creating a new hash table with double the capacity and rehashing all existing entries into the new table.
+
+4. **Effect on Performance**:
+   - **Lower Load Factor**: 
+     - Reduces the likelihood of collisions (entries hashing to the same bucket), improving lookup time.
+     - Increases memory usage because the table needs more space.
+   - **Higher Load Factor**: 
+     - Increases the likelihood of collisions, potentially reducing performance.
+     - Decreases memory usage as fewer resizes are required.
+
+### How It Works Internally:
+1. When you create a `HashMap`, you can specify the **initial capacity** and **load factor**:
+   ```java
+   HashMap<Integer, String> map = new HashMap<>(initialCapacity, loadFactor);
+   ```
+
+2. During put operations, the map checks if the current size exceeds the threshold:
+   \[
+   \text{Threshold} = \text{Capacity} \times \text{Load Factor}
+   \]
+   If exceeded, it triggers a resize.
+
+3. **Example**:
+   - Suppose you create a `HashMap` with an initial capacity of 16 and a default load factor of 0.75.
+   - The threshold is \( 16 \times 0.75 = 12 \).
+   - After adding the 13th element, the `HashMap` resizes, doubling its capacity to 32.
+
+### Example in Code:
+```java
+import java.util.HashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<Integer, String> map = new HashMap<>(4, 0.75f); // Initial capacity 4, load factor 0.75
+
+        // Adding entries
+        map.put(1, "One");
+        map.put(2, "Two");
+        map.put(3, "Three");
+        map.put(4, "Four");
+
+        // The next entry will exceed the threshold (4 * 0.75 = 3) and trigger resizing
+        map.put(5, "Five");
+
+        System.out.println("Map Size: " + map.size());
+        System.out.println("Map Contents: " + map);
+    }
+}
+```
+
+### Output:
+```plaintext
+Map Size: 5
+Map Contents: {1=One, 2=Two, 3=Three, 4=Four, 5=Five}
+```
+
+Here, you can observe that resizing happens once the load factor threshold is exceeded.
 ---
 
 ### **Key Notes**
