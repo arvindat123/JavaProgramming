@@ -6,6 +6,13 @@ import java.util.stream.IntStream;
 
 public class HelpfulCode {
     public static void main(String[] args) {
+        //How to split words
+        String str = "Hello World";
+        String[] split = str.split("");
+        char[] charArray = str.toCharArray();
+        System.out.println(Arrays.toString(split)); //[H, e, l, l, o,  , W, o, r, l, d]
+        System.out.println(Arrays.toString(charArray)); //[H, e, l, l, o,  , W, o, r, l, d]
+
         boolean isNegative = 10 < 12; //true
         System.out.println(Math.abs(-989)); //989 return positive of number
         StringBuilder sb = new StringBuilder("123456").reverse(); //print reverse number

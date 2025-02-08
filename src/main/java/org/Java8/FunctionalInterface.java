@@ -32,6 +32,7 @@ public class FunctionalInterface {
 		Supplier<String> s = () -> "Java is fun";
 		System.out.println(s.get());
 
+
 //Function example
 		/*public interface Function<T, R> {
 			R apply(T t);

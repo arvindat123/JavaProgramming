@@ -70,6 +70,12 @@ public class MapClass {
 //     String s3 = "java";
 //     System.out.println(s1.equals(s2));
         Map<String, String> hMap = new HashMap<String, String>();
+        Map<Integer, String> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
+        ConcurrentHashMap<Integer, String> concurrentHashMap = new ConcurrentHashMap<>();
+        concurrentHashMap.put(1, "Value1");
+        concurrentHashMap.put(2, "Value2");
+
+        concurrentHashMap.forEach((key, value) -> System.out.println(key+" "+ value));
 
         // add elements into the Map
         hMap.put("1", "Welcome");
@@ -77,6 +83,8 @@ public class MapClass {
         hMap.put("3", "Geeks");
         hMap.put("4", "For");
         hMap.put(null, null);
+
+        hMap.forEach((key,value) -> System.out.println(key+value));
 
         System.out.println("Map : " + hMap);
 

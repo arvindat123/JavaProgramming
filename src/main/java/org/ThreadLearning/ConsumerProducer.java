@@ -14,9 +14,10 @@ public class ConsumerProducer {
             while(true){
                 int produced = random.nextInt(100);
                 try {
-                    Thread.sleep(2000);
+
                     queue.put(produced); //Thread blocks if queue is full
                     System.out.println("Produced=" + produced);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e){
                     System.out.println(e.getMessage());
                 }
@@ -24,13 +25,13 @@ public class ConsumerProducer {
         };
 
         new Thread(producer).start(); //thread1
-        new Thread(producer).start(); //thread2
+        //new Thread(producer).start(); //thread2
 
         //Consumer
         final Runnable consumer = () -> {
            while(true){
                try {
-                   Thread.sleep(2000);
+                   Thread.sleep(1000);
                    Integer consumed = queue.take();//Thread blocks if queue is empty
                    System.out.println("Consumed=" + consumed);
                } catch (InterruptedException e){
@@ -40,7 +41,7 @@ public class ConsumerProducer {
         };
 
         new Thread(consumer).start();//thread1
-        new Thread(consumer).start();//thread2
+       // new Thread(consumer).start();//thread2
 
        //Thread.sleep(1000);
     }

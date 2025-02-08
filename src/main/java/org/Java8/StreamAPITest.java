@@ -140,6 +140,33 @@ public class StreamAPITest {
          * System.out.println("Number of days over 110 in 10 day period " +
          * tempsInPhoenix.stream().filter(i -> i > 110).count());
          */
+
+        /*Map<Boolean, List<Integer>> collect = Stream.of(1, 2, 3, 4, 5, 6).collect(Collectors.partitioningBy(n -> n % 2 == 0));
+        System.out.println(collect);*/
+
+        /*double a = Stream.of(1,2,3).mapToInt(b->b.intValue()).average().orElse(1);
+        System.out.println(a);*/
+
+       /* boolean allEven = Stream.of(2,4,6,8).allMatch(a -> a % 2 == 0);
+        System.out.println(allEven);*/
+
+        /*Stream.of("Alice", "Bob", "Charlie").sorted(Comparator.comparingInt(String::length).reversed()).forEach(System.out::println);*/
+
+        /*Stream.of("Alice", "Bob", "Charlie").map(a -> a.toUpperCase()).forEach(System.out::println);*/
+
+        /*int sum = Stream.of(1,2,3).mapToInt(a ->a.intValue()).sum();
+        System.out.println(sum);*/
+
+        /* Stream.of("Alice", "Bob", "Charlie").map(a -> a.length()).forEach(System.out::println);*/
+
+        /*List<List<String>> listOfList = Arrays.asList(Arrays.asList("arvind","arid"), Arrays.asList("aridy","arrid"));
+        List<String> collect = listOfList.stream().flatMap(List::stream).collect(Collectors.toList());*/
+
+
+        /*Optional<Integer> a = Stream.of(1,3,4,5,6,9,4,3).sorted(Comparator.reverseOrder()).skip(1).findFirst();
+        System.out.println(a.isPresent() ? a.get() : "there is no second highest");*/
+
+        //"arvind".chars().mapToObj(c -> (char)c).collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
     }
 }
 

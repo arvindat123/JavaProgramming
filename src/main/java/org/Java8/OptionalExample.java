@@ -4,9 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class OptionalExample {
     public static void main(String[] args) {
+
+        Optional<String> str123 = Stream.of("arvind", "arvid", "arid").filter(a -> a.startsWith("a")).findAny();
+        if(str123.isPresent()){
+            System.out.println(str123.get());
+        }
 
         //Code that will throw null pointer exception
         /*String[] words = new String[10];
