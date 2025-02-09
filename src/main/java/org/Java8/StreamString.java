@@ -1,5 +1,9 @@
 package org.Java8;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -21,5 +25,9 @@ public class StreamString {
                 .collect(StringBuilder::new, (sb, c) -> sb.append((char) c), StringBuilder::append)
                 .toString();
         System.out.println(reversed1);
+
+        //Find the longest string in a list of strings using Java streams:
+        List<String> strings = Arrays.asList("apple", "banana", "cherry", "date", "grapefruit");
+        Optional<String> longestString = strings.stream().max(Comparator.comparingInt(String::length));
     }
 }
