@@ -6406,4 +6406,58 @@ Map<String, String> concurrentMap = new ConcurrentHashMap<>();
 - Use **`SynchronizedHashMap`** when you have low concurrency and need simple synchronization.
 - Use **`ConcurrentHashMap`** for high-concurrency environments where multiple threads frequently modify the map.
 
-Would you like a code example comparing their performance? 🚀
+---
+
+### Difference Between `HashMap` and `TreeMap` in Java
+
+Both `HashMap` and `TreeMap` are implementations of the `Map` interface in Java, but they have significant differences in terms of performance, ordering, and underlying data structures.
+
+| Feature          | `HashMap` | `TreeMap` |
+|-----------------|----------|----------|
+| **Ordering**    | No ordering (unsorted) | Sorted in natural order (or custom `Comparator`) |
+| **Implementation** | Uses a **hash table** | Uses a **red-black tree** (self-balancing binary search tree) |
+| **Performance (Time Complexity)** | `O(1)` for `put()`, `get()`, `remove()` (on average) | `O(log n)` for `put()`, `get()`, `remove()` |
+| **Null Keys** | Allows one `null` key | Does **not** allow `null` key |
+| **Null Values** | Allows multiple `null` values | Allows multiple `null` values |
+| **Usage** | Best for **fast lookups** when ordering is not needed | Best when **sorted order** is required |
+
+---
+
+## Example Demonstrating `HashMap` and `TreeMap`
+```java
+import java.util.*;
+
+public class MapExample {
+    public static void main(String[] args) {
+        // HashMap Example (No ordering)
+        Map<Integer, String> hashMap = new HashMap<>();
+        hashMap.put(3, "Apple");
+        hashMap.put(1, "Banana");
+        hashMap.put(2, "Cherry");
+        hashMap.put(5, "Mango");
+        hashMap.put(4, "Grapes");
+
+        System.out.println("HashMap (Unordered): " + hashMap);
+
+        // TreeMap Example (Sorted by keys)
+        Map<Integer, String> treeMap = new TreeMap<>();
+        treeMap.putAll(hashMap);
+
+        System.out.println("TreeMap (Sorted by keys): " + treeMap);
+    }
+}
+```
+
+### **Output Example**
+```
+HashMap (Unordered): {3=Apple, 1=Banana, 2=Cherry, 5=Mango, 4=Grapes}
+TreeMap (Sorted by keys): {1=Banana, 2=Cherry, 3=Apple, 4=Grapes, 5=Mango}
+```
+
+### **Key Takeaways**
+1. **HashMap does not guarantee order**, so elements appear in an arbitrary sequence.
+2. **TreeMap maintains elements in sorted order** based on their keys.
+3. **HashMap is faster (`O(1)`)** for insertion and lookup compared to **TreeMap (`O(log n)`)** due to the difference in underlying data structures.
+4. **TreeMap is useful when ordered traversal is needed** (e.g., in applications where data must be accessed in a sorted manner).
+
+Would you like me to explain any part in more detail? 🚀
