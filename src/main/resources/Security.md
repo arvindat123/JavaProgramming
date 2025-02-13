@@ -144,6 +144,83 @@ Securing API endpoints in microservices is crucial to protect sensitive data, en
 
 ---
 - API Proxies: Route, transform and secure your traffic through the API Gateway
+- API Products: Control how developers consume your API 
+- Shared Flow:
+  - SF-Internet Access: Flow to include ACL policies for internet Access. It will have some policies which applies
+    - IP Rules: Whitelist IPs for internet Access under match rule
+    - Denied Access: If IPs is not listed then it will throw 403 Forbidden (Denied Access)
+  - SF-central-token-validation: Validate token with uberorg token proxy. It will have some policies which applies.
+    ```xml
+              <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+              <SharedFlow name="default">
+                  <Step>
+                      <Name>Extract-Access-Token</Name>
+                  </Step>
+                  <Step>
+                      <Name>SC-Validate-Token</Name>
+                      <Condition>oauthtoken!=null</Condition>
+                  </Step>
+                  <Step>
+                      <Name>RF-Invalid-Access-Token</Name>
+                      <Condition>oauthtoken==null OR tokenValidateResponse.status.code!=200</Condition>
+                  </Step>
+                  <Step>
+                      <Name>Extract-Token-Validation-Response-Values</Name>
+                  </Step>
+                  <Step>
+                      <Name>Quota-Gekko</Name>
+                      <Condition>quota_value!=null</Condition>
+                  </Step>
+                  <Step>
+                      <Name>Spike-Arrest-Gekko</Name>
+                  </Step>
+                  </SharedFlow>
+
+  - Extract: Access Token
+    ```xml 
+            <Source>request</Source>
+            <Header name="Authorization">
+            <Pattern ignoreCase="false">Bearer {oauthtoken}</Pattern>
+            </Header>
+  
+  - Validate Token
+    ```xml
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <ServiceCallout async="false" continueOnError="true" enabled="true" name="SC-Validate-Token">
+                <DisplayName>SC: Validate Token</DisplayName>
+                <Properties/>
+                <Request clearPayload="true" variable="tokenValidateRequest">
+                    <Set>
+                        <Headers>
+                            <Header name="X-HP-Organization">{organization.name}</Header>
+                            <Header name="X-HP-Environment">{environment.name}</Header>
+                            <Header name="Content-Type">application/json</Header>
+                            <Header name="X-BU_apikey">TgO95XcuG5jGcTuOpaHyuDUVwrSBHLmd</Header>
+                        </Headers>
+                        <Payload contentType="application/json" variablePrefix="%" variableSuffix="#">{"accessToken":"%oauthtoken#","resourcePath":"%request.path#"}</Payload>
+                        <Verb>POST</Verb>
+                    </Set>
+                </Request>
+                <Response>tokenValidateResponse</Response>
+                <HTTPTargetConnection>
+                    <Properties/>
+                    <LoadBalancer>
+                        <Server name="coreOauth"/>
+                    </LoadBalancer>
+                    <Path>/hpid/oauth/v1/validate</Path>
+                </HTTPTargetConnection>
+            </ServiceCallout> 
+    
+  - spike arrest
+    ```xml
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <SpikeArrest async="false" continueOnError="false" enabled="true" name="Spike-Arrest-Gekko">
+        <DisplayName>Spike Arrest Gekko</DisplayName>
+        <Rate>1000ps</Rate>
+        <UseEffectiveCount>true</UseEffectiveCount>
+    </SpikeArrest>
+  
+  - 
 - Table which store token (findByFieldNameAndSystemNameAndKmsRegion)
 - ![image](https://github.com/user-attachments/assets/0da5cf44-b704-44b0-82b7-b56c809a0dab)
 - Get token from database
