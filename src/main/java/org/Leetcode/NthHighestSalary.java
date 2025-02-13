@@ -22,8 +22,8 @@ public class NthHighestSalary {
 
         map.entrySet().stream().collect(Collectors.toList()).forEach(System.out::println);
 
-       // Map.Entry<String,Integer> m = map.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-              //  .collect(Collectors.toList()).get(1);
+       //Map.Entry<String,Integer> m = map.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+             // .collect(Collectors.toList()).get(1);
         //2nd approach
      /*  Map.Entry<String,Integer> m = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .collect(Collectors.toList()).get(0);*/

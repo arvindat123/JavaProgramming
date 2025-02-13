@@ -143,6 +143,7 @@ Both are essential for secure systems but serve distinct purposes.
 Securing API endpoints in microservices is crucial to protect sensitive data, ensure authorized access, and maintain the integrity of the system. Below are the approaches to secure API endpoints in a microservices architecture:
 
 ---
+- API Proxies: Route, transform and secure your traffic through the API Gateway
 - Table which store token (findByFieldNameAndSystemNameAndKmsRegion)
 - ![image](https://github.com/user-attachments/assets/0da5cf44-b704-44b0-82b7-b56c809a0dab)
 - Get token from database

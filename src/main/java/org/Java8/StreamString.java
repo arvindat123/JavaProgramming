@@ -39,6 +39,10 @@ public class StreamString {
         System.out.println(reversed1);
 
         //Find the longest string in a list of strings using Java streams:
+        List<String> strings = Arrays.asList("apple", "banana", "cherry", "date", "grapefruit");
+        Optional<String> longestString = strings.stream().max(Comparator.comparingInt(String::length));
+
+        //Find the longest string in a list of strings using Java streams:
         List<String> strings = Arrays
                 .asList("apple", "banana", "cherry", "redy","date", "grapefruit");
         Optional<String> str1 = strings.stream().min(Comparator.comparingInt(String::length));
