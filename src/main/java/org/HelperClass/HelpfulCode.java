@@ -1,11 +1,25 @@
 package org.HelperClass;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class HelpfulCode {
     public static void main(String[] args) {
+
+        //HashMap
+        Map<String, Integer> map = new HashMap<>();
+        String str1 = "arvind";
+        map.put(str1, 123);
+        str1 = str1 + "abc";
+        System.out.println(map.get(str1)); // null
+
+        //to convert number to binary code
+        String binaryCode = Integer.toString(5, 2); //101
+        System.out.println(binaryCode); // 101
+
         //How to split words
         String str = "Hello World";
         String[] split = str.split("");
