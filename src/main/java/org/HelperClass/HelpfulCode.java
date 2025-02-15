@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 public class HelpfulCode {
     public static void main(String[] args) {
-
+        //https://www.geeksforgeeks.org/prime-numbers/
         //HashMap
         Map<String, Integer> map = new HashMap<>();
         String str1 = "arvind";
