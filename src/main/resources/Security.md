@@ -1146,3 +1146,122 @@ public class JWTExample {
 - **Secure Storage**: Store the token securely on the client side (e.g., in HTTP-only cookies or secure storage).
 
 By following these steps and examples, you can create JWT tokens in various programming languages.
+
+---
+
+The `OncePerRequestFilter` is a **base class for filters** in Spring Framework that ensures the filter is executed **only once per request**. It is part of the `org.springframework.web.filter` package and is commonly used in Spring applications to implement custom filters for HTTP requests.
+
+---
+
+### Key Features of `OncePerRequestFilter`
+1. **Guarantees Single Execution**:
+   - The filter ensures that its logic is executed only once per request, even if the request is forwarded or included in another request (e.g., via `RequestDispatcher`).
+
+2. **Convenient Base Class**:
+   - It provides a simple way to implement custom filters by overriding the `doFilterInternal` method, which contains the actual filtering logic.
+
+3. **Integration with Spring's Filter Chain**:
+   - It integrates seamlessly with Spring's filter chain and works well with other Spring features like dependency injection.
+
+4. **Thread Safety**:
+   - The filter is designed to be thread-safe, making it suitable for use in multi-threaded environments like web applications.
+
+---
+
+### How It Works
+- The `OncePerRequestFilter` class extends `GenericFilterBean` and implements `Filter`.
+- It overrides the `doFilter` method to ensure the filter logic is executed only once per request.
+- Developers override the `doFilterInternal` method to implement custom filtering logic.
+
+---
+
+### Example Usage
+A common use case for `OncePerRequestFilter` is implementing a **JWT authentication filter** that validates JWT tokens in incoming requests.
+
+```java
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        // Extract JWT token from the request (e.g., from the Authorization header)
+        String token = extractToken(request);
+
+        if (token != null && validateToken(token)) {
+            // If the token is valid, set the authentication in the SecurityContext
+            setAuthenticationInContext(token);
+        }
+
+        // Continue the filter chain
+        filterChain.doFilter(request, response);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        // Logic to extract the token (e.g., from the Authorization header)
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // Remove "Bearer " prefix
+        }
+        return null;
+    }
+
+    private boolean validateToken(String token) {
+        // Logic to validate the token (e.g., using a JWT library)
+        return true; // Placeholder
+    }
+
+    private void setAuthenticationInContext(String token) {
+        // Logic to set the authentication in the SecurityContext
+    }
+}
+```
+
+---
+
+### Key Methods in `OncePerRequestFilter`
+1. **`doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain)`**:
+   - This is the method you override to implement custom filtering logic.
+   - It is guaranteed to be executed only once per request.
+
+2. **`shouldNotFilter(HttpServletRequest)`**:
+   - You can override this method to specify conditions under which the filter should **not** be applied.
+   - For example, you might skip filtering for certain endpoints.
+
+```java
+@Override
+protected boolean shouldNotFilter(HttpServletRequest request) {
+    // Skip filtering for public endpoints
+    return request.getServletPath().startsWith("/public/");
+}
+```
+
+---
+
+### When to Use `OncePerRequestFilter`
+- **Authentication Filters**: For validating tokens (e.g., JWT, OAuth2).
+- **Logging Filters**: For logging request/response details.
+- **Header Manipulation**: For adding or modifying HTTP headers.
+- **Request/Response Wrapping**: For wrapping requests or responses (e.g., to read the request body multiple times).
+
+---
+
+### Comparison with `GenericFilterBean`
+- `OncePerRequestFilter` extends `GenericFilterBean`, which provides additional features like dependency injection and configuration via Spring's `Environment`.
+- The key difference is that `OncePerRequestFilter` ensures single execution per request, while `GenericFilterBean` does not.
+
+---
+
+### Summary
+- `OncePerRequestFilter` is a convenient base class for implementing custom filters in Spring.
+- It ensures the filter logic is executed only once per request.
+- Commonly used for authentication, logging, and request/response manipulation.
+- Override `doFilterInternal` to implement custom logic and `shouldNotFilter` to skip filtering for specific requests.
