@@ -1265,3 +1265,170 @@ protected boolean shouldNotFilter(HttpServletRequest request) {
 - It ensures the filter logic is executed only once per request.
 - Commonly used for authentication, logging, and request/response manipulation.
 - Override `doFilterInternal` to implement custom logic and `shouldNotFilter` to skip filtering for specific requests.
+
+
+---
+
+The `FilterRegistrationBean` is a **Spring Boot utility class** used to **register and configure custom filters** in a Spring Boot application. It provides a programmatic way to define how a filter should be registered with the servlet container, including its order, URL patterns, and initialization parameters.
+
+---
+
+### Key Uses of `FilterRegistrationBean`
+1. **Register Custom Filters**:
+   - It allows you to register custom filters (e.g., `OncePerRequestFilter`, `Filter`, or any custom implementation) with the servlet container.
+
+2. **Control Filter Order**:
+   - You can specify the order in which the filter is applied relative to other filters using the `setOrder` method.
+
+3. **Specify URL Patterns**:
+   - You can define which URLs the filter should apply to using the `addUrlPatterns` or `setUrlPatterns` methods.
+
+4. **Add Initialization Parameters**:
+   - You can pass initialization parameters to the filter using the `addInitParameter` method.
+
+5. **Enable/Disable Filters**:
+   - You can enable or disable a filter dynamically by setting the `enabled` property.
+
+---
+
+### How to Use `FilterRegistrationBean`
+To use `FilterRegistrationBean`, you typically define it as a `@Bean` in a configuration class. Here’s an example:
+
+```java
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+
+@Configuration
+public class FilterConfig {
+
+    @Bean
+    public FilterRegistrationBean<MyCustomFilter> myCustomFilterRegistration() {
+        FilterRegistrationBean<MyCustomFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new MyCustomFilter()); // Register the custom filter
+        registrationBean.addUrlPatterns("/secure/*"); // Apply to specific URL patterns
+        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // Set filter order
+        registrationBean.addInitParameter("paramName", "paramValue"); // Add init parameters
+        return registrationBean;
+    }
+}
+```
+
+---
+
+### Example: Registering a Custom Filter
+Suppose you have a custom filter `MyCustomFilter` that logs request details. You can register it using `FilterRegistrationBean` as follows:
+
+```java
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+public class MyCustomFilter implements Filter {
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // Initialization logic (optional)
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        System.out.println("Request URL: " + httpRequest.getRequestURL());
+        chain.doFilter(request, response); // Continue the filter chain
+    }
+
+    @Override
+    public void destroy() {
+        // Cleanup logic (optional)
+    }
+}
+```
+
+Now, register this filter using `FilterRegistrationBean`:
+
+```java
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class FilterConfig {
+
+    @Bean
+    public FilterRegistrationBean<MyCustomFilter> myCustomFilterRegistration() {
+        FilterRegistrationBean<MyCustomFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new MyCustomFilter());
+        registrationBean.addUrlPatterns("/*"); // Apply to all URLs
+        registrationBean.setOrder(1); // Set filter order
+        return registrationBean;
+    }
+}
+```
+
+---
+
+### Key Methods in `FilterRegistrationBean`
+1. **`setFilter(Filter filter)`**:
+   - Sets the custom filter to be registered.
+
+2. **`addUrlPatterns(String... urlPatterns)`**:
+   - Specifies the URL patterns to which the filter should apply.
+
+3. **`setOrder(int order)`**:
+   - Sets the order of the filter in the filter chain. Lower values have higher precedence.
+
+4. **`addInitParameter(String name, String value)`**:
+   - Adds initialization parameters to the filter.
+
+5. **`setEnabled(boolean enabled)`**:
+   - Enables or disables the filter.
+
+6. **`setName(String name)`**:
+   - Sets a name for the filter (useful for debugging and logging).
+
+---
+
+### Example: Registering a Spring Security Filter
+If you’re using Spring Security and want to register a custom filter (e.g., a JWT filter), you can do so as follows:
+
+```java
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SecurityFilterConfig {
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilterRegistration(JwtAuthenticationFilter jwtFilter) {
+        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(jwtFilter);
+        registrationBean.addUrlPatterns("/api/*"); // Apply to API endpoints
+        registrationBean.setOrder(2); // Set filter order
+        return registrationBean;
+    }
+}
+```
+
+---
+
+### When to Use `FilterRegistrationBean`
+- **Custom Filters**: When you need to register a custom filter that is not part of Spring Security or other auto-configured filters.
+- **Fine-Grained Control**: When you need to control the order, URL patterns, or initialization parameters of a filter.
+- **Dynamic Configuration**: When you want to enable or disable filters dynamically based on conditions.
+
+---
+
+### Summary
+- `FilterRegistrationBean` is used to register and configure custom filters in a Spring Boot application.
+- It provides control over filter order, URL patterns, initialization parameters, and more.
+- Commonly used for custom logging, authentication, or request/response manipulation filters.
+- Define it as a `@Bean` in a configuration class to register your filters.
