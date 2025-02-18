@@ -5633,3 +5633,150 @@ Spring provides different types of bean scopes, which determine whether a new in
 | **WebSocket** | Each WebSocket session | Session end | WebSocket communication |
 
 Would you like more in-depth examples or explanations for any of these scopes? 🚀
+
+---
+
+**Dependency Injection (DI)** and **Inversion of Control (IoC)** are closely related concepts in software design, often used interchangeably but with distinct meanings. Here's a detailed explanation of each and their differences:
+
+---
+
+### **1. Inversion of Control (IoC)**
+#### **Definition**
+IoC is a **design principle** where the control flow of a program is inverted. Instead of the application controlling the flow, the framework or external entity takes control.
+
+#### **Key Idea**
+- Traditional Approach: The application code controls the flow of execution (e.g., creating objects, calling methods).
+- IoC Approach: The framework or container controls the flow, and the application code responds to events or callbacks.
+
+#### **Examples of IoC**
+- **Event-Driven Programming**: The framework calls your code when an event occurs (e.g., button click in a GUI application).
+- **Template Method Pattern**: A framework defines the skeleton of an algorithm, and the application provides specific implementations.
+- **Dependency Injection**: A specific implementation of IoC where dependencies are provided to a class rather than the class creating them.
+
+#### **Benefits of IoC**
+- Decouples components, making the system more modular and testable.
+- Promotes separation of concerns by letting the framework handle common tasks (e.g., lifecycle management).
+
+---
+
+### **2. Dependency Injection (DI)**
+#### **Definition**
+DI is a **design pattern** and a specific implementation of IoC. It is a technique where the dependencies of a class are provided (injected) from the outside rather than the class creating them itself.
+
+#### **Key Idea**
+- Instead of a class creating its dependencies (e.g., using `new`), the dependencies are passed to the class (e.g., via constructor, setter, or interface).
+
+#### **Types of Dependency Injection**
+1. **Constructor Injection**:
+   - Dependencies are provided via the constructor.
+   - Example:
+     ```java
+     public class UserService {
+         private final UserRepository userRepository;
+
+         public UserService(UserRepository userRepository) {
+             this.userRepository = userRepository;
+         }
+     }
+     ```
+
+2. **Setter Injection**:
+   - Dependencies are provided via setter methods.
+   - Example:
+     ```java
+     public class UserService {
+         private UserRepository userRepository;
+
+         public void setUserRepository(UserRepository userRepository) {
+             this.userRepository = userRepository;
+         }
+     }
+     ```
+
+3. **Interface Injection**:
+   - Dependencies are provided through an interface.
+   - Less common and more complex.
+
+#### **Benefits of DI**
+- Improves testability by allowing dependencies to be mocked or stubbed.
+- Promotes loose coupling between classes.
+- Makes the code more modular and maintainable.
+
+---
+
+### **3. Key Differences Between IoC and DI**
+| **Aspect**              | **Inversion of Control (IoC)**                          | **Dependency Injection (DI)**                 |
+|--------------------------|---------------------------------------------------------|-----------------------------------------------|
+| **Definition**           | A design principle where control is inverted.           | A design pattern that implements IoC.         |
+| **Scope**                | Broader concept applicable to many patterns.            | Specific technique for managing dependencies. |
+| **Focus**                | Control flow of the application.                        | Providing dependencies to a class.            |
+| **Examples**             | Event-driven programming, template method pattern.      | Constructor injection, setter injection.      |
+| **Relationship**         | DI is a specific implementation of IoC.                 | DI relies on IoC to work.                     |
+
+---
+
+### **4. How They Work Together**
+- **IoC** is the principle that defines the inversion of control flow.
+- **DI** is a practical implementation of IoC, where dependencies are injected into a class rather than the class creating them.
+
+#### **Example in Spring Framework**
+Spring is a popular framework that uses IoC and DI extensively.
+
+1. **IoC in Spring**:
+   - Spring controls the lifecycle of objects (beans) and manages their creation, configuration, and destruction.
+   - Example: Spring manages when and how beans are instantiated and wired together.
+
+2. **DI in Spring**:
+   - Spring injects dependencies into beans (e.g., via constructor or setter injection).
+   - Example:
+     ```java
+     @Service
+     public class UserService {
+         private final UserRepository userRepository;
+
+         @Autowired
+         public UserService(UserRepository userRepository) {
+             this.userRepository = userRepository;
+         }
+     }
+     ```
+
+---
+
+### **5. Practical Example**
+#### **Without IoC/DI**
+```java
+public class UserService {
+    private UserRepository userRepository = new UserRepository();
+
+    public void performAction() {
+        userRepository.save();
+    }
+}
+```
+- The `UserService` class creates its own dependency (`UserRepository`), leading to tight coupling.
+
+#### **With IoC/DI**
+```java
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public void performAction() {
+        userRepository.save();
+    }
+}
+```
+- The `UserRepository` dependency is injected into `UserService`, promoting loose coupling and testability.
+
+---
+
+### **6. Summary**
+- **IoC** is a broader principle where control is inverted, and the framework manages the flow of the application.
+- **DI** is a specific pattern that implements IoC by injecting dependencies into a class.
+- Together, they promote modular, testable, and maintainable code by decoupling components and letting the framework handle object creation and wiring.
+
+By understanding and applying these concepts, you can design more flexible and scalable software systems.
