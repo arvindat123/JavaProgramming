@@ -5780,3 +5780,160 @@ public class UserService {
 - Together, they promote modular, testable, and maintainable code by decoupling components and letting the framework handle object creation and wiring.
 
 By understanding and applying these concepts, you can design more flexible and scalable software systems.
+
+---
+
+In Spring Boot, the Actuator module provides several built-in endpoints that allow you to monitor and manage your application. By default, only a few endpoints are enabled (e.g., `/health`), but you can enable additional endpoints by configuring your application.
+
+Here’s how you can enable specific Actuator endpoints in Spring Boot:
+
+---
+
+### 1. **Add the Actuator Dependency**
+Ensure that the `spring-boot-starter-actuator` dependency is included in your `pom.xml` (for Maven) or `build.gradle` (for Gradle).
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+**Gradle:**
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-actuator'
+```
+
+---
+
+### 2. **Enable Specific Endpoints**
+By default, only the `/health` endpoint is exposed over HTTP. To enable additional endpoints, you need to configure them in your `application.properties` or `application.yml` file.
+
+#### Using `application.properties`:
+```properties
+# Enable specific endpoints
+management.endpoints.web.exposure.include=health,info,metrics,env
+
+# Disable all endpoints and then enable specific ones
+management.endpoints.web.exposure.include=*
+management.endpoints.web.exposure.exclude=heapdump,threaddump
+```
+
+#### Using `application.yml`:
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+        exclude: heapdump,threaddump
+```
+
+- `management.endpoints.web.exposure.include`: Specifies which endpoints to expose. Use `*` to expose all endpoints.
+- `management.endpoints.web.exposure.exclude`: Specifies which endpoints to exclude.
+
+---
+
+### 3. **Access the Endpoints**
+Once enabled, you can access the endpoints via HTTP. For example:
+- `/actuator/health` – Application health information.
+- `/actuator/info` – Custom application information.
+- `/actuator/metrics` – Application metrics.
+- `/actuator/env` – Environment properties.
+
+---
+
+### 4. **Secure Endpoints (Optional)**
+If you want to secure the Actuator endpoints, you can integrate Spring Security. For example:
+
+#### Add Spring Security Dependency:
+**Maven:**
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+**Gradle:**
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-security'
+```
+
+#### Configure Security in `application.properties`:
+```properties
+# Enable security for Actuator endpoints
+management.endpoints.web.exposure.include=*
+management.endpoint.health.show-details=always
+
+# Spring Security configuration
+spring.security.user.name=admin
+spring.security.user.password=password
+spring.security.user.roles=ACTUATOR
+```
+
+#### Custom Security Configuration:
+You can also create a custom security configuration class to restrict access to Actuator endpoints.
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class ActuatorSecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/**").hasRole("ACTUATOR")
+                .anyRequest().permitAll()
+            )
+            .httpBasic();
+        return http.build();
+    }
+}
+```
+
+---
+
+### 5. **Customize Endpoint Behavior**
+You can further customize the behavior of Actuator endpoints using additional properties. For example:
+
+- **Change the base path** for Actuator endpoints:
+  ```properties
+  management.endpoints.web.base-path=/manage
+  ```
+
+- **Enable sensitive endpoints** (e.g., `/shutdown`):
+  ```properties
+  management.endpoint.shutdown.enabled=true
+  ```
+
+- **Show details for the `/health` endpoint**:
+  ```properties
+  management.endpoint.health.show-details=always
+  ```
+
+---
+
+### 6. **List of Common Actuator Endpoints**
+Here are some commonly used Actuator endpoints:
+- `/health` – Application health.
+- `/info` – Custom application information.
+- `/metrics` – Application metrics.
+- `/env` – Environment properties.
+- `/beans` – Spring beans in the application context.
+- `/mappings` – URL mappings.
+- `/loggers` – Configure and view loggers.
+- `/threaddump` – Thread dump information.
+- `/heapdump` – Heap dump (disabled by default).
+
+---
+
+By following these steps, you can enable and configure Actuator endpoints in your Spring Boot application.
