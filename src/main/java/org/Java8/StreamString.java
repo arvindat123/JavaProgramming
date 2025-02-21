@@ -38,6 +38,11 @@ public class StreamString {
 
     public static void main(String[] args) {
 
+        //Find 1, 2, 3 highest, lowest element from a list
+        List<Integer> list = Arrays.asList(1,2,4,7,4,5,2,9,8,3);
+        list.stream().sorted().skip(list.size()-3).findFirst().ifPresentOrElse(System.out::println, () -> System.out.println("There is no such element"));
+        list.stream().sorted(Comparator.reverseOrder()).skip(1).findFirst().ifPresentOrElse(System.out::println, ()-> System.out.println("No"));
+
         //Merge two sorted lists into a single sorted list using Java streams:
         List<Integer> list1 = Arrays.asList(1, 3, 5, 7, 9, 45, 67, 89);
         List<Integer> list2 = Arrays.asList(2, 4, 6, 8, 10);
@@ -68,6 +73,7 @@ public class StreamString {
         //Find the longest string in a list of strings using Java streams:
         List<String> strings = Arrays.asList("apple", "banana", "cherry", "date", "grapefruit");
         Optional<String> longestString = strings.stream().max(Comparator.comparingInt(String::length));
+        //strings.stream().max(Comparator.comparingInt(String::length)).ifPresentOrElse(System.out::println, () -> System.out.println("There is no such string"));
 
         //Find the longest string in a list of strings using Java streams:
         List<String> strings1 = Arrays
