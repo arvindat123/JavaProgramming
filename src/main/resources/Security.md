@@ -1562,3 +1562,129 @@ Encryption algorithms are often used in conjunction with specific modes and tech
 - **Key Management**: KDFs, HSMs.
 
 By using strong encryption algorithms and following best practices, you can ensure that your data at rest remains secure and protected from unauthorized access.
+
+---
+
+In **cryptography**, **public keys** and **private keys** are used in **asymmetric encryption** (also known as **public-key cryptography**). They are mathematically related but serve different purposes. Below is a detailed explanation of the differences between public and private keys:
+
+---
+
+### **1. Definition**
+#### **Public Key**
+- A **public key** is a cryptographic key that can be shared openly with anyone.
+- It is used to **encrypt data** or **verify digital signatures**.
+- Example: When someone sends you an encrypted message, they use your public key to encrypt it.
+
+#### **Private Key**
+- A **private key** is a cryptographic key that must be kept secret.
+- It is used to **decrypt data** or **create digital signatures**.
+- Example: You use your private key to decrypt a message that was encrypted with your public key.
+
+---
+
+### **2. Key Characteristics**
+| **Aspect**              | **Public Key**                                  | **Private Key**                               |
+|--------------------------|------------------------------------------------|-----------------------------------------------|
+| **Accessibility**        | Can be shared publicly.                        | Must be kept secret.                          |
+| **Purpose**              | Encrypt data or verify signatures.             | Decrypt data or create signatures.            |
+| **Mathematical Relation**| Derived from the private key.                  | Used to generate the public key.              |
+| **Security**             | Safe to distribute.                            | Must be protected at all costs.               |
+
+---
+
+### **3. How They Work Together**
+Public and private keys are mathematically related but cannot be derived from each other easily. They work together in the following ways:
+
+#### **A. Encryption and Decryption**
+1. **Encryption**:
+   - The sender uses the recipient's **public key** to encrypt the message.
+   - Example: Alice encrypts a message for Bob using Bob's public key.
+2. **Decryption**:
+   - The recipient uses their **private key** to decrypt the message.
+   - Example: Bob decrypts the message using his private key.
+
+#### **B. Digital Signatures**
+1. **Signing**:
+   - The sender uses their **private key** to create a digital signature.
+   - Example: Alice signs a message using her private key.
+2. **Verification**:
+   - The recipient uses the sender's **public key** to verify the signature.
+   - Example: Bob verifies the signature using Alice's public key.
+
+---
+
+### **4. Example Use Cases**
+#### **A. Secure Communication (SSL/TLS)**
+- A website's SSL/TLS certificate contains a **public key**.
+- The browser uses the public key to encrypt data sent to the server.
+- The server uses its **private key** to decrypt the data.
+
+#### **B. Digital Signatures**
+- A software developer signs their code with their **private key**.
+- Users verify the signature using the developer's **public key** to ensure the code has not been tampered with.
+
+#### **C. Cryptocurrency (e.g., Bitcoin)**
+- A user's **public key** is their wallet address.
+- The user's **private key** is used to sign transactions and prove ownership of the wallet.
+
+---
+
+### **5. Key Generation**
+- Public and private keys are generated together using a cryptographic algorithm (e.g., RSA, ECC).
+- Example (RSA Key Pair Generation):
+  ```python
+  from Crypto.PublicKey import RSA
+
+  # Generate a new RSA key pair
+  key = RSA.generate(2048)
+
+  # Extract the private key
+  private_key = key.export_key()
+  print("Private Key:")
+  print(private_key.decode())
+
+  # Extract the public key
+  public_key = key.publickey().export_key()
+  print("Public Key:")
+  print(public_key.decode())
+  ```
+
+---
+
+### **6. Security Considerations**
+#### **Public Key**
+- Since the public key is shared openly, it does not need to be kept secret.
+- However, it must be authentic (i.e., not tampered with or replaced by an attacker).
+
+#### **Private Key**
+- The private key must be kept secure at all times.
+- If the private key is compromised, the security of the system is broken.
+- Best practices for protecting private keys:
+  - Store them in secure hardware (e.g., HSMs).
+  - Use strong passwords or passphrases to encrypt private keys.
+  - Limit access to private keys to authorized personnel only.
+
+---
+
+### **7. Summary of Differences**
+| **Feature**              | **Public Key**                                  | **Private Key**                               |
+|--------------------------|------------------------------------------------|-----------------------------------------------|
+| **Access**               | Publicly shared.                               | Kept secret.                                  |
+| **Purpose**              | Encrypt data, verify signatures.               | Decrypt data, create signatures.             |
+| **Mathematical Relation**| Derived from the private key.                  | Used to generate the public key.             |
+| **Security**             | Safe to distribute.                            | Must be protected.                           |
+
+---
+
+### **8. Real-World Analogy**
+- Think of a **public key** as a padlock that you can give to anyone. They can use it to lock a box (encrypt data), but only you have the key (private key) to unlock it (decrypt data).
+- Think of a **private key** as the key to your house. You must keep it safe because anyone with the key can enter your house (access your data).
+
+---
+
+### **Conclusion**
+- **Public keys** are used for encryption and signature verification.
+- **Private keys** are used for decryption and signature creation.
+- Together, they enable secure communication, data integrity, and authentication in asymmetric cryptography.
+
+By understanding the roles and differences between public and private keys, you can effectively use them to secure your data and communications.
