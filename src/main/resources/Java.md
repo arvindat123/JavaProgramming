@@ -7059,3 +7059,230 @@ System.out.println(result); // Output: [ALICE]
 - When you need to chain multiple operations (e.g., filtering, mapping, reducing) in a clean and readable way.
 
 By understanding that streams do not store data, you can use them effectively for efficient and functional data processing in Java.
+
+
+---
+
+The **Singleton Pattern** is a **creational design pattern** that ensures a class has only one instance and provides a global point of access to that instance. It is commonly used when exactly one object is needed to coordinate actions across a system, such as managing a shared resource or configuration settings.
+
+---
+
+### **Key Features of the Singleton Pattern**
+1. **Single Instance**:
+   - Only one instance of the class is created and shared across the application.
+
+2. **Global Access**:
+   - The instance is accessible globally, typically through a static method.
+
+3. **Lazy Initialization**:
+   - The instance is created only when it is needed (on-demand).
+
+4. **Thread Safety**:
+   - Ensures that the singleton instance is created safely in a multi-threaded environment.
+
+---
+
+### **Use Cases for the Singleton Pattern**
+1. **Configuration Management**:
+   - A single instance to manage application-wide configuration settings.
+
+2. **Logging**:
+   - A single logger instance to handle logging across the application.
+
+3. **Database Connections**:
+   - A single connection pool to manage database connections.
+
+4. **Caching**:
+   - A single cache instance to store frequently accessed data.
+
+5. **Hardware Access**:
+   - A single instance to manage access to hardware resources (e.g., printers).
+
+---
+
+### **Implementation of the Singleton Pattern**
+Here’s how to implement the Singleton Pattern in **Java**:
+
+#### **1. Basic Singleton (Not Thread-Safe)**
+```java
+public class Singleton {
+    // Private static instance
+    private static Singleton instance;
+
+    // Private constructor to prevent instantiation
+    private Singleton() {}
+
+    // Public method to provide access to the instance
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    // Example method
+    public void showMessage() {
+        System.out.println("Hello from Singleton!");
+    }
+}
+```
+
+#### **2. Thread-Safe Singleton (Using Synchronized Method)**
+```java
+public class Singleton {
+    private static Singleton instance;
+
+    private Singleton() {}
+
+    // Synchronized method to ensure thread safety
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    public void showMessage() {
+        System.out.println("Hello from Singleton!");
+    }
+}
+```
+
+#### **3. Thread-Safe Singleton (Using Double-Checked Locking)**
+```java
+public class Singleton {
+    private static volatile Singleton instance;
+
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public void showMessage() {
+        System.out.println("Hello from Singleton!");
+    }
+}
+```
+
+#### **4. Singleton with Enum (Best Approach for Java)**
+```java
+public enum Singleton {
+    INSTANCE;
+
+    public void showMessage() {
+        System.out.println("Hello from Singleton!");
+    }
+}
+```
+
+---
+
+### **Example Usage**
+```java
+public class Main {
+    public static void main(String[] args) {
+        // Get the singleton instance
+        Singleton singleton = Singleton.getInstance();
+
+        // Use the singleton instance
+        singleton.showMessage();
+    }
+}
+```
+
+---
+
+### **Advantages of the Singleton Pattern**
+1. **Controlled Access**:
+   - Ensures that only one instance of the class exists, preventing multiple instances from causing inconsistencies.
+
+2. **Global Access**:
+   - Provides a global point of access to the instance, making it easy to manage shared resources.
+
+3. **Lazy Initialization**:
+   - The instance is created only when needed, saving resources.
+
+4. **Thread Safety**:
+   - Properly implemented singletons are thread-safe, ensuring safe usage in multi-threaded environments.
+
+---
+
+### **Disadvantages of the Singleton Pattern**
+1. **Global State**:
+   - Singletons introduce global state, which can make the code harder to test and maintain.
+
+2. **Tight Coupling**:
+   - Classes that depend on singletons are tightly coupled to the singleton instance, making it harder to replace or mock.
+
+3. **Concurrency Issues**:
+   - If not implemented correctly, singletons can cause issues in multi-threaded environments.
+
+4. **Violation of Single Responsibility Principle**:
+   - Singletons often manage their own lifecycle, which can violate the Single Responsibility Principle.
+
+---
+
+### **When to Use the Singleton Pattern**
+- When you need exactly one instance of a class to coordinate actions across the system.
+- When you want to control access to a shared resource (e.g., database connection, configuration settings).
+- When you need lazy initialization of an object.
+
+---
+
+### **Real-World Example: Logger**
+A common use case for the Singleton Pattern is a **Logger** class that handles logging across an application.
+
+#### **Logger Singleton**
+```java
+public class Logger {
+    private static Logger instance;
+    private StringBuilder log = new StringBuilder();
+
+    private Logger() {}
+
+    public static synchronized Logger getInstance() {
+        if (instance == null) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    public void log(String message) {
+        log.append(message).append("\n");
+    }
+
+    public void printLog() {
+        System.out.println(log.toString());
+    }
+}
+```
+
+#### **Usage**
+```java
+public class Main {
+    public static void main(String[] args) {
+        Logger logger = Logger.getInstance();
+        logger.log("Application started.");
+        logger.log("Performing some operations...");
+        logger.printLog();
+    }
+}
+```
+
+---
+
+### **Summary**
+- The Singleton Pattern ensures that a class has only one instance and provides a global point of access to it.
+- It is useful for managing shared resources, configurations, and logging.
+- Proper implementation ensures thread safety and lazy initialization.
+- Use the Singleton Pattern judiciously, as it can introduce global state and tight coupling.
+
+By understanding and applying the Singleton Pattern, you can effectively manage shared resources and ensure consistency in your applications.
