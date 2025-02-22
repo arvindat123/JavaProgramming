@@ -1432,3 +1432,133 @@ public class SecurityFilterConfig {
 - It provides control over filter order, URL patterns, initialization parameters, and more.
 - Commonly used for custom logging, authentication, or request/response manipulation filters.
 - Define it as a `@Bean` in a configuration class to register your filters.
+
+---
+
+Encrypting data at rest is a critical aspect of data security, ensuring that sensitive information remains protected even when stored on disk or in a database. Various encryption algorithms are used for this purpose, each with its own strengths and use cases. Below is a list of commonly used encryption algorithms for data at rest:
+
+---
+
+### **1. Symmetric Encryption Algorithms**
+Symmetric encryption uses the same key for both encryption and decryption. It is fast and efficient, making it suitable for encrypting large amounts of data.
+
+#### **A. Advanced Encryption Standard (AES)**
+- **Key Sizes**: 128-bit, 192-bit, 256-bit.
+- **Description**: AES is the most widely used symmetric encryption algorithm. It is secure, efficient, and approved by the U.S. government for protecting classified information.
+- **Use Cases**: File encryption, database encryption, disk encryption (e.g., BitLocker, FileVault).
+
+#### **B. Triple DES (3DES)**
+- **Key Sizes**: 168-bit (effectively 112-bit due to vulnerabilities).
+- **Description**: 3DES applies the DES algorithm three times to each data block, providing enhanced security over the original DES.
+- **Use Cases**: Legacy systems, financial transactions (being phased out in favor of AES).
+
+#### **C. Blowfish**
+- **Key Sizes**: 32-bit to 448-bit.
+- **Description**: Blowfish is a fast and flexible symmetric encryption algorithm, though it is less commonly used today.
+- **Use Cases**: File encryption, legacy systems.
+
+#### **D. Twofish**
+- **Key Sizes**: 128-bit, 192-bit, 256-bit.
+- **Description**: Twofish is a successor to Blowfish and is known for its security and performance.
+- **Use Cases**: File encryption, disk encryption.
+
+---
+
+### **2. Asymmetric Encryption Algorithms**
+Asymmetric encryption uses a pair of keys: a public key for encryption and a private key for decryption. It is slower than symmetric encryption but is useful for key exchange and digital signatures.
+
+#### **A. RSA (Rivest-Shamir-Adleman)**
+- **Key Sizes**: 1024-bit, 2048-bit, 4096-bit.
+- **Description**: RSA is one of the most widely used asymmetric encryption algorithms. It is based on the difficulty of factoring large prime numbers.
+- **Use Cases**: Encrypting small amounts of data (e.g., encryption keys), SSL/TLS certificates.
+
+#### **B. Elliptic Curve Cryptography (ECC)**
+- **Key Sizes**: 256-bit, 384-bit, 521-bit.
+- **Description**: ECC provides equivalent security to RSA with smaller key sizes, making it more efficient.
+- **Use Cases**: Mobile devices, SSL/TLS certificates, IoT devices.
+
+---
+
+### **3. Hashing Algorithms**
+Hashing algorithms are used to ensure data integrity and are often combined with encryption for additional security.
+
+#### **A. SHA-256 (Secure Hash Algorithm 256-bit)**
+- **Description**: Part of the SHA-2 family, SHA-256 generates a fixed-size 256-bit hash value.
+- **Use Cases**: Data integrity checks, password hashing, digital signatures.
+
+#### **B. SHA-3 (Secure Hash Algorithm 3)**
+- **Description**: The latest member of the SHA family, SHA-3 is based on the Keccak algorithm.
+- **Use Cases**: Data integrity checks, cryptographic hashing.
+
+#### **C. bcrypt**
+- **Description**: A password-hashing function based on the Blowfish cipher, designed to be slow and resistant to brute-force attacks.
+- **Use Cases**: Password storage.
+
+#### **D. Argon2**
+- **Description**: A modern password-hashing algorithm designed to be memory-hard and resistant to GPU-based attacks.
+- **Use Cases**: Password storage.
+
+---
+
+### **4. Encryption Modes and Techniques**
+Encryption algorithms are often used in conjunction with specific modes and techniques to enhance security.
+
+#### **A. Block Cipher Modes**
+- **Electronic Codebook (ECB)**: Simple but insecure; not recommended for encrypting large amounts of data.
+- **Cipher Block Chaining (CBC)**: Adds randomness by XORing each block with the previous ciphertext block.
+- **Galois/Counter Mode (GCM)**: Provides both encryption and authentication, commonly used with AES.
+
+#### **B. Key Management**
+- **Key Derivation Functions (KDFs)**: Used to derive encryption keys from passwords or other inputs (e.g., PBKDF2, HKDF).
+- **Hardware Security Modules (HSMs)**: Secure hardware devices for managing encryption keys.
+
+---
+
+### **5. Common Use Cases for Data-at-Rest Encryption**
+#### **A. Full Disk Encryption (FDE)**
+- Encrypts the entire disk or storage device.
+- Examples: BitLocker (Windows), FileVault (macOS), LUKS (Linux).
+
+#### **B. File-Level Encryption**
+- Encrypts individual files or directories.
+- Examples: GPG, VeraCrypt.
+
+#### **C. Database Encryption**
+- Encrypts data stored in databases.
+- Examples: Transparent Data Encryption (TDE) in SQL Server, Oracle, and PostgreSQL.
+
+#### **D. Cloud Storage Encryption**
+- Encrypts data stored in cloud services.
+- Examples: AWS S3 Server-Side Encryption (SSE), Azure Storage Service Encryption.
+
+---
+
+### **6. Best Practices for Encrypting Data at Rest**
+1. **Use Strong Algorithms**:
+   - Prefer AES-256 for symmetric encryption and RSA-2048 or ECC for asymmetric encryption.
+
+2. **Secure Key Management**:
+   - Use HSMs or cloud-based key management services (e.g., AWS KMS, Azure Key Vault).
+
+3. **Encrypt All Sensitive Data**:
+   - Ensure that all sensitive data, including backups, is encrypted.
+
+4. **Use Authenticated Encryption**:
+   - Combine encryption with authentication (e.g., AES-GCM) to ensure data integrity.
+
+5. **Regularly Rotate Keys**:
+   - Periodically change encryption keys to reduce the risk of compromise.
+
+6. **Monitor and Audit**:
+   - Use logging and monitoring tools to detect unauthorized access or key usage.
+
+---
+
+### **Summary**
+- **Symmetric Encryption**: AES, 3DES, Blowfish, Twofish.
+- **Asymmetric Encryption**: RSA, ECC.
+- **Hashing Algorithms**: SHA-256, SHA-3, bcrypt, Argon2.
+- **Encryption Modes**: CBC, GCM.
+- **Key Management**: KDFs, HSMs.
+
+By using strong encryption algorithms and following best practices, you can ensure that your data at rest remains secure and protected from unauthorized access.
