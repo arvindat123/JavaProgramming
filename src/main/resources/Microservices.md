@@ -1084,6 +1084,9 @@ Would you like help setting up a rate-limiting policy? 😊
 
 ## Circuit Breaker implementation
 
+![image](https://github.com/user-attachments/assets/788af97b-1563-4cb3-bece-d49912a95d69)
+
+
 Okay, I need to figure out how to implement a circuit breaker using Resilience4j in a Spring Boot application. Let me start by recalling what I know about circuit breakers. They help prevent a system from repeatedly trying to execute an operation that's likely to fail, allowing it to recover without being overwhelmed.
 
 First, I should check the official documentation for Resilience4j and Spring Boot integration. I remember that Resilience4j is a lightweight fault tolerance library designed for Java 8 and functional programming. Since the user wants a detailed example, I need to outline each step clearly.
