@@ -7396,8 +7396,6 @@ The `ConcurrentHashMap` in Java is a thread-safe hash table designed for high co
 
 ### what is internal working of concurrentHashMap with detailed example?
 
-```java
-
 Okay, I need to explain the internal workings of ConcurrentHashMap in Java with a detailed example. Let me start by recalling what I know about ConcurrentHashMap.
 
 First, I remember that ConcurrentHashMap is a thread-safe implementation of the Map interface, designed for concurrent access without locking the entire table. Unlike Hashtable or synchronized HashMap, which use a single lock, ConcurrentHashMap allows multiple threads to read and write without blocking each other unnecessarily. But how exactly does it achieve that?
@@ -7690,7 +7688,7 @@ So putting it all together, the internal working of ConcurrentHashMap in Java 8+
 
 This design allows high concurrency for both read and write operations, making it suitable for high-performance multi-threaded applications.
 
-```
+
 
 ### **Internal Structure**
 1. **Buckets and Nodes**:
