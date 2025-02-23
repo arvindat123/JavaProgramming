@@ -7394,7 +7394,7 @@ The `ConcurrentHashMap` in Java is a thread-safe hash table designed for high co
 
 ---
 
-###what is internal working of concurrentHashMap with detailed example?
+### what is internal working of concurrentHashMap with detailed example?
 
 ```java
 
