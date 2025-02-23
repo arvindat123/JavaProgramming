@@ -1086,6 +1086,9 @@ Would you like help setting up a rate-limiting policy? 😊
 
 ![image](https://github.com/user-attachments/assets/788af97b-1563-4cb3-bece-d49912a95d69)
 
+![image](https://github.com/user-attachments/assets/81b25f55-86cb-44ea-b89a-c747448636f9)
+
+
 
 Okay, I need to figure out how to implement a circuit breaker using Resilience4j in a Spring Boot application. Let me start by recalling what I know about circuit breakers. They help prevent a system from repeatedly trying to execute an operation that's likely to fail, allowing it to recover without being overwhelmed.
 
