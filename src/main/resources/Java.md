@@ -7387,3 +7387,418 @@ public class Main {
 - An **instance** refers to the specific realization of a class (the object and its creation process).
 
 In practice, the terms are often used interchangeably, but understanding the subtle difference can help clarify discussions about object-oriented programming.
+
+---
+
+The `ConcurrentHashMap` in Java is a thread-safe hash table designed for high concurrency. It allows multiple threads to read and write without blocking each other unnecessarily. Here's a detailed breakdown of its internal workings with an example:
+
+---
+
+###what is internal working of concurrentHashMap with detailed example?
+
+```java
+
+Okay, I need to explain the internal workings of ConcurrentHashMap in Java with a detailed example. Let me start by recalling what I know about ConcurrentHashMap.
+
+First, I remember that ConcurrentHashMap is a thread-safe implementation of the Map interface, designed for concurrent access without locking the entire table. Unlike Hashtable or synchronized HashMap, which use a single lock, ConcurrentHashMap allows multiple threads to read and write without blocking each other unnecessarily. But how exactly does it achieve that?
+
+I think it's segmented. Wait, in older versions of Java, like before Java 8, ConcurrentHashMap used a segmentation approach where the map was divided into segments, each acting as a separate hash table. Each segment had its own lock, so multiple threads could modify different segments concurrently. But I've heard that in Java 8 and later, this was changed. Now, instead of segments, they use a node-based locking mechanism with synchronized blocks on the first node of the bucket. So the segmentation was replaced with a more fine-grained locking approach.
+
+So in Java 8+, ConcurrentHashMap is an array of buckets, each bucket is a linked list or a tree (if the list becomes too long, it's converted to a tree to improve performance). When a thread modifies a bucket, it locks only the head node of that bucket. This allows other threads to access different buckets simultaneously, increasing concurrency.
+
+The main methods like put, get, remove, etc., work by first calculating the hash code of the key to determine the bucket. Then, they handle that bucket accordingly. For insertion (put), if the bucket is empty, a CAS (Compare-And-Swap) operation is used to add the new node. If the bucket isn't empty, the code synchronizes on the first node of the bucket and proceeds to add or update the entry. CAS operations are part of the java.util.concurrent.atomic package, which allows lock-free algorithms for certain operations, improving performance.
+
+Also, ConcurrentHashMap allows concurrent reads and writes. For instance, the get() method doesn't lock because the Node's fields are volatile, ensuring visibility of changes across threads. However, updates like put or remove require locking but only at the bucket level.
+
+Another thing I remember is the size() method. Since counting entries in a concurrent environment is tricky, ConcurrentHashMap uses a counter that's maintained using CAS to avoid locking. It might not be exact at any given moment but is designed to be accurate enough for concurrency purposes.
+
+Now, how to structure an example? Let's think of a scenario where multiple threads are adding entries to the map. Let's say we have a ConcurrentHashMap and several threads performing put operations. Each thread adds different keys, perhaps with some overlapping. The example should demonstrate that even when multiple threads are writing, the map remains consistent without explicit synchronization.
+
+Wait, but to make the example detailed, maybe have a situation where two threads are modifying the same bucket. If their keys hash to the same bucket, then one would block until the other completes. But if they are different buckets, they can proceed concurrently. How to force that? Maybe by using keys with the same hash code but different equals, but that's complicated. Alternatively, use a known hash function to target specific buckets.
+
+Alternatively, use a small map capacity so that different keys end up in the same bucket. For example, if the initial capacity is 16 (default), the hash code determines the bucket. If two keys have the same hash modulo 16, they go to the same bucket. So if we create keys that intentionally collide, we can show that modifying the same bucket is synchronized, while different buckets can proceed in parallel.
+
+Let's say we have a ConcurrentHashMap with capacity 16. Thread 1 adds a key "key1" which hashes to bucket 5. Thread 2 adds "key2" which also hashes to bucket 5. Then, these two threads will contend for the same bucket's lock, leading to one blocking the other. But if Thread 3 adds "key3" that hashes to bucket 6, it can proceed without contention.
+
+But how to demonstrate this in code? Maybe by creating threads that perform puts and timing their execution. If two threads are trying to put to the same bucket, the total time would be longer than if they are putting to different buckets. However, that's a bit involved and might require knowing the internal hash function, which could vary between Java versions.
+
+Alternatively, use a custom object as a key with overridden hashCode() to control the bucket. For example:
+
+class Key {
+
+int id;
+
+public Key(int id) { this.id = id; }
+
+@Override
+
+public int hashCode() { return id % 16; } // Force bucket based on id mod 16
+
+}
+
+Then, creating Key instances with id 1 and 17 would both hash to bucket 1 (since 1 mod 16 is 1, 17 mod 16 is 1). Then, two threads inserting these keys would be in the same bucket, so their puts would be synchronized. Another key with id 2 would go to bucket 2, so a different thread could insert without contention.
+
+In the example, we can simulate this with multiple threads. Let's create two threads inserting keys into the same bucket and a third thread inserting into a different bucket. We can add some delays to simulate processing time and observe the order of execution. However, since threads are asynchronous, the exact order may vary, but the idea is to illustrate that same-bucket operations are synchronized.
+
+Wait, but how to ensure that the hash code is computed as per the bucket? Because the actual bucket index is determined by the hash code of the key, which in Java's ConcurrentHashMap is not just the key's hashCode() but is spread using a hashing function to minimize collisions. So overriding hashCode() might not directly map to the bucket index. The internal method for determining the bucket might apply an additional transformation.
+
+In Java 8+, the bucket index is determined by (hash & (n-1)), where n is the number of buckets (a power of two). So if we have a key with a hashCode() that is, say, 5, and the number of buckets is 16, then the bucket index is 5. So by controlling the hash code of the key, we can control the bucket.
+
+Therefore, creating keys with specific hash codes would allow us to target specific buckets. So let's define a Key class with a fixed hashCode() that returns a specific value. For example:
+
+class Key {
+
+private int hash;
+
+public Key(int hash) {
+
+this.hash = hash;
+
+}
+
+@Override
+
+public int hashCode() {
+
+return hash;
+
+}
+
+@Override
+
+public boolean equals(Object obj) {
+
+if (this == obj) return true;
+
+if (obj == null || getClass() != obj.getClass()) return false;
+
+Key key = (Key) obj;
+
+return hash == key.hash;
+
+}
+
+}
+
+Then, when creating keys with hash codes 1 and 17, both would map to bucket 1 (assuming the map has 16 buckets). So two threads inserting keys with hash 1 and 17 would end up in the same bucket, hence the same lock, leading to contention. Whereas a key with hash 2 would be in a different bucket.
+
+Now, let's write an example where two threads are adding entries to the same bucket and another thread to a different bucket. To make it visible, we can add print statements with timestamps to see when each thread acquires the lock. However, since the actual locking is internal, we can't directly observe it. Instead, we can infer through timing. For example, if a thread is putting into a bucket and sleeps while holding the lock, another thread trying to put into the same bucket would be blocked until the first releases the lock.
+
+But how to simulate that? Because in normal operations, the lock is held only during the modification of the bucket. So if we have a thread that does a put, then sleeps, but the lock is released once the put is done. To create contention, we need to have a long operation while holding the lock. However, the put operation itself is atomic and quick. So maybe we can use a custom data structure or some reflection to extend the lock duration. But that's getting complicated.
+
+Alternatively, we can create a situation where two threads are trying to update the same key, leading to contention. But that's more about atomicity of operations rather than bucket-level locking.
+
+Alternatively, use computeIfAbsent with a long-running function. Because computeIfAbsent will lock the bucket while computing the value if the key is absent. So if two threads call computeIfAbsent on the same key, the second thread will block until the first completes.
+
+So here's a possible example:
+
+1. Create a ConcurrentHashMap.
+
+2. Define a key that maps to the same bucket.
+
+3. Create a thread that uses computeIfAbsent on that key, with a function that takes some time (e.g., sleeps for 2 seconds).
+
+4. Create another thread that also tries to computeIfAbsent on the same key. The second thread should be blocked until the first completes.
+
+5. A third thread that works on a different key (different bucket) can proceed concurrently.
+
+This would demonstrate that operations on the same bucket are synchronized, while others are not.
+
+Let me draft some code:
+
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentHashMapExample {
+
+public static void main(String[] args) throws InterruptedException {
+
+ConcurrentHashMap<Key, String> map = new ConcurrentHashMap<>();
+
+Key key1 = new Key(1); // hash 1, bucket 1 (assuming 16 buckets)
+
+Key key2 = new Key(17); // hash 17, bucket 1 (since 17 & 15 = 1)
+
+Key key3 = new Key(2); // bucket 2
+
+Thread t1 = new Thread(() -> {
+
+String value = map.computeIfAbsent(key1, k -> {
+
+try {
+
+System.out.println("Thread 1 computing value for key1");
+
+Thread.sleep(2000); // Simulate long computation
+
+} catch (InterruptedException e) {
+
+e.printStackTrace();
+
+}
+
+return "Value1";
+
+});
+
+System.out.println("Thread 1 got: " + value);
+
+});
+
+Thread t2 = new Thread(() -> {
+
+String value = map.computeIfAbsent(key2, k -> {
+
+System.out.println("Thread 2 computing value for key2");
+
+return "Value2";
+
+});
+
+System.out.println("Thread 2 got: " + value);
+
+});
+
+Thread t3 = new Thread(() -> {
+
+String value = map.computeIfAbsent(key3, k -> {
+
+System.out.println("Thread 3 computing value for key3");
+
+return "Value3";
+
+});
+
+System.out.println("Thread 3 got: " + value);
+
+});
+
+t1.start();
+
+Thread.sleep(100); // Ensure t1 starts first
+
+t2.start();
+
+t3.start();
+
+t1.join();
+
+t2.join();
+
+t3.join();
+
+}
+
+static class Key {
+
+private int hash;
+
+public Key(int hash) {
+
+this.hash = hash;
+
+}
+
+@Override
+
+public int hashCode() {
+
+return hash;
+
+}
+
+@Override
+
+public boolean equals(Object obj) {
+
+if (this == obj) return true;
+
+if (obj == null || getClass() != obj.getClass()) return false;
+
+Key key = (Key) obj;
+
+return hash == key.hash;
+
+}
+
+}
+
+}
+
+In this example, key1 and key2 have hash codes 1 and 17, which modulo 16 (since the default initial capacity is 16) both map to bucket 1. Thread t1 starts first and calls computeIfAbsent on key1, which triggers the function that sleeps for 2 seconds. Because the bucket is locked during the computation, any other threads trying to modify the same bucket will block. Thread t2 calls computeIfAbsent on key2, which is in the same bucket, so it should block until t1 releases the lock. Thread t3 operates on key3, which is in a different bucket, so it can proceed immediately.
+
+When running this code, the expected output would be:
+
+Thread 1 computing value for key1
+
+Thread 3 computing value for key3
+
+Thread 3 got: Value3
+
+(after 2 seconds)
+
+Thread 2 computing value for key2
+
+Thread 1 got: Value1
+
+Thread 2 got: Value2
+
+This shows that t3 could proceed concurrently with t1, but t2 had to wait for t1's operation on the same bucket to complete.
+
+However, there's a potential issue here: when using computeIfAbsent, if the key is already present, the function isn't called. But in this case, since t1 and t2 are inserting different keys (key1 and key2), even though they are in the same bucket, but different keys. Wait, but the computeIfAbsent is per key. So if key1 and key2 are different keys (even in the same bucket), computeIfAbsent for key2 would proceed once the bucket's lock is available. Wait, but since the bucket is locked during the computation of key1, would inserting key2 (same bucket, different key) block?
+
+Ah, here's a confusion. The lock is on the bucket's head node. So when t1 is computing for key1, it has locked the bucket's head. Then, when t2 comes in to compute for key2, which is in the same bucket, it would try to acquire the same lock. So even though they are different keys in the same bucket, t2 has to wait until t1's operation completes. So in this example, even though key1 and key2 are different, because they are in the same bucket, their computeIfAbsent operations are serialized.
+
+But wait, in Java's ConcurrentHashMap, during a computeIfAbsent, the entire bucket is locked. So any modification to the same bucket requires the lock. So even different keys in the same bucket would contend for the same lock. So yes, in this example, t2 would block until t1's compute completes, even though they are different keys. However, when t1 is processing key1, the code traverses the bucket (a linked list or tree) to find the key. If key1 is not present, it adds it. During this time, the bucket is locked. So t2, which is trying to process key2 in the same bucket, must wait until the lock is released. Then, after the lock is released, t2 can proceed to check if key2 exists and add it if necessary.
+
+But in the example, key1 and key2 are different keys, but in the same bucket. So when t1 is inserting key1, it holds the lock for the bucket. Then, t2 comes in and wants to insert key2. Since they're in the same bucket, t2 has to wait for t1 to release the lock. Once t1 is done, t2 can proceed. But the computeIfAbsent for key2 will proceed, since key2 is not present. So the expected output would be:
+
+Thread 1 computing value for key1
+
+Thread 3 computing value for key3
+
+Thread 3 got: Value3
+
+(after 2 seconds)
+
+Thread 1 got: Value1
+
+Thread 2 computing value for key2
+
+Thread 2 got: Value2
+
+But the order could vary. However, Thread 3's operation is on a different bucket, so it can proceed immediately. Thread 2's operation on the same bucket as Thread 1 has to wait until Thread 1's lock is released.
+
+This example would demonstrate the internal locking mechanism at the bucket level. Thus, even different keys in the same bucket will contend for the same lock, leading to serialized execution of their modifications. Meanwhile, operations on other buckets can proceed concurrently.
+
+Another point to consider is that ConcurrentHashMap dynamically resizes when the number of elements exceeds a threshold. The resizing involves creating a new bucket array and transferring entries. This process is done concurrently by multiple threads to avoid long pauses. During resizing, threads can help with the transfer, and new insertions may be directed to the new table.
+
+Additionally, the load factor determines when resizing occurs. The default is 0.75, meaning when 75% of the buckets are filled, the map is resized. But since ConcurrentHashMap uses a per-bucket approach, the actual resizing is managed more efficiently.
+
+In terms of iterators, ConcurrentHashMap provides weakly consistent iterators, which means they reflect the state of the map at some point at or since the creation of the iterator. They do not throw ConcurrentModificationException, allowing iteration while the map is being modified, but the changes may or may not be visible.
+
+So putting it all together, the internal working of ConcurrentHashMap in Java 8+ involves:
+
+- An array of buckets, each a linked list or tree.
+
+- Locking at the bucket level (synchronized on the first node) for write operations.
+
+- CAS operations for lock-free reads and certain updates.
+
+- Dynamic resizing with concurrent assistance.
+
+- Weakly consistent iterators.
+
+This design allows high concurrency for both read and write operations, making it suitable for high-performance multi-threaded applications.
+
+```
+
+### **Internal Structure**
+1. **Buckets and Nodes**:
+   - The map is an array of buckets (default capacity: 16).
+   - Each bucket holds a linked list or tree (for collision resolution).
+   - Java 8+ uses a node-based locking mechanism (synchronized on the first node of a bucket) instead of segment-level locks.
+
+2. **Concurrency Control**:
+   - **Write Operations** (e.g., `put`, `remove`): Lock the first node of the bucket to ensure thread safety.
+   - **Read Operations** (e.g., `get`): No locks; uses volatile variables for visibility.
+   - **CAS (Compare-and-Swap)**: Used for lock-free updates (e.g., inserting the first node in a bucket).
+
+3. **Dynamic Resizing**:
+   - When the load factor (default: 0.75) is exceeded, the map resizes.
+   - Resizing is done concurrently by multiple threads to minimize blocking.
+
+---
+
+### **Example: Concurrent Operations**
+#### **Scenario**
+- **Thread 1**: Inserts a key with a slow computation into **Bucket 1**.
+- **Thread 2**: Inserts a different key into **Bucket 1** (same bucket, different key).
+- **Thread 3**: Inserts a key into **Bucket 2** (different bucket).
+
+#### **Code**
+```java
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentHashMapExample {
+    static class Key {
+        private final int hash;
+        Key(int hash) { this.hash = hash; }
+        @Override public int hashCode() { return hash; }
+        @Override public boolean equals(Object o) { /*...*/ }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        ConcurrentHashMap<Key, String> map = new ConcurrentHashMap<>();
+
+        Key key1 = new Key(1);   // Bucket 1 (1 & 15 = 1)
+        Key key2 = new Key(17);  // Bucket 1 (17 & 15 = 1)
+        Key key3 = new Key(2);   // Bucket 2
+
+        Thread t1 = new Thread(() -> {
+            map.computeIfAbsent(key1, k -> {
+                try {
+                    System.out.println("Thread 1 computing key1...");
+                    Thread.sleep(2000); // Simulate slow computation
+                } catch (InterruptedException e) { e.printStackTrace(); }
+                return "Value1";
+            });
+            System.out.println("Thread 1 done.");
+        });
+
+        Thread t2 = new Thread(() -> {
+            map.computeIfAbsent(key2, k -> {
+                System.out.println("Thread 2 computing key2...");
+                return "Value2";
+            });
+            System.out.println("Thread 2 done.");
+        });
+
+        Thread t3 = new Thread(() -> {
+            map.computeIfAbsent(key3, k -> {
+                System.out.println("Thread 3 computing key3...");
+                return "Value3";
+            });
+            System.out.println("Thread 3 done.");
+        });
+
+        t1.start();
+        Thread.sleep(100); // Ensure t1 starts first
+        t2.start();
+        t3.start();
+        t1.join(); t2.join(); t3.join();
+    }
+}
+```
+
+---
+
+### **Output and Explanation**
+- **Thread 1** locks **Bucket 1** and starts a slow computation.
+- **Thread 3** (operating on **Bucket 2**) proceeds immediately:
+  ```
+  Thread 1 computing key1...
+  Thread 3 computing key3...
+  Thread 3 done.
+  ```
+- After 2 seconds, **Thread 1** releases the lock, and **Thread 2** proceeds:
+  ```
+  Thread 1 done.
+  Thread 2 computing key2...
+  Thread 2 done.
+  ```
+
+---
+
+### **Key Takeaways**
+1. **Bucket-Level Locking**:
+   - Threads modifying the same bucket are serialized.
+   - Threads modifying different buckets run concurrently.
+
+2. **Efficiency**:
+   - Reads are lock-free and use volatile variables.
+   - Writes use fine-grained locks (minimize contention).
+
+3. **Resizing**:
+   - Done concurrently to avoid blocking all operations.
+
+This design ensures high concurrency and scalability in multi-threaded environments.
