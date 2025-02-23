@@ -1137,7 +1137,7 @@ Let me think about the code structure. The main application class should have @S
 Sample code:
 
 In application.yml:
-
+```yaml
 resilience4j.circuitbreaker:
 
 instances:
@@ -1153,9 +1153,10 @@ waitDurationInOpenState: 5s
 ringBufferSizeInHalfOpenState: 3
 
 ringBufferSizeInClosedState: 5
+```
 
 The service class:
-
+```java
 @Service
 
 public class ExternalService {
@@ -1203,6 +1204,7 @@ return externalService.callExternalService();
 }
 
 }
+```
 
 Wait, but the @CircuitBreaker annotation is from Resilience4j? Let me confirm. Yes, the correct import is io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker.
 
@@ -1217,7 +1219,7 @@ Also, after the waitDurationInOpenState, the circuit moves to half-open. If the 
 To monitor the circuit breaker's state, enable actuator and check /actuator/circuitbreakers or /actuator/health. But need to configure the actuator endpoints.
 
 In application.yml:
-
+```yaml
 management:
 
 endpoint:
@@ -1233,6 +1235,7 @@ web:
 exposure:
 
 include: health, circuitbreakers
+```
 
 Then, /actuator/health would show the status of the circuit breaker.
 
@@ -1257,6 +1260,8 @@ So, putting it all together, the steps are:
 6. Optionally, monitor via actuator endpoints.
 
 I should also mention the required Maven or Gradle dependencies. For Maven:
+
+```xml
 
 <dependency>
 
@@ -1291,6 +1296,7 @@ I should also mention the required Maven or Gradle dependencies. For Maven:
 <artifactId>spring-boot-starter-actuator</artifactId>
 
 </dependency>
+```
 
 Wait, the version for Resilience4j should be compatible with Spring Boot 2. Let me confirm the versions. If using Spring Boot 2.5.x, Resilience4j 1.7.x is compatible. For Spring Boot 3, maybe Resilience4j 2.x. But the user might be using Spring Boot 2, so stick with 1.7.x.
 
