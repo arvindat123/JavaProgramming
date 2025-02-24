@@ -50,3 +50,12 @@ server {
 ```
 
 Nginx is a cornerstone of modern web infrastructure, powering over 30% of the busiest websites globally. Its lightweight design and versatility make it a go-to tool for developers and sysadmins.
+
+![image](https://github.com/user-attachments/assets/b8831cc1-a14b-40e4-bb2b-152a36ba4252)
+
+![image](https://github.com/user-attachments/assets/21c2e138-969a-4909-8259-69fcad1037e1)
+
+![image](https://github.com/user-attachments/assets/d86c9d70-b053-4628-bbf1-6e4322be6916)
+
+
+
