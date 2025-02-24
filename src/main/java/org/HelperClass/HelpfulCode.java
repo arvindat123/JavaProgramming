@@ -8,6 +8,38 @@ import java.util.stream.IntStream;
 
 public class HelpfulCode {
     public static void main(String[] args) {
+
+        //Count of unique character and their count without stream and HashMap
+        String paragraph1 = "I am not going to market.";
+        int[] arrOfAllCharacter = new int[256];
+        for (int i = 0; i < paragraph1.length(); i++) {
+            arrOfAllCharacter[paragraph1.charAt(i)]++;
+        }
+        for (int j = 0; j < 256; j++) {
+            if(arrOfAllCharacter[j] != 0){
+                System.out.println(arrOfAllCharacter[j]+"="+(char)j);
+            }
+        }
+
+
+        //To break string to char array and sort
+        String strr = "Arvind Gupta ";
+        String[] s = strr.split("");
+        Arrays.sort(s);
+        System.out.println(Arrays.toString(s)); // [ ,  , A, G, a, d, i, n, p, r, t, u, v]
+
+        char[] c = strr.toCharArray();
+        Arrays.sort(c);
+        System.out.println(Arrays.toString(c)); // [ ,  , A, G, a, d, i, n, p, r, t, u, v]
+
+        String paragraph = "I am going to market.";
+        System.out.println(paragraph.charAt(0)); // I
+
+        System.out.println(paragraph.length()); // 21
+
+        //For String use string.length();
+        //For Array use array.length;
+
         //https://www.geeksforgeeks.org/prime-numbers/
         //HashMap
         Map<String, Integer> map = new HashMap<>();

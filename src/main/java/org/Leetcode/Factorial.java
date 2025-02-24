@@ -1,4 +1,4 @@
-package org.General;
+package org.Leetcode;
 
 public class Factorial {
 

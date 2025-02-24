@@ -1,6 +1,6 @@
-package org.Test;
+package org.ThreadLearning;
 
-public class Test {
+public class WaitNotifySleepExample {
     public static void main(String[] args) {
         final Object object = new Object();
         Thread thread = new Thread(() ->  {
@@ -30,6 +30,3 @@ public class Test {
         thread2.start();
     }
 }
-
-
-
