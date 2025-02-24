@@ -1432,3 +1432,374 @@ public class SecurityFilterConfig {
 - It provides control over filter order, URL patterns, initialization parameters, and more.
 - Commonly used for custom logging, authentication, or request/response manipulation filters.
 - Define it as a `@Bean` in a configuration class to register your filters.
+
+---
+
+Encrypting data at rest is a critical aspect of data security, ensuring that sensitive information remains protected even when stored on disk or in a database. Various encryption algorithms are used for this purpose, each with its own strengths and use cases. Below is a list of commonly used encryption algorithms for data at rest:
+
+---
+
+### **1. Symmetric Encryption Algorithms**
+Symmetric encryption uses the same key for both encryption and decryption. It is fast and efficient, making it suitable for encrypting large amounts of data.
+
+#### **A. Advanced Encryption Standard (AES)**
+- **Key Sizes**: 128-bit, 192-bit, 256-bit.
+- **Description**: AES is the most widely used symmetric encryption algorithm. It is secure, efficient, and approved by the U.S. government for protecting classified information.
+- **Use Cases**: File encryption, database encryption, disk encryption (e.g., BitLocker, FileVault).
+
+#### **B. Triple DES (3DES)**
+- **Key Sizes**: 168-bit (effectively 112-bit due to vulnerabilities).
+- **Description**: 3DES applies the DES algorithm three times to each data block, providing enhanced security over the original DES.
+- **Use Cases**: Legacy systems, financial transactions (being phased out in favor of AES).
+
+#### **C. Blowfish**
+- **Key Sizes**: 32-bit to 448-bit.
+- **Description**: Blowfish is a fast and flexible symmetric encryption algorithm, though it is less commonly used today.
+- **Use Cases**: File encryption, legacy systems.
+
+#### **D. Twofish**
+- **Key Sizes**: 128-bit, 192-bit, 256-bit.
+- **Description**: Twofish is a successor to Blowfish and is known for its security and performance.
+- **Use Cases**: File encryption, disk encryption.
+
+---
+
+### **2. Asymmetric Encryption Algorithms**
+Asymmetric encryption uses a pair of keys: a public key for encryption and a private key for decryption. It is slower than symmetric encryption but is useful for key exchange and digital signatures.
+
+#### **A. RSA (Rivest-Shamir-Adleman)**
+- **Key Sizes**: 1024-bit, 2048-bit, 4096-bit.
+- **Description**: RSA is one of the most widely used asymmetric encryption algorithms. It is based on the difficulty of factoring large prime numbers.
+- **Use Cases**: Encrypting small amounts of data (e.g., encryption keys), SSL/TLS certificates.
+
+#### **B. Elliptic Curve Cryptography (ECC)**
+- **Key Sizes**: 256-bit, 384-bit, 521-bit.
+- **Description**: ECC provides equivalent security to RSA with smaller key sizes, making it more efficient.
+- **Use Cases**: Mobile devices, SSL/TLS certificates, IoT devices.
+
+---
+
+### **3. Hashing Algorithms**
+Hashing algorithms are used to ensure data integrity and are often combined with encryption for additional security.
+
+#### **A. SHA-256 (Secure Hash Algorithm 256-bit)**
+- **Description**: Part of the SHA-2 family, SHA-256 generates a fixed-size 256-bit hash value.
+- **Use Cases**: Data integrity checks, password hashing, digital signatures.
+
+#### **B. SHA-3 (Secure Hash Algorithm 3)**
+- **Description**: The latest member of the SHA family, SHA-3 is based on the Keccak algorithm.
+- **Use Cases**: Data integrity checks, cryptographic hashing.
+
+#### **C. bcrypt**
+- **Description**: A password-hashing function based on the Blowfish cipher, designed to be slow and resistant to brute-force attacks.
+- **Use Cases**: Password storage.
+
+#### **D. Argon2**
+- **Description**: A modern password-hashing algorithm designed to be memory-hard and resistant to GPU-based attacks.
+- **Use Cases**: Password storage.
+
+---
+
+### **4. Encryption Modes and Techniques**
+Encryption algorithms are often used in conjunction with specific modes and techniques to enhance security.
+
+#### **A. Block Cipher Modes**
+- **Electronic Codebook (ECB)**: Simple but insecure; not recommended for encrypting large amounts of data.
+- **Cipher Block Chaining (CBC)**: Adds randomness by XORing each block with the previous ciphertext block.
+- **Galois/Counter Mode (GCM)**: Provides both encryption and authentication, commonly used with AES.
+
+#### **B. Key Management**
+- **Key Derivation Functions (KDFs)**: Used to derive encryption keys from passwords or other inputs (e.g., PBKDF2, HKDF).
+- **Hardware Security Modules (HSMs)**: Secure hardware devices for managing encryption keys.
+
+---
+
+### **5. Common Use Cases for Data-at-Rest Encryption**
+#### **A. Full Disk Encryption (FDE)**
+- Encrypts the entire disk or storage device.
+- Examples: BitLocker (Windows), FileVault (macOS), LUKS (Linux).
+
+#### **B. File-Level Encryption**
+- Encrypts individual files or directories.
+- Examples: GPG, VeraCrypt.
+
+#### **C. Database Encryption**
+- Encrypts data stored in databases.
+- Examples: Transparent Data Encryption (TDE) in SQL Server, Oracle, and PostgreSQL.
+
+#### **D. Cloud Storage Encryption**
+- Encrypts data stored in cloud services.
+- Examples: AWS S3 Server-Side Encryption (SSE), Azure Storage Service Encryption.
+
+---
+
+### **6. Best Practices for Encrypting Data at Rest**
+1. **Use Strong Algorithms**:
+   - Prefer AES-256 for symmetric encryption and RSA-2048 or ECC for asymmetric encryption.
+
+2. **Secure Key Management**:
+   - Use HSMs or cloud-based key management services (e.g., AWS KMS, Azure Key Vault).
+
+3. **Encrypt All Sensitive Data**:
+   - Ensure that all sensitive data, including backups, is encrypted.
+
+4. **Use Authenticated Encryption**:
+   - Combine encryption with authentication (e.g., AES-GCM) to ensure data integrity.
+
+5. **Regularly Rotate Keys**:
+   - Periodically change encryption keys to reduce the risk of compromise.
+
+6. **Monitor and Audit**:
+   - Use logging and monitoring tools to detect unauthorized access or key usage.
+
+---
+
+### **Summary**
+- **Symmetric Encryption**: AES, 3DES, Blowfish, Twofish.
+- **Asymmetric Encryption**: RSA, ECC.
+- **Hashing Algorithms**: SHA-256, SHA-3, bcrypt, Argon2.
+- **Encryption Modes**: CBC, GCM.
+- **Key Management**: KDFs, HSMs.
+
+By using strong encryption algorithms and following best practices, you can ensure that your data at rest remains secure and protected from unauthorized access.
+
+---
+
+In **cryptography**, **public keys** and **private keys** are used in **asymmetric encryption** (also known as **public-key cryptography**). They are mathematically related but serve different purposes. Below is a detailed explanation of the differences between public and private keys:
+
+---
+
+### **1. Definition**
+#### **Public Key**
+- A **public key** is a cryptographic key that can be shared openly with anyone.
+- It is used to **encrypt data** or **verify digital signatures**.
+- Example: When someone sends you an encrypted message, they use your public key to encrypt it.
+
+#### **Private Key**
+- A **private key** is a cryptographic key that must be kept secret.
+- It is used to **decrypt data** or **create digital signatures**.
+- Example: You use your private key to decrypt a message that was encrypted with your public key.
+
+---
+
+### **2. Key Characteristics**
+| **Aspect**              | **Public Key**                                  | **Private Key**                               |
+|--------------------------|------------------------------------------------|-----------------------------------------------|
+| **Accessibility**        | Can be shared publicly.                        | Must be kept secret.                          |
+| **Purpose**              | Encrypt data or verify signatures.             | Decrypt data or create signatures.            |
+| **Mathematical Relation**| Derived from the private key.                  | Used to generate the public key.              |
+| **Security**             | Safe to distribute.                            | Must be protected at all costs.               |
+
+---
+
+### **3. How They Work Together**
+Public and private keys are mathematically related but cannot be derived from each other easily. They work together in the following ways:
+
+#### **A. Encryption and Decryption**
+1. **Encryption**:
+   - The sender uses the recipient's **public key** to encrypt the message.
+   - Example: Alice encrypts a message for Bob using Bob's public key.
+2. **Decryption**:
+   - The recipient uses their **private key** to decrypt the message.
+   - Example: Bob decrypts the message using his private key.
+
+#### **B. Digital Signatures**
+1. **Signing**:
+   - The sender uses their **private key** to create a digital signature.
+   - Example: Alice signs a message using her private key.
+2. **Verification**:
+   - The recipient uses the sender's **public key** to verify the signature.
+   - Example: Bob verifies the signature using Alice's public key.
+
+---
+
+### **4. Example Use Cases**
+#### **A. Secure Communication (SSL/TLS)**
+- A website's SSL/TLS certificate contains a **public key**.
+- The browser uses the public key to encrypt data sent to the server.
+- The server uses its **private key** to decrypt the data.
+
+#### **B. Digital Signatures**
+- A software developer signs their code with their **private key**.
+- Users verify the signature using the developer's **public key** to ensure the code has not been tampered with.
+
+#### **C. Cryptocurrency (e.g., Bitcoin)**
+- A user's **public key** is their wallet address.
+- The user's **private key** is used to sign transactions and prove ownership of the wallet.
+
+---
+
+### **5. Key Generation**
+- Public and private keys are generated together using a cryptographic algorithm (e.g., RSA, ECC).
+- Example (RSA Key Pair Generation):
+  ```python
+  from Crypto.PublicKey import RSA
+
+  # Generate a new RSA key pair
+  key = RSA.generate(2048)
+
+  # Extract the private key
+  private_key = key.export_key()
+  print("Private Key:")
+  print(private_key.decode())
+
+  # Extract the public key
+  public_key = key.publickey().export_key()
+  print("Public Key:")
+  print(public_key.decode())
+  ```
+
+---
+
+### **6. Security Considerations**
+#### **Public Key**
+- Since the public key is shared openly, it does not need to be kept secret.
+- However, it must be authentic (i.e., not tampered with or replaced by an attacker).
+
+#### **Private Key**
+- The private key must be kept secure at all times.
+- If the private key is compromised, the security of the system is broken.
+- Best practices for protecting private keys:
+  - Store them in secure hardware (e.g., HSMs).
+  - Use strong passwords or passphrases to encrypt private keys.
+  - Limit access to private keys to authorized personnel only.
+
+---
+
+### **7. Summary of Differences**
+| **Feature**              | **Public Key**                                  | **Private Key**                               |
+|--------------------------|------------------------------------------------|-----------------------------------------------|
+| **Access**               | Publicly shared.                               | Kept secret.                                  |
+| **Purpose**              | Encrypt data, verify signatures.               | Decrypt data, create signatures.             |
+| **Mathematical Relation**| Derived from the private key.                  | Used to generate the public key.             |
+| **Security**             | Safe to distribute.                            | Must be protected.                           |
+
+---
+
+### **8. Real-World Analogy**
+- Think of a **public key** as a padlock that you can give to anyone. They can use it to lock a box (encrypt data), but only you have the key (private key) to unlock it (decrypt data).
+- Think of a **private key** as the key to your house. You must keep it safe because anyone with the key can enter your house (access your data).
+
+---
+
+### **Conclusion**
+- **Public keys** are used for encryption and signature verification.
+- **Private keys** are used for decryption and signature creation.
+- Together, they enable secure communication, data integrity, and authentication in asymmetric cryptography.
+
+By understanding the roles and differences between public and private keys, you can effectively use them to secure your data and communications.
+
+---
+## Where should we keep access token in application?
+
+Okay, the user is asking where to store access tokens in their application. Let me start by recalling the previous conversation. They were asking about Nginx, which is a web server and reverse proxy. Now they're moving into application security, specifically about access tokens. I need to make sure I connect this to their prior interest, maybe in setting up a secure server.
+
+First, I should outline the different options for storing access tokens. The main considerations are security and accessibility. Access tokens are sensitive, so they need to be stored securely to prevent unauthorized access. But they also need to be accessible to the application when required for API calls.
+
+Let me think about client-side vs. server-side storage. If it's a client-side application like a SPA or mobile app, storing tokens in memory is best. But if it's a server-side app, maybe using environment variables or a secure vault. Wait, the user didn't specify if it's client or server. I should cover both scenarios.
+
+For client-side storage, common bad practices include localStorage or sessionStorage. But those are vulnerable to XSS. Cookies with HttpOnly and Secure flags are better but can be susceptible to CSRF. So in-memory storage is the safest but has the downside of losing the token on page reload. Maybe service workers for PWAs can help there.
+
+For server-side applications, environment variables are okay but might not be the best for sensitive data. Using a secrets manager like AWS Secrets Manager or HashiCorp Vault is more secure. Also, encrypted databases or files with restricted permissions are options. They might be using Nginx as a reverse proxy, so maybe mention how Nginx can handle SSL termination or rate limiting to protect the tokens in transit.
+
+I should also mention best practices like short token expiration, encryption at rest, avoiding logging tokens, and using secure protocols. The user might be integrating with OAuth2, so maybe touch on refresh tokens and backend handling.
+
+Wait, in the previous answer, I mentioned Nginx as a reverse proxy and load balancer. Maybe the user is setting up a web app with Nginx in front. So when talking about server-side storage, mentioning how Nginx can help secure the backend APIs by handling TLS and maybe even client authentication.
+
+Also, need to warn against common mistakes like hardcoding tokens in source code or config files. Emphasize the principle of least privilege for token permissions.
+
+Putting it all together, the answer should first distinguish between client and server-side storage, then list options for each with pros and cons, followed by best practices. Maybe give examples like React app using memory storage, and server using environment variables or vaults. Also, mention how Nginx can be part of the security setup, like SSL termination, headers, rate limiting to protect against token leakage.
+
+Check if there's anything I missed. Oh, token rotation, maybe. And the difference between access tokens and refresh tokens. Also, the importance of secure transmission (HTTPS) which Nginx can handle. Make sure to structure the answer clearly, maybe with sections for client, server, best practices, and Nginx's role. Keep it comprehensive but not too technical, so the user can understand the options and choose based on their use case.
+
+Storing access tokens securely is critical to protecting user data and preventing unauthorized access. The best approach depends on your application type (**client-side** vs. **server-side**) and the token’s sensitivity. Below are common strategies and best practices:
+
+---
+
+### **1. Client-Side Applications (SPA, Mobile Apps)**
+For apps running in the browser or on mobile devices, **avoid persistent storage** (e.g., `localStorage`, `sessionStorage`, or unsecured cookies) due to risks like XSS attacks. Instead:
+
+#### **Options:**
+- **In-Memory Storage**  
+  Keep tokens in memory (e.g., JavaScript variables or React state).  
+  **Pros**: No persistence, cleared on tab close/refresh.  
+  **Cons**: Token lost on page reload; user must re-authenticate.  
+  **Use Case**: Single-Page Apps (SPA) with short-lived tokens.
+
+- **Secure HTTP-Only Cookies**  
+  Store tokens in cookies with:  
+  ```http
+  Set-Cookie: token=<value>; HttpOnly; Secure; SameSite=Strict
+  ```  
+  **Pros**: Protected from XSS (if `HttpOnly`), auto-sent with requests.  
+  **Cons**: Vulnerable to CSRF (mitigate with anti-CSRF tokens).  
+
+- **Encrypted Mobile Storage**  
+  For mobile apps, use platform-specific secure storage:  
+  - Android: [EncryptedSharedPreferences](https://developer.android.com/topic/security/data)  
+  - iOS: [Keychain Services](https://developer.apple.com/documentation/security/keychain_services)  
+
+---
+
+### **2. Server-Side Applications**
+For backend services, tokens should **never be hardcoded** or stored in version control (e.g., Git). Use:
+
+#### **Options:**
+- **Environment Variables**  
+  Store tokens in environment variables (e.g., `.env` files excluded from Git).  
+  **Pros**: Simple, supported by most frameworks.  
+  **Cons**: Risk of exposure in logs or via env dumps.
+
+- **Secrets Managers**  
+  Use cloud-specific tools:  
+  - AWS Secrets Manager  
+  - Google Cloud Secret Manager  
+  - Azure Key Vault  
+  - HashiCorp Vault  
+  **Pros**: Centralized, encrypted, access-controlled, and auditable.
+
+- **Encrypted Config Files/Databases**  
+  Store tokens in encrypted files/databases (e.g., using AES-256) with strict file permissions.  
+
+---
+
+### **3. Best Practices**
+1. **Short Token Lifetimes**: Use short-lived access tokens (e.g., 15–60 minutes) and refresh tokens for re-authentication.
+2. **Encrypt at Rest**: Encrypt tokens if stored in databases/files.
+3. **Avoid Logging**: Ensure tokens never appear in logs or error messages.
+4. **Use HTTPS**: Always transmit tokens over encrypted channels.
+5. **Least Privilege**: Limit token permissions (e.g., OAuth2 scopes).
+6. **Token Binding**: Bind tokens to client IP/user-agent to prevent misuse.
+
+---
+
+### **Example Flow with Nginx**
+If using Nginx as a reverse proxy:  
+- Terminate SSL/TLS at Nginx to ensure encrypted traffic.  
+- Add security headers (e.g., `Content-Security-Policy`) to mitigate XSS.  
+- Use rate limiting to block brute-force attacks:  
+  ```nginx
+  # nginx.conf
+  limit_req_zone $binary_remote_addr zone=auth:10m rate=10r/m;
+
+  location /auth {
+    limit_req zone=auth burst=5;
+    proxy_pass http://backend;
+  }
+  ```
+
+---
+
+### **What to Avoid**
+- ❌ **Hardcoding tokens** in source code or config files.  
+- ❌ Storing in `localStorage`/`sessionStorage` (XSS risk).  
+- ❌ Long-lived tokens without refresh mechanisms.  
+
+---
+
+### **Final Recommendation**
+- **For Web Apps**: Use in-memory storage + secure cookies (with CSRF protection).  
+- **For Mobile**: Platform-specific secure storage.  
+- **For Backend**: Secrets Manager + environment variables.  
+
+By prioritizing security and following least-privilege principles, you can minimize risks associated with access token storage.
