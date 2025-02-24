@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 public class TimeOutThread {
     public static void main(String[] args) throws InterruptedException {
         //There is no method to stop a thread in Thread class
-
         ExecutorService threadPool = Executors.newFixedThreadPool(2);
         //Start the task
         threadPool.submit(() -> System.out.println("Task has been submitted and completed by " + Thread.currentThread().getName()));
@@ -21,13 +20,5 @@ public class TimeOutThread {
         //No new task accepted, returned previously submitted tasks waiting in the queue,
         // tasks being run by thread(s) are attempted to stop(but not guarantees)
         threadPool.shutdownNow();
-
-
-
-
-        /*Thread t1 = new Thread(() -> {
-            System.out.println("Thread started");
-        });
-        t1.start();*/
     }
 }

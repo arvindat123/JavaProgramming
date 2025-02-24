@@ -21,7 +21,7 @@ public class WaitNotifySleepExample {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
                 System.out.println("thread 2 notified thread 1");
             }
