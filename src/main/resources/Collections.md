@@ -685,3 +685,154 @@ Map<K, V>
 
 This hierarchy provides a flexible and powerful way to work with collections in Java.
 
+
+---
+## Diagram of map<K, V> hierarchy?
+
+The **`Map<K, V>`** hierarchy in Java is part of the Java Collections Framework and represents key-value pairs. Below is the **diagram** and **explanation** of the `Map<K, V>` hierarchy:
+
+---
+
+### **Map<K, V> Hierarchy Diagram**
+
+```
+Map<K, V>
+    |
+    +-- HashMap<K, V>
+    |      |
+    |      +-- LinkedHashMap<K, V>
+    |
+    +-- TreeMap<K, V>
+    |
+    +-- Hashtable<K, V>
+    |
+    +-- SortedMap<K, V>
+          |
+          +-- NavigableMap<K, V>
+                |
+                +-- TreeMap<K, V>
+```
+
+---
+
+### **Explanation of the Hierarchy**
+
+#### **1. `Map<K, V>`**
+- **Root interface** for all map implementations.
+- Represents a collection of key-value pairs.
+- Keys are unique, and each key maps to exactly one value.
+- **Core methods**:
+  - `put(K key, V value)`: Adds a key-value pair.
+  - `get(K key)`: Retrieves the value associated with the key.
+  - `remove(K key)`: Removes the key-value pair.
+  - `keySet()`: Returns a set of keys.
+  - `values()`: Returns a collection of values.
+  - `entrySet()`: Returns a set of key-value pairs.
+
+---
+
+#### **2. `HashMap<K, V>`**
+- **Most commonly used implementation** of `Map<K, V>`.
+- Uses a **hash table** for storage.
+- **Features**:
+  - Does **not maintain insertion order**.
+  - Allows **one null key** and **multiple null values**.
+  - Provides **O(1)** time complexity for `get()` and `put()` operations (on average).
+- **Example**:
+  ```java
+  Map<String, Integer> map = new HashMap<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map.get("Alice")); // Output: 25
+  ```
+
+---
+
+#### **3. `LinkedHashMap<K, V>`**
+- Extends `HashMap<K, V>`.
+- **Maintains insertion order** of keys.
+- **Features**:
+  - Slower than `HashMap` due to maintaining order.
+  - Provides **O(1)** time complexity for `get()` and `put()` operations.
+- **Example**:
+  ```java
+  Map<String, Integer> map = new LinkedHashMap<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map); // Output: {Alice=25, Bob=30} (insertion order preserved)
+  ```
+
+---
+
+#### **4. `TreeMap<K, V>`**
+- Implements `SortedMap<K, V>` and `NavigableMap<K, V>`.
+- Stores key-value pairs in **sorted order** (natural ordering or custom comparator).
+- **Features**:
+  - Does **not allow null keys** (but allows null values).
+  - Provides **O(log n)** time complexity for `get()` and `put()` operations.
+- **Example**:
+  ```java
+  Map<String, Integer> map = new TreeMap<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map); // Output: {Alice=25, Bob=30} (sorted by keys)
+  ```
+
+---
+
+#### **5. `Hashtable<K, V>`**
+- **Legacy class** (introduced in Java 1.0).
+- **Synchronized** (thread-safe).
+- **Features**:
+  - Does **not allow null keys or values**.
+  - Slower than `HashMap` due to synchronization.
+- **Example**:
+  ```java
+  Map<String, Integer> map = new Hashtable<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map.get("Bob")); // Output: 30
+  ```
+
+---
+
+#### **6. `SortedMap<K, V>`**
+- Extends `Map<K, V>`.
+- Represents a map with keys sorted in **natural order** or by a **custom comparator**.
+- **Core methods**:
+  - `firstKey()`: Returns the first (lowest) key.
+  - `lastKey()`: Returns the last (highest) key.
+  - `subMap(K fromKey, K toKey)`: Returns a view of the portion of the map whose keys range from `fromKey` to `toKey`.
+
+---
+
+#### **7. `NavigableMap<K, V>`**
+- Extends `SortedMap<K, V>`.
+- Provides additional methods for navigation:
+  - `lowerKey(K key)`: Returns the greatest key less than the given key.
+  - `higherKey(K key)`: Returns the smallest key greater than the given key.
+  - `floorKey(K key)`: Returns the greatest key less than or equal to the given key.
+  - `ceilingKey(K key)`: Returns the smallest key greater than or equal to the given key.
+
+---
+
+### **Key Points**
+1. **`Map<K, V>`** is the root interface for all map implementations.
+2. **`HashMap<K, V>`** is the most commonly used implementation (fast, unordered).
+3. **`LinkedHashMap<K, V>`** maintains insertion order.
+4. **`TreeMap<K, V>`** stores keys in sorted order.
+5. **`Hashtable<K, V>`** is a legacy, synchronized implementation.
+6. **`SortedMap<K, V>`** and **`NavigableMap<K, V>`** provide additional functionality for sorted maps.
+
+---
+
+### **When to Use Which Map?**
+| **Map Type**         | **Use Case**                                                                 |
+|-----------------------|-----------------------------------------------------------------------------|
+| **`HashMap<K, V>`**   | General-purpose map with no ordering requirements.                          |
+| **`LinkedHashMap<K, V>`** | When insertion order needs to be preserved.                              |
+| **`TreeMap<K, V>`**   | When keys need to be sorted (natural or custom order).                     |
+| **`Hashtable<K, V>`** | Legacy code or when thread safety is required (use `ConcurrentHashMap` instead). |
+
+By understanding the `Map<K, V>` hierarchy, you can choose the appropriate implementation based on your requirements.
+
