@@ -7800,3 +7800,328 @@ public class ConcurrentHashMapExample {
    - Done concurrently to avoid blocking all operations.
 
 This design ensures high concurrency and scalability in multi-threaded environments.
+
+---
+
+The **SOLID** principles are a set of five design principles in object-oriented programming that help developers design robust, maintainable, and scalable software. Let's break down each principle with detailed examples.
+
+---
+
+### **1. Single Responsibility Principle (SRP)**
+**Definition**: A class should have only one reason to change, meaning it should have only one responsibility.
+
+**Example**:
+Imagine a class that handles both user authentication and sending emails. This violates SRP because it has multiple responsibilities.
+
+```java
+// Violates SRP
+class UserService {
+    public void authenticateUser(String username, String password) {
+        // Authentication logic
+    }
+
+    public void sendEmail(String to, String subject, String body) {
+        // Email sending logic
+    }
+}
+```
+
+**Refactored Code**:
+Split the responsibilities into two separate classes.
+
+```java
+// Follows SRP
+class AuthenticationService {
+    public void authenticateUser(String username, String password) {
+        // Authentication logic
+    }
+}
+
+class EmailService {
+    public void sendEmail(String to, String subject, String body) {
+        // Email sending logic
+    }
+}
+```
+
+---
+
+### **2. Open/Closed Principle (OCP)**
+**Definition**: Software entities (classes, modules, functions) should be open for extension but closed for modification.
+
+**Example**:
+Suppose you have a class that calculates the area of shapes. Adding a new shape requires modifying the existing class.
+
+```java
+// Violates OCP
+class AreaCalculator {
+    public double calculateArea(Object shape) {
+        if (shape instanceof Rectangle) {
+            Rectangle rectangle = (Rectangle) shape;
+            return rectangle.width * rectangle.height;
+        } else if (shape instanceof Circle) {
+            Circle circle = (Circle) shape;
+            return Math.PI * circle.radius * circle.radius;
+        }
+        throw new IllegalArgumentException("Unknown shape");
+    }
+}
+```
+
+**Refactored Code**:
+Use abstraction to allow extension without modifying the existing code.
+
+```java
+// Follows OCP
+interface Shape {
+    double calculateArea();
+}
+
+class Rectangle implements Shape {
+    private double width;
+    private double height;
+
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    @Override
+    public double calculateArea() {
+        return width * height;
+    }
+}
+
+class Circle implements Shape {
+    private double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class AreaCalculator {
+    public double calculateArea(Shape shape) {
+        return shape.calculateArea();
+    }
+}
+```
+
+---
+
+### **3. Liskov Substitution Principle (LSP)**
+**Definition**: Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.
+
+**Example**:
+A subclass should not break the behavior of the superclass.
+
+```java
+// Violates LSP
+class Bird {
+    public void fly() {
+        System.out.println("Flying");
+    }
+}
+
+class Ostrich extends Bird {
+    @Override
+    public void fly() {
+        throw new UnsupportedOperationException("Ostrich cannot fly");
+    }
+}
+```
+
+**Refactored Code**:
+Ensure subclasses adhere to the behavior of the superclass.
+
+```java
+// Follows LSP
+interface Bird {
+    void move();
+}
+
+class Sparrow implements Bird {
+    @Override
+    public void move() {
+        System.out.println("Flying");
+    }
+}
+
+class Ostrich implements Bird {
+    @Override
+    public void move() {
+        System.out.println("Running");
+    }
+}
+```
+
+---
+
+### **4. Interface Segregation Principle (ISP)**
+**Definition**: Clients should not be forced to depend on interfaces they do not use.
+
+**Example**:
+A single interface with multiple methods forces implementing classes to define unused methods.
+
+```java
+// Violates ISP
+interface Worker {
+    void work();
+    void eat();
+}
+
+class HumanWorker implements Worker {
+    @Override
+    public void work() {
+        System.out.println("Working");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println("Eating");
+    }
+}
+
+class RobotWorker implements Worker {
+    @Override
+    public void work() {
+        System.out.println("Working");
+    }
+
+    @Override
+    public void eat() {
+        throw new UnsupportedOperationException("Robot cannot eat");
+    }
+}
+```
+
+**Refactored Code**:
+Split the interface into smaller, more specific interfaces.
+
+```java
+// Follows ISP
+interface Workable {
+    void work();
+}
+
+interface Eatable {
+    void eat();
+}
+
+class HumanWorker implements Workable, Eatable {
+    @Override
+    public void work() {
+        System.out.println("Working");
+    }
+
+    @Override
+    public void eat() {
+        System.out.println("Eating");
+    }
+}
+
+class RobotWorker implements Workable {
+    @Override
+    public void work() {
+        System.out.println("Working");
+    }
+}
+```
+
+---
+
+### **5. Dependency Inversion Principle (DIP)**
+**Definition**: High-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+**Example**:
+A high-level class directly depends on a low-level class.
+
+```java
+// Violates DIP
+class LightBulb {
+    public void turnOn() {
+        System.out.println("LightBulb: On");
+    }
+
+    public void turnOff() {
+        System.out.println("LightBulb: Off");
+    }
+}
+
+class Switch {
+    private LightBulb bulb;
+
+    public Switch(LightBulb bulb) {
+        this.bulb = bulb;
+    }
+
+    public void operate() {
+        bulb.turnOn();
+    }
+}
+```
+
+**Refactored Code**:
+Introduce an abstraction to decouple the high-level and low-level modules.
+
+```java
+// Follows DIP
+interface Switchable {
+    void turnOn();
+    void turnOff();
+}
+
+class LightBulb implements Switchable {
+    @Override
+    public void turnOn() {
+        System.out.println("LightBulb: On");
+    }
+
+    @Override
+    public void turnOff() {
+        System.out.println("LightBulb: Off");
+    }
+}
+
+class Fan implements Switchable {
+    @Override
+    public void turnOn() {
+        System.out.println("Fan: On");
+    }
+
+    @Override
+    public void turnOff() {
+        System.out.println("Fan: Off");
+    }
+}
+
+class Switch {
+    private Switchable device;
+
+    public Switch(Switchable device) {
+        this.device = device;
+    }
+
+    public void operate() {
+        device.turnOn();
+    }
+}
+```
+
+---
+
+### **Summary of SOLID Principles**
+| Principle                        | Key Idea                                                                 |
+|----------------------------------|--------------------------------------------------------------------------|
+| **Single Responsibility (SRP)**  | A class should have only one responsibility.                             |
+| **Open/Closed (OCP)**            | Classes should be open for extension but closed for modification.        |
+| **Liskov Substitution (LSP)**    | Subclasses should be substitutable for their base classes.               |
+| **Interface Segregation (ISP)**  | Clients should not be forced to depend on interfaces they do not use.    |
+| **Dependency Inversion (DIP)**   | Depend on abstractions, not on concrete implementations.                 |
+
+By adhering to these principles, you can create clean, modular, and maintainable code.
