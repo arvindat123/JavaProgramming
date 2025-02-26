@@ -8125,3 +8125,183 @@ class Switch {
 | **Dependency Inversion (DIP)**   | Depend on abstractions, not on concrete implementations.                 |
 
 By adhering to these principles, you can create clean, modular, and maintainable code.
+
+---
+
+## What is functional interface, how to create custom functional interface and what are type of functional interface available in java 8 with detailed example?
+
+### **Functional Interface in Java**
+
+A **functional interface** in Java is an interface that contains **exactly one abstract method**. It can have any number of default or static methods but only one abstract method. Functional interfaces are the foundation of **lambda expressions** in Java 8.
+
+---
+
+### **How to Create a Custom Functional Interface**
+
+To create a custom functional interface:
+1. Define an interface with exactly one abstract method.
+2. Optionally, add `@FunctionalInterface` annotation to enforce the rule at compile time.
+
+#### Example:
+```java
+@FunctionalInterface
+interface Greeting {
+    void greet(String name); // Single abstract method
+
+    // Default method (allowed)
+    default void sayHello() {
+        System.out.println("Hello!");
+    }
+
+    // Static method (allowed)
+    static void sayBye() {
+        System.out.println("Goodbye!");
+    }
+}
+```
+
+#### Usage:
+```java
+public class Main {
+    public static void main(String[] args) {
+        // Using lambda expression
+        Greeting greeting = (name) -> System.out.println("Hello, " + name);
+        greeting.greet("Alice"); // Output: Hello, Alice
+
+        // Calling default and static methods
+        greeting.sayHello(); // Output: Hello!
+        Greeting.sayBye();   // Output: Goodbye!
+    }
+}
+```
+
+---
+
+### **Types of Functional Interfaces in Java 8**
+
+Java 8 introduced several built-in functional interfaces in the `java.util.function` package. These interfaces cover most common use cases for lambda expressions.
+
+#### **1. `Consumer<T>`**
+- **Purpose**: Accepts a single input argument and returns no result.
+- **Abstract Method**: `void accept(T t)`
+- **Example**:
+  ```java
+  Consumer<String> print = (s) -> System.out.println(s);
+  print.accept("Hello, Consumer!"); // Output: Hello, Consumer!
+  ```
+
+#### **2. `Supplier<T>`**
+- **Purpose**: Supplies a result without taking any input.
+- **Abstract Method**: `T get()`
+- **Example**:
+  ```java
+  Supplier<Double> randomValue = () -> Math.random();
+  System.out.println(randomValue.get()); // Output: Random double value
+  ```
+
+#### **3. `Function<T, R>`**
+- **Purpose**: Accepts one argument and produces a result.
+- **Abstract Method**: `R apply(T t)`
+- **Example**:
+  ```java
+  Function<String, Integer> lengthFunction = (s) -> s.length();
+  System.out.println(lengthFunction.apply("Java")); // Output: 4
+  ```
+
+#### **4. `Predicate<T>`**
+- **Purpose**: Tests a condition and returns a boolean.
+- **Abstract Method**: `boolean test(T t)`
+- **Example**:
+  ```java
+  Predicate<Integer> isEven = (n) -> n % 2 == 0;
+  System.out.println(isEven.test(10)); // Output: true
+  ```
+
+#### **5. `UnaryOperator<T>`**
+- **Purpose**: A specialization of `Function` where the input and output types are the same.
+- **Abstract Method**: `T apply(T t)`
+- **Example**:
+  ```java
+  UnaryOperator<String> toUpperCase = (s) -> s.toUpperCase();
+  System.out.println(toUpperCase.apply("java")); // Output: JAVA
+  ```
+
+#### **6. `BinaryOperator<T>`**
+- **Purpose**: A specialization of `BiFunction` where both input types and the output type are the same.
+- **Abstract Method**: `T apply(T t1, T t2)`
+- **Example**:
+  ```java
+  BinaryOperator<Integer> add = (a, b) -> a + b;
+  System.out.println(add.apply(5, 3)); // Output: 8
+  ```
+
+#### **7. `BiConsumer<T, U>`**
+- **Purpose**: Accepts two input arguments and returns no result.
+- **Abstract Method**: `void accept(T t, U u)`
+- **Example**:
+  ```java
+  BiConsumer<String, Integer> printDetails = (name, age) -> 
+      System.out.println(name + " is " + age + " years old.");
+  printDetails.accept("Alice", 30); // Output: Alice is 30 years old.
+  ```
+
+#### **8. `BiFunction<T, U, R>`**
+- **Purpose**: Accepts two arguments and produces a result.
+- **Abstract Method**: `R apply(T t, U u)`
+- **Example**:
+  ```java
+  BiFunction<Integer, Integer, String> sumToString = (a, b) -> "Sum: " + (a + b);
+  System.out.println(sumToString.apply(5, 3)); // Output: Sum: 8
+  ```
+
+#### **9. `BiPredicate<T, U>`**
+- **Purpose**: Tests a condition on two arguments and returns a boolean.
+- **Abstract Method**: `boolean test(T t, U u)`
+- **Example**:
+  ```java
+  BiPredicate<String, Integer> isNameLengthValid = (name, length) -> name.length() == length;
+  System.out.println(isNameLengthValid.test("Alice", 5)); // Output: true
+  ```
+
+---
+
+### **Custom Functional Interface Example**
+
+Let's create a custom functional interface for a mathematical operation.
+
+#### Step 1: Define the Interface
+```java
+@FunctionalInterface
+interface MathOperation {
+    int operate(int a, int b); // Single abstract method
+}
+```
+
+#### Step 2: Use the Interface
+```java
+public class Main {
+    public static void main(String[] args) {
+        // Lambda expressions for addition, subtraction, multiplication, and division
+        MathOperation add = (a, b) -> a + b;
+        MathOperation subtract = (a, b) -> a - b;
+        MathOperation multiply = (a, b) -> a * b;
+        MathOperation divide = (a, b) -> a / b;
+
+        System.out.println("10 + 5 = " + add.operate(10, 5)); // Output: 15
+        System.out.println("10 - 5 = " + subtract.operate(10, 5)); // Output: 5
+        System.out.println("10 * 5 = " + multiply.operate(10, 5)); // Output: 50
+        System.out.println("10 / 5 = " + divide.operate(10, 5)); // Output: 2
+    }
+}
+```
+
+---
+
+### **Key Points**
+1. A functional interface has **exactly one abstract method**.
+2. Use the `@FunctionalInterface` annotation to enforce this rule.
+3. Java 8 provides built-in functional interfaces like `Consumer`, `Supplier`, `Function`, `Predicate`, etc.
+4. Custom functional interfaces can be created for specific use cases.
+
+By leveraging functional interfaces and lambda expressions, you can write more concise and expressive code in Java.
+
