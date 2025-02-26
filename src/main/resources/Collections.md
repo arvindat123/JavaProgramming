@@ -495,3 +495,193 @@ public class MemoryLeakPrevention {
 ```
 
 Following these practices will help reduce or eliminate memory leaks in Java, leading to more efficient memory usage and more reliable applications. Regular monitoring and profiling are key to ensuring that memory is managed effectively in long-running applications.
+
+---
+## hierarchy of collection in java?
+
+The **Java Collections Framework** is a unified architecture for representing and manipulating collections. It provides a well-designed hierarchy of interfaces and classes for storing and processing groups of objects. Below is the detailed hierarchy of the Java Collections Framework:
+
+---
+
+### **1. Core Interfaces**
+The Java Collections Framework is built around a set of core interfaces:
+
+1. **`Iterable<T>`**
+   - Root interface for all collections.
+   - Provides the `iterator()` method to iterate over elements.
+
+2. **`Collection<E>`**
+   - Extends `Iterable<E>`.
+   - Represents a group of objects (elements).
+   - Core methods: `add()`, `remove()`, `size()`, `isEmpty()`, `contains()`, etc.
+
+3. **`List<E>`**
+   - Extends `Collection<E>`.
+   - Represents an ordered collection (sequence).
+   - Allows duplicate elements.
+   - Core implementations: `ArrayList`, `LinkedList`, `Vector`, `Stack`.
+
+4. **`Set<E>`**
+   - Extends `Collection<E>`.
+   - Represents a collection of unique elements (no duplicates).
+   - Core implementations: `HashSet`, `LinkedHashSet`, `TreeSet`.
+
+5. **`Queue<E>`**
+   - Extends `Collection<E>`.
+   - Represents a collection designed for holding elements prior to processing.
+   - Core implementations: `LinkedList`, `PriorityQueue`.
+
+6. **`Deque<E>`**
+   - Extends `Queue<E>`.
+   - Represents a double-ended queue (supports element insertion and removal at both ends).
+   - Core implementations: `ArrayDeque`, `LinkedList`.
+
+7. **`Map<K, V>`**
+   - Does **not** extend `Collection<E>`.
+   - Represents a collection of key-value pairs.
+   - Keys are unique, values can be duplicated.
+   - Core implementations: `HashMap`, `LinkedHashMap`, `TreeMap`, `Hashtable`.
+
+---
+
+### **2. Class Hierarchy**
+The Java Collections Framework provides concrete implementations of the core interfaces. Here's the hierarchy:
+
+#### **`Collection<E>` Implementations**
+1. **`List<E>` Implementations**
+   - **`ArrayList<E>`**
+     - Resizable array implementation.
+     - Fast random access.
+   - **`LinkedList<E>`**
+     - Doubly-linked list implementation.
+     - Efficient for frequent insertions/deletions.
+   - **`Vector<E>`**
+     - Synchronized resizable array.
+     - Legacy class (use `ArrayList` instead).
+   - **`Stack<E>`**
+     - Extends `Vector<E>`.
+     - Represents a last-in-first-out (LIFO) stack.
+
+2. **`Set<E>` Implementations**
+   - **`HashSet<E>`**
+     - Uses a hash table for storage.
+     - Does not maintain insertion order.
+   - **`LinkedHashSet<E>`**
+     - Extends `HashSet<E>`.
+     - Maintains insertion order.
+   - **`TreeSet<E>`**
+     - Implements `SortedSet<E>`.
+     - Stores elements in a sorted order (natural or custom).
+
+3. **`Queue<E>` Implementations**
+   - **`PriorityQueue<E>`**
+     - Implements a priority heap.
+     - Orders elements based on natural ordering or a custom comparator.
+   - **`LinkedList<E>`**
+     - Can also be used as a `Queue<E>`.
+
+4. **`Deque<E>` Implementations**
+   - **`ArrayDeque<E>`**
+     - Resizable array implementation of a double-ended queue.
+   - **`LinkedList<E>`**
+     - Can also be used as a `Deque<E>`.
+
+#### **`Map<K, V>` Implementations**
+1. **`HashMap<K, V>`**
+   - Uses a hash table for storage.
+   - Does not maintain insertion order.
+2. **`LinkedHashMap<K, V>`**
+   - Extends `HashMap<K, V>`.
+   - Maintains insertion order.
+3. **`TreeMap<K, V>`**
+   - Implements `SortedMap<K, V>`.
+   - Stores key-value pairs in sorted order (natural or custom).
+4. **`Hashtable<K, V>`**
+   - Legacy class (use `HashMap` instead).
+   - Synchronized.
+
+---
+
+### **3. Utility Classes**
+The Java Collections Framework also provides utility classes for working with collections:
+
+1. **`Collections`**
+   - Provides static methods for operations like sorting, searching, shuffling, etc.
+   - Example: `Collections.sort(list)`.
+
+2. **`Arrays`**
+   - Provides static methods for working with arrays.
+   - Example: `Arrays.asList(array)`.
+
+---
+
+### **4. Legacy Classes**
+Before the introduction of the Java Collections Framework, Java had legacy classes for collections:
+
+1. **`Vector<E>`**
+   - Synchronized resizable array.
+   - Replaced by `ArrayList<E>`.
+
+2. **`Hashtable<K, V>`**
+   - Synchronized key-value storage.
+   - Replaced by `HashMap<K, V>`.
+
+3. **`Stack<E>`**
+   - Extends `Vector<E>`.
+   - Represents a LIFO stack.
+   - Replaced by `Deque<E>` implementations.
+
+---
+
+### **5. Diagram of the Hierarchy**
+
+```
+Iterable<E>
+    |
+Collection<E>
+    |
+    +-- List<E>
+    |     |
+    |     +-- ArrayList<E>
+    |     +-- LinkedList<E>
+    |     +-- Vector<E>
+    |           |
+    |           +-- Stack<E>
+    |
+    +-- Set<E>
+    |     |
+    |     +-- HashSet<E>
+    |     |      |
+    |     |      +-- LinkedHashSet<E>
+    |     |
+    |     +-- TreeSet<E>
+    |
+    +-- Queue<E>
+          |
+          +-- PriorityQueue<E>
+          +-- Deque<E>
+                |
+                +-- ArrayDeque<E>
+                +-- LinkedList<E>
+
+Map<K, V>
+    |
+    +-- HashMap<K, V>
+    |      |
+    |      +-- LinkedHashMap<K, V>
+    |
+    +-- TreeMap<K, V>
+    +-- Hashtable<K, V>
+```
+
+---
+
+### **Key Points**
+1. **`Collection<E>`** is the root interface for all collections (except `Map<K, V>`).
+2. **`List<E>`**, **`Set<E>`**, and **`Queue<E>`** are the main sub-interfaces of `Collection<E>`.
+3. **`Map<K, V>`** is a separate interface for key-value pairs.
+4. Use **`Collections`** and **`Arrays`** utility classes for common operations.
+5. Prefer modern collection classes (e.g., `ArrayList`, `HashMap`) over legacy classes (e.g., `Vector`, `Hashtable`).
+
+This hierarchy provides a flexible and powerful way to work with collections in Java.
+
