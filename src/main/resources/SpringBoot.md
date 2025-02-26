@@ -6470,3 +6470,115 @@ public void performDb2Operation() {
 - **Migrations**: Use tools like Flyway/Liquibase with separate configurations for each database.
 
 By following these steps, your microservice can efficiently interact with two databases while maintaining separation of concerns.
+
+
+---
+
+## How to disable tomcat embedded server in spring boot?
+
+To disable the embedded Tomcat server in a Spring Boot application, you can exclude the Tomcat dependency and use a different server (e.g., Jetty or Undertow) or run the application without an embedded server altogether. Here's how you can do it:
+
+---
+
+### **1. Exclude Tomcat Dependency**
+If you want to disable Tomcat and use a different embedded server (e.g., Jetty or Undertow), exclude the Tomcat dependency in your `pom.xml` or `build.gradle`.
+
+#### **For Maven (`pom.xml`)**:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+#### **For Gradle (`build.gradle`)**:
+```groovy
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+}
+```
+
+---
+
+### **2. Use Jetty or Undertow Instead**
+After excluding Tomcat, you can add a dependency for Jetty or Undertow.
+
+#### **For Jetty**:
+Add the Jetty starter dependency:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+```
+
+#### **For Undertow**:
+Add the Undertow starter dependency:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+```
+
+---
+
+### **3. Disable the Embedded Server Completely**
+If you don't want any embedded server (e.g., for a non-web application), you can exclude the `spring-boot-starter-web` dependency entirely.
+
+#### **For Maven (`pom.xml`)**:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
+```
+
+#### **For Gradle (`build.gradle`)**:
+```groovy
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+}
+```
+
+---
+
+### **4. Programmatically Disable the Embedded Server**
+If you want to disable the embedded server programmatically, you can set the `web-application-type` to `NONE` in your `application.properties` or `application.yml`.
+
+#### **In `application.properties`**:
+```properties
+spring.main.web-application-type=none
+```
+
+#### **In `application.yml`**:
+```yaml
+spring:
+  main:
+    web-application-type: none
+```
+
+This will prevent Spring Boot from starting any embedded server.
+
+---
+
+### **5. Verify the Configuration**
+After making these changes, run your application. If Tomcat is successfully disabled, you won't see Tomcat-related logs during startup. If you switched to Jetty or Undertow, you'll see logs for the respective server.
+
+---
+
+### **When to Disable the Embedded Server?**
+- You're building a non-web application (e.g., a batch job or a CLI tool).
+- You want to deploy your application to an external server (e.g., an external Tomcat, Jetty, or WildFly server).
+- You prefer using a different embedded server (e.g., Jetty or Undertow).
+
+By following these steps, you can disable the embedded Tomcat server in your Spring Boot application.
+
