@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/190d64d7-e974-49d6-aa72-383632624a7e)
+
+
 # **Strategy Design Pattern**
 
 The **Strategy Design Pattern** is a behavioral design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern allows the algorithm to be selected at runtime. 
@@ -240,6 +243,7 @@ Solid design patterns, particularly the **SOLID principles**, are a set of desig
 By following these principles, developers can create systems that are easier to maintain, extend, and adapt, ultimately leading to higher-quality software and more efficient development processes.
 
 ---
+## **Adapter Design Pattern**
 
 The Adapter Design Pattern is a structural design pattern that allows two incompatible interfaces to work together. It acts as a bridge between two incompatible interfaces by converting the interface of a class into another interface that a client expects. This pattern is particularly useful when you want to reuse existing classes but their interfaces do not match the requirements of the new system.
 
