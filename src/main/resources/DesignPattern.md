@@ -238,3 +238,91 @@ Solid design patterns, particularly the **SOLID principles**, are a set of desig
 5. **Dependency Inversion Principle (DIP)**: High-level modules should not depend on low-level modules; both should depend on abstractions.
 
 By following these principles, developers can create systems that are easier to maintain, extend, and adapt, ultimately leading to higher-quality software and more efficient development processes.
+
+---
+
+The Adapter Design Pattern is a structural design pattern that allows two incompatible interfaces to work together. It acts as a bridge between two incompatible interfaces by converting the interface of a class into another interface that a client expects. This pattern is particularly useful when you want to reuse existing classes but their interfaces do not match the requirements of the new system.
+
+### Key Components of the Adapter Pattern:
+1. **Target Interface**: This is the interface that the client expects to interact with.
+2. **Adaptee**: This is the existing class that has the functionality that the client needs but has an incompatible interface.
+3. **Adapter**: This is the class that implements the Target Interface and wraps the Adaptee, translating the calls from the client to the Adaptee.
+
+### Example in Java:
+
+Let's consider a scenario where we have an existing `LegacyPrinter` class that has a method `printDocument(String text)` but the client expects to use a `ModernPrinter` interface with a method `print(String content)`.
+
+#### Step 1: Define the Target Interface (`ModernPrinter`)
+```java
+public interface ModernPrinter {
+    void print(String content);
+}
+```
+
+#### Step 2: Define the Adaptee (`LegacyPrinter`)
+```java
+public class LegacyPrinter {
+    public void printDocument(String text) {
+        System.out.println("Legacy Printer: " + text);
+    }
+}
+```
+
+#### Step 3: Create the Adapter (`PrinterAdapter`)
+The `PrinterAdapter` class implements the `ModernPrinter` interface and wraps the `LegacyPrinter` to adapt its interface.
+
+```java
+public class PrinterAdapter implements ModernPrinter {
+    private LegacyPrinter legacyPrinter;
+
+    public PrinterAdapter(LegacyPrinter legacyPrinter) {
+        this.legacyPrinter = legacyPrinter;
+    }
+
+    @Override
+    public void print(String content) {
+        // Convert the modern print call to the legacy print call
+        legacyPrinter.printDocument(content);
+    }
+}
+```
+
+#### Step 4: Client Code
+The client code interacts with the `ModernPrinter` interface, unaware of the `LegacyPrinter` class.
+
+```java
+public class Client {
+    public static void main(String[] args) {
+        // Create an instance of the LegacyPrinter
+        LegacyPrinter legacyPrinter = new LegacyPrinter();
+
+        // Wrap the LegacyPrinter in a PrinterAdapter
+        ModernPrinter printer = new PrinterAdapter(legacyPrinter);
+
+        // Use the ModernPrinter interface to print
+        printer.print("Hello, World!");
+    }
+}
+```
+
+### Output:
+```
+Legacy Printer: Hello, World!
+```
+
+### Explanation:
+- **Target Interface (`ModernPrinter`)**: The client expects to use this interface to print documents.
+- **Adaptee (`LegacyPrinter`)**: This is the existing class that has the functionality to print but with a different method signature.
+- **Adapter (`PrinterAdapter`)**: This class implements the `ModernPrinter` interface and internally uses the `LegacyPrinter` to perform the actual printing. It translates the `print(String content)` method call to the `printDocument(String text)` method call.
+
+### Benefits of the Adapter Pattern:
+1. **Reusability**: Allows existing classes to be reused without modifying their code.
+2. **Flexibility**: Makes it easier to introduce new adapters for different adaptees without changing the client code.
+3. **Separation of Concerns**: Keeps the client code decoupled from the implementation details of the adaptee.
+
+### When to Use the Adapter Pattern:
+- When you want to use an existing class, but its interface does not match the one you need.
+- When you want to create a reusable class that cooperates with classes that don't necessarily have compatible interfaces.
+- When you need to integrate multiple third-party libraries with different interfaces.
+
+This pattern is widely used in real-world applications, especially when dealing with legacy code or integrating with third-party libraries.
