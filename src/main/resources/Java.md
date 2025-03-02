@@ -1,4 +1,5 @@
 ---
+https://docs.oracle.com/en/java/javase/11/language/java-language-changes-release.html#GUID-6459681C-6881-45D8-B0DB-395D1BD6DB9B
 ---
 
 Here’s a curated list of **Java 8 interview questions** for experienced professionals, focusing on key concepts, practical applications, and advanced topics:
