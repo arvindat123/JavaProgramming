@@ -8306,3 +8306,115 @@ public class Main {
 
 By leveraging functional interfaces and lambda expressions, you can write more concise and expressive code in Java.
 
+---
+
+In Java, primitive data types are the most basic data types provided by the language. They are predefined by the language and named by a reserved keyword. Primitive data types are not objects and represent raw values. They are stored directly in memory and are used to declare variables and methods.
+
+Java has eight primitive data types, which can be categorized into four groups:
+
+1. **Integer Types**: These are used to store whole numbers.
+   - `byte`: 8-bit signed integer. Range: -128 to 127.
+     ```java
+     byte b = 100;
+     ```
+   - `short`: 16-bit signed integer. Range: -32,768 to 32,767.
+     ```java
+     short s = 20000;
+     ```
+   - `int`: 32-bit signed integer. Range: -2^31 to 2^31-1.
+     ```java
+     int i = 100000;
+     ```
+   - `long`: 64-bit signed integer. Range: -2^63 to 2^63-1.
+     ```java
+     long l = 100000L; // Note the 'L' suffix
+     ```
+
+2. **Floating-Point Types**: These are used to store numbers with fractional parts.
+   - `float`: 32-bit IEEE 754 floating point. Range: approximately ±3.40282347E+38F.
+     ```java
+     float f = 3.14f; // Note the 'f' suffix
+     ```
+   - `double`: 64-bit IEEE 754 floating point. Range: approximately ±1.79769313486231570E+308.
+     ```java
+     double d = 3.14159;
+     ```
+
+3. **Character Type**: This is used to store a single character.
+   - `char`: 16-bit Unicode character. Range: 0 to 65,535.
+     ```java
+     char c = 'A';
+     ```
+
+4. **Boolean Type**: This is used to store true/false values.
+   - `boolean`: Represents one bit of information, but its "size" isn't precisely defined. It can only take the values `true` or `false`.
+     ```java
+     boolean flag = true;
+     ```
+
+### Example Program
+
+Here is a simple Java program that demonstrates the use of primitive data types:
+
+```java
+public class PrimitiveTypesExample {
+    public static void main(String[] args) {
+        // Integer types
+        byte b = 100;
+        short s = 20000;
+        int i = 100000;
+        long l = 100000L;
+
+        // Floating-point types
+        float f = 3.14f;
+        double d = 3.14159;
+
+        // Character type
+        char c = 'A';
+
+        // Boolean type
+        boolean flag = true;
+
+        // Output the values
+        System.out.println("byte: " + b);
+        System.out.println("short: " + s);
+        System.out.println("int: " + i);
+        System.out.println("long: " + l);
+        System.out.println("float: " + f);
+        System.out.println("double: " + d);
+        System.out.println("char: " + c);
+        System.out.println("boolean: " + flag);
+    }
+}
+```
+
+### Output
+```
+byte: 100
+short: 20000
+int: 100000
+long: 100000
+float: 3.14
+double: 3.14159
+char: A
+boolean: true
+```
+
+### Key Points:
+- Primitive data types are the building blocks of data manipulation in Java.
+- They are not objects and do not have methods.
+- Each primitive type has a fixed size and range.
+- They are stored directly in memory, which makes them faster to access compared to objects.
+
+```java
+public void m1(double d){
+        System.out.println("double argument="+d*d);
+    }
+    public void m1(float d){
+        System.out.println("float argument="+d*d);
+    }
+    public static void main(String[] args) {
+        Test test = new Test();
+        test.m1(4); //float argument=16.0
+    }
+```
