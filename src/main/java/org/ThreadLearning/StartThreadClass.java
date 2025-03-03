@@ -27,7 +27,12 @@ public class StartThreadClass implements Runnable{
 		
 		//.equals() method for content comparison
 		//If a class does not override the equals method, then by default, it uses the equals(Object o) method of the closest parent class that has overridden this method. 
-		
+
+		String b = "a";
+		String c = "a";
+		if(b == c ){ // true
+			System.out.println(Boolean.TRUE);
+		}
 		
 		
 	}

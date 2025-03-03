@@ -495,3 +495,344 @@ public class MemoryLeakPrevention {
 ```
 
 Following these practices will help reduce or eliminate memory leaks in Java, leading to more efficient memory usage and more reliable applications. Regular monitoring and profiling are key to ensuring that memory is managed effectively in long-running applications.
+
+---
+## hierarchy of collection in java?
+
+The **Java Collections Framework** is a unified architecture for representing and manipulating collections. It provides a well-designed hierarchy of interfaces and classes for storing and processing groups of objects. Below is the detailed hierarchy of the Java Collections Framework:
+
+---
+
+### **1. Core Interfaces**
+The Java Collections Framework is built around a set of core interfaces:
+
+1. **`Iterable<T>`**
+   - Root interface for all collections.
+   - Provides the `iterator()` method to iterate over elements.
+
+2. **`Collection<E>`**
+   - Extends `Iterable<E>`.
+   - Represents a group of objects (elements).
+   - Core methods: `add()`, `remove()`, `size()`, `isEmpty()`, `contains()`, etc.
+
+3. **`List<E>`**
+   - Extends `Collection<E>`.
+   - Represents an ordered collection (sequence).
+   - Allows duplicate elements.
+   - Core implementations: `ArrayList`, `LinkedList`, `Vector`, `Stack`.
+
+4. **`Set<E>`**
+   - Extends `Collection<E>`.
+   - Represents a collection of unique elements (no duplicates).
+   - Core implementations: `HashSet`, `LinkedHashSet`, `TreeSet`.
+
+5. **`Queue<E>`**
+   - Extends `Collection<E>`.
+   - Represents a collection designed for holding elements prior to processing.
+   - Core implementations: `LinkedList`, `PriorityQueue`.
+
+6. **`Deque<E>`**
+   - Extends `Queue<E>`.
+   - Represents a double-ended queue (supports element insertion and removal at both ends).
+   - Core implementations: `ArrayDeque`, `LinkedList`.
+
+7. **`Map<K, V>`**
+   - Does **not** extend `Collection<E>`.
+   - Represents a collection of key-value pairs.
+   - Keys are unique, values can be duplicated.
+   - Core implementations: `HashMap`, `LinkedHashMap`, `TreeMap`, `Hashtable`.
+
+---
+
+### **2. Class Hierarchy**
+The Java Collections Framework provides concrete implementations of the core interfaces. Here's the hierarchy:
+
+#### **`Collection<E>` Implementations**
+1. **`List<E>` Implementations**
+   - **`ArrayList<E>`**
+     - Resizable array implementation.
+     - Fast random access.
+   - **`LinkedList<E>`**
+     - Doubly-linked list implementation.
+     - Efficient for frequent insertions/deletions.
+   - **`Vector<E>`**
+     - Synchronized resizable array.
+     - Legacy class (use `ArrayList` instead).
+   - **`Stack<E>`**
+     - Extends `Vector<E>`.
+     - Represents a last-in-first-out (LIFO) stack.
+
+2. **`Set<E>` Implementations**
+   - **`HashSet<E>`**
+     - Uses a hash table for storage.
+     - Does not maintain insertion order.
+   - **`LinkedHashSet<E>`**
+     - Extends `HashSet<E>`.
+     - Maintains insertion order.
+   - **`TreeSet<E>`**
+     - Implements `SortedSet<E>`.
+     - Stores elements in a sorted order (natural or custom).
+
+3. **`Queue<E>` Implementations**
+   - **`PriorityQueue<E>`**
+     - Implements a priority heap.
+     - Orders elements based on natural ordering or a custom comparator.
+   - **`LinkedList<E>`**
+     - Can also be used as a `Queue<E>`.
+
+4. **`Deque<E>` Implementations**
+   - **`ArrayDeque<E>`**
+     - Resizable array implementation of a double-ended queue.
+   - **`LinkedList<E>`**
+     - Can also be used as a `Deque<E>`.
+
+#### **`Map<K, V>` Implementations**
+1. **`HashMap<K, V>`**
+   - Uses a hash table for storage.
+   - Does not maintain insertion order.
+2. **`LinkedHashMap<K, V>`**
+   - Extends `HashMap<K, V>`.
+   - Maintains insertion order.
+3. **`TreeMap<K, V>`**
+   - Implements `SortedMap<K, V>`.
+   - Stores key-value pairs in sorted order (natural or custom).
+4. **`Hashtable<K, V>`**
+   - Legacy class (use `HashMap` instead).
+   - Synchronized.
+
+---
+
+### **3. Utility Classes**
+The Java Collections Framework also provides utility classes for working with collections:
+
+1. **`Collections`**
+   - Provides static methods for operations like sorting, searching, shuffling, etc.
+   - Example: `Collections.sort(list)`.
+
+2. **`Arrays`**
+   - Provides static methods for working with arrays.
+   - Example: `Arrays.asList(array)`.
+
+---
+
+### **4. Legacy Classes**
+Before the introduction of the Java Collections Framework, Java had legacy classes for collections:
+
+1. **`Vector<E>`**
+   - Synchronized resizable array.
+   - Replaced by `ArrayList<E>`.
+
+2. **`Hashtable<K, V>`**
+   - Synchronized key-value storage.
+   - Replaced by `HashMap<K, V>`.
+
+3. **`Stack<E>`**
+   - Extends `Vector<E>`.
+   - Represents a LIFO stack.
+   - Replaced by `Deque<E>` implementations.
+
+---
+
+### **5. Diagram of the Hierarchy**
+
+```
+Iterable<E>
+    |
+Collection<E>
+    |
+    +-- List<E>
+    |     |
+    |     +-- ArrayList<E>
+    |     +-- LinkedList<E>
+    |     +-- Vector<E>
+    |           |
+    |           +-- Stack<E>
+    |
+    +-- Set<E>
+    |     |
+    |     +-- HashSet<E>
+    |     |      |
+    |     |      +-- LinkedHashSet<E>
+    |     |
+    |     +-- TreeSet<E>
+    |
+    +-- Queue<E>
+          |
+          +-- PriorityQueue<E>
+          +-- Deque<E>
+                |
+                +-- ArrayDeque<E>
+                +-- LinkedList<E>
+
+Map<K, V>
+    |
+    +-- HashMap<K, V>
+    |      |
+    |      +-- LinkedHashMap<K, V>
+    |
+    +-- TreeMap<K, V>
+    +-- Hashtable<K, V>
+```
+
+---
+
+### **Key Points**
+1. **`Collection<E>`** is the root interface for all collections (except `Map<K, V>`).
+2. **`List<E>`**, **`Set<E>`**, and **`Queue<E>`** are the main sub-interfaces of `Collection<E>`.
+3. **`Map<K, V>`** is a separate interface for key-value pairs.
+4. Use **`Collections`** and **`Arrays`** utility classes for common operations.
+5. Prefer modern collection classes (e.g., `ArrayList`, `HashMap`) over legacy classes (e.g., `Vector`, `Hashtable`).
+
+This hierarchy provides a flexible and powerful way to work with collections in Java.
+
+
+---
+## Diagram of map<K, V> hierarchy?
+
+The **`Map<K, V>`** hierarchy in Java is part of the Java Collections Framework and represents key-value pairs. Below is the **diagram** and **explanation** of the `Map<K, V>` hierarchy:
+
+---
+
+### **Map<K, V> Hierarchy Diagram**
+
+```
+Map<K, V>
+    |
+    +-- HashMap<K, V>
+    |      |
+    |      +-- LinkedHashMap<K, V>
+    |
+    +-- TreeMap<K, V>
+    |
+    +-- Hashtable<K, V>
+    |
+    +-- SortedMap<K, V>
+          |
+          +-- NavigableMap<K, V>
+                |
+                +-- TreeMap<K, V>
+```
+
+---
+
+### **Explanation of the Hierarchy**
+
+#### **1. `Map<K, V>`**
+- **Root interface** for all map implementations.
+- Represents a collection of key-value pairs.
+- Keys are unique, and each key maps to exactly one value.
+- **Core methods**:
+  - `put(K key, V value)`: Adds a key-value pair.
+  - `get(K key)`: Retrieves the value associated with the key.
+  - `remove(K key)`: Removes the key-value pair.
+  - `keySet()`: Returns a set of keys.
+  - `values()`: Returns a collection of values.
+  - `entrySet()`: Returns a set of key-value pairs.
+
+---
+
+#### **2. `HashMap<K, V>`**
+- **Most commonly used implementation** of `Map<K, V>`.
+- Uses a **hash table** for storage.
+- **Features**:
+  - Does **not maintain insertion order**.
+  - Allows **one null key** and **multiple null values**.
+  - Provides **O(1)** time complexity for `get()` and `put()` operations (on average).
+- **Example**:
+  ```java
+  Map<String, Integer> map = new HashMap<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map.get("Alice")); // Output: 25
+  ```
+
+---
+
+#### **3. `LinkedHashMap<K, V>`**
+- Extends `HashMap<K, V>`.
+- **Maintains insertion order** of keys.
+- **Features**:
+  - Slower than `HashMap` due to maintaining order.
+  - Provides **O(1)** time complexity for `get()` and `put()` operations.
+- **Example**:
+  ```java
+  Map<String, Integer> map = new LinkedHashMap<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map); // Output: {Alice=25, Bob=30} (insertion order preserved)
+  ```
+
+---
+
+#### **4. `TreeMap<K, V>`**
+- Implements `SortedMap<K, V>` and `NavigableMap<K, V>`.
+- Stores key-value pairs in **sorted order** (natural ordering or custom comparator).
+- **Features**:
+  - Does **not allow null keys** (but allows null values).
+  - Provides **O(log n)** time complexity for `get()` and `put()` operations.
+- **Example**:
+  ```java
+  Map<String, Integer> map = new TreeMap<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map); // Output: {Alice=25, Bob=30} (sorted by keys)
+  ```
+
+---
+
+#### **5. `Hashtable<K, V>`**
+- **Legacy class** (introduced in Java 1.0).
+- **Synchronized** (thread-safe).
+- **Features**:
+  - Does **not allow null keys or values**.
+  - Slower than `HashMap` due to synchronization.
+- **Example**:
+  ```java
+  Map<String, Integer> map = new Hashtable<>();
+  map.put("Alice", 25);
+  map.put("Bob", 30);
+  System.out.println(map.get("Bob")); // Output: 30
+  ```
+
+---
+
+#### **6. `SortedMap<K, V>`**
+- Extends `Map<K, V>`.
+- Represents a map with keys sorted in **natural order** or by a **custom comparator**.
+- **Core methods**:
+  - `firstKey()`: Returns the first (lowest) key.
+  - `lastKey()`: Returns the last (highest) key.
+  - `subMap(K fromKey, K toKey)`: Returns a view of the portion of the map whose keys range from `fromKey` to `toKey`.
+
+---
+
+#### **7. `NavigableMap<K, V>`**
+- Extends `SortedMap<K, V>`.
+- Provides additional methods for navigation:
+  - `lowerKey(K key)`: Returns the greatest key less than the given key.
+  - `higherKey(K key)`: Returns the smallest key greater than the given key.
+  - `floorKey(K key)`: Returns the greatest key less than or equal to the given key.
+  - `ceilingKey(K key)`: Returns the smallest key greater than or equal to the given key.
+
+---
+
+### **Key Points**
+1. **`Map<K, V>`** is the root interface for all map implementations.
+2. **`HashMap<K, V>`** is the most commonly used implementation (fast, unordered).
+3. **`LinkedHashMap<K, V>`** maintains insertion order.
+4. **`TreeMap<K, V>`** stores keys in sorted order.
+5. **`Hashtable<K, V>`** is a legacy, synchronized implementation.
+6. **`SortedMap<K, V>`** and **`NavigableMap<K, V>`** provide additional functionality for sorted maps.
+
+---
+
+### **When to Use Which Map?**
+| **Map Type**         | **Use Case**                                                                 |
+|-----------------------|-----------------------------------------------------------------------------|
+| **`HashMap<K, V>`**   | General-purpose map with no ordering requirements.                          |
+| **`LinkedHashMap<K, V>`** | When insertion order needs to be preserved.                              |
+| **`TreeMap<K, V>`**   | When keys need to be sorted (natural or custom order).                     |
+| **`Hashtable<K, V>`** | Legacy code or when thread safety is required (use `ConcurrentHashMap` instead). |
+
+By understanding the `Map<K, V>` hierarchy, you can choose the appropriate implementation based on your requirements.
+

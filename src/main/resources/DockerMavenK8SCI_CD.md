@@ -777,6 +777,11 @@ By preparing for these questions and understanding the concepts deeply, you will
 
 ---
 
+![image](https://github.com/user-attachments/assets/8cee9a42-dece-497d-86fd-02d8ed95164c)
+
+
+---
+
 ### **Intermediate CI/CD Questions**
 
 5. **How do you design a CI/CD pipeline for a Java application?**  
