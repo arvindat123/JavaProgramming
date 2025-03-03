@@ -38,6 +38,10 @@ public class StreamString {
 
     public static void main(String[] args) {
 
+        String string = "I am Arvind";
+        char[] cc = string.toCharArray();
+        System.out.println(Arrays.toString(cc)); // [I,  , a, m,  , A, r, v, i, n, d]
+
         //Merge two sorted lists into a single sorted list using Java streams:
         List<Integer> list1 = Arrays.asList(1, 3, 5, 7, 9, 45, 67, 89);
         List<Integer> list2 = Arrays.asList(2, 4, 6, 8, 10);
@@ -47,6 +51,8 @@ public class StreamString {
         //Check if a list of integers contains a prime number using Java streams:
         List<Integer> numbers = Arrays.asList(2, 4, 6, 8, 10, 11, 12, 13, 14, 15);
         boolean isPrimeNumber = numbers.stream().anyMatch(StreamString::isPrime);
+        List<Integer> num = numbers.stream().filter(StreamString::isPrime).toList(); // Get prime number [2, 11, 13]
+
         System.out.println(isPrimeNumber);
 
         //Reverse String using Stream API Java 8
@@ -68,6 +74,7 @@ public class StreamString {
         //Find the longest string in a list of strings using Java streams:
         List<String> strings = Arrays.asList("apple", "banana", "cherry", "date", "grapefruit");
         Optional<String> longestString = strings.stream().max(Comparator.comparingInt(String::length));
+        //strings.stream().max(Comparator.comparingInt(String::length)).ifPresentOrElse(System.out::println, () -> System.out.println("There is no such element"));
 
         //Find the longest string in a list of strings using Java streams:
         List<String> strings1 = Arrays

@@ -49,10 +49,10 @@ public class Student{
 	@Override
 	public String toString() {
 		return "Student{" +
-				"name='" + name + '\'' +
+				"name='" + name +
 				", age=" + age +
-				", address=" + address +
-				", mobileNumbers=" + mobileNumbers +
+				", address=" + address.getZipcode() +
+				", mobileNumbers=" + mobileNumbers.get(0).getNumber() +
 				'}';
 	}
 }
