@@ -330,3 +330,199 @@ Legacy Printer: Hello, World!
 - When you need to integrate multiple third-party libraries with different interfaces.
 
 This pattern is widely used in real-world applications, especially when dealing with legacy code or integrating with third-party libraries.
+
+---
+## **Builder Design Pattern**
+
+
+
+The **Builder Design Pattern** is a **creational design pattern** that separates the construction of a complex object from its representation. It allows you to create objects step-by-step, providing flexibility and clarity in the construction process. This pattern is particularly useful when an object has many optional parameters or configurations.
+
+---
+
+### **Key Concepts of the Builder Pattern**
+1. **Complex Object**:
+   - An object with many attributes, some of which are optional.
+2. **Builder**:
+   - A separate class responsible for constructing the complex object.
+3. **Director** (optional):
+   - A class that directs the builder to construct the object (not always used).
+4. **Product**:
+   - The final object being constructed.
+
+---
+
+### **Advantages of the Builder Pattern**
+1. **Flexibility**:
+   - Allows you to create objects with different configurations without using multiple constructors.
+2. **Readability**:
+   - Improves code readability by separating the construction logic from the object itself.
+3. **Immutability**:
+   - Can be used to create immutable objects by finalizing the object only after all attributes are set.
+
+---
+
+### **Example: Building a Computer**
+Let’s say we want to build a `Computer` object with the following attributes:
+- **RAM** (required)
+- **Storage** (required)
+- **CPU** (optional)
+- **GPU** (optional)
+- **Operating System** (optional)
+
+---
+
+### **Step 1: Define the Product (Computer)**
+```java
+public class Computer {
+    private String ram;
+    private String storage;
+    private String cpu;
+    private String gpu;
+    private String operatingSystem;
+
+    // Private constructor to force the use of the builder
+    private Computer(ComputerBuilder builder) {
+        this.ram = builder.ram;
+        this.storage = builder.storage;
+        this.cpu = builder.cpu;
+        this.gpu = builder.gpu;
+        this.operatingSystem = builder.operatingSystem;
+    }
+
+    // Getters for all attributes
+    public String getRam() {
+        return ram;
+    }
+
+    public String getStorage() {
+        return storage;
+    }
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public String getGpu() {
+        return gpu;
+    }
+
+    public String getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    @Override
+    public String toString() {
+        return "Computer{" +
+                "ram='" + ram + '\'' +
+                ", storage='" + storage + '\'' +
+                ", cpu='" + cpu + '\'' +
+                ", gpu='" + gpu + '\'' +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                '}';
+    }
+
+    // Builder class
+    public static class ComputerBuilder {
+        private String ram;
+        private String storage;
+        private String cpu;
+        private String gpu;
+        private String operatingSystem;
+
+        // Constructor for required attributes
+        public ComputerBuilder(String ram, String storage) {
+            this.ram = ram;
+            this.storage = storage;
+        }
+
+        // Setters for optional attributes
+        public ComputerBuilder setCpu(String cpu) {
+            this.cpu = cpu;
+            return this;
+        }
+
+        public ComputerBuilder setGpu(String gpu) {
+            this.gpu = gpu;
+            return this;
+        }
+
+        public ComputerBuilder setOperatingSystem(String operatingSystem) {
+            this.operatingSystem = operatingSystem;
+            return this;
+        }
+
+        // Build method to create the Computer object
+        public Computer build() {
+            return new Computer(this);
+        }
+    }
+}
+```
+
+---
+
+### **Step 2: Use the Builder to Create a Computer**
+```java
+public class BuilderPatternExample {
+    public static void main(String[] args) {
+        // Create a Computer object using the builder
+        Computer computer = new Computer.ComputerBuilder("16GB", "512GB SSD")
+                .setCpu("Intel i7")
+                .setGpu("NVIDIA RTX 3080")
+                .setOperatingSystem("Windows 11")
+                .build();
+
+        // Print the computer details
+        System.out.println(computer);
+    }
+}
+```
+
+---
+
+### **Output**
+```
+Computer{ram='16GB', storage='512GB SSD', cpu='Intel i7', gpu='NVIDIA RTX 3080', operatingSystem='Windows 11'}
+```
+
+---
+
+### **Explanation**
+1. **Computer Class**:
+   - Represents the final product.
+   - Has a private constructor to enforce the use of the builder.
+   - Contains getters for all attributes.
+
+2. **ComputerBuilder Class**:
+   - A static inner class responsible for constructing the `Computer` object.
+   - Has a constructor for required attributes (`ram` and `storage`).
+   - Provides setter methods for optional attributes (`cpu`, `gpu`, `operatingSystem`).
+   - Includes a `build()` method to finalize and return the `Computer` object.
+
+3. **BuilderPatternExample Class**:
+   - Demonstrates how to use the builder to create a `Computer` object.
+   - The builder allows you to set only the attributes you need, making the code clean and flexible.
+
+---
+
+### **Key Points**
+- The **Builder Pattern** separates the construction of an object from its representation.
+- It is useful for creating objects with many optional attributes.
+- The pattern improves code readability and flexibility.
+- The `build()` method finalizes the object and ensures immutability.
+
+---
+
+### **Real-World Use Cases**
+1. **Building Complex Objects**:
+   - Creating objects like `Car`, `Pizza`, or `House` with many optional attributes.
+2. **Configuration Objects**:
+   - Building configuration objects for libraries or frameworks.
+3. **Immutable Objects**:
+   - Creating immutable objects with a large number of attributes.
+
+---
+
+### **Conclusion**
+The **Builder Design Pattern** is a powerful tool for constructing complex objects in a flexible and readable way. By separating the construction logic from the object itself, it simplifies the creation process and improves code maintainability.
