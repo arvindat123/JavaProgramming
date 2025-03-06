@@ -526,3 +526,128 @@ Computer{ram='16GB', storage='512GB SSD', cpu='Intel i7', gpu='NVIDIA RTX 3080',
 
 ### **Conclusion**
 The **Builder Design Pattern** is a powerful tool for constructing complex objects in a flexible and readable way. By separating the construction logic from the object itself, it simplifies the creation process and improves code maintainability.
+
+---
+## **Decorator Design Pattern**
+
+The **Decorator Design Pattern** is a structural design pattern that allows you to dynamically add behavior or responsibilities to objects without altering their code. It is a flexible alternative to subclassing for extending functionality. The pattern involves a set of decorator classes that are used to wrap concrete components, adding new behaviors while preserving the original interface.
+
+### Key Concepts:
+1. **Component**: The base interface or abstract class that defines the operations that can be altered by decorators.
+2. **Concrete Component**: The actual object to which additional behaviors can be added.
+3. **Decorator**: A class that implements the component interface and contains a reference to a component object. It can add behavior before or after delegating to the wrapped object.
+4. **Concrete Decorator**: A specific implementation of the decorator that adds new behaviors.
+
+### Example: Coffee Ordering System
+Let's say you are building a coffee ordering system where you can add various toppings (decorators) to a base coffee (concrete component).
+
+#### Step 1: Define the Component Interface
+```python
+from abc import ABC, abstractmethod
+
+# Component Interface
+class Coffee(ABC):
+    @abstractmethod
+    def cost(self) -> float:
+        pass
+
+    @abstractmethod
+    def description(self) -> str:
+        pass
+```
+
+#### Step 2: Create the Concrete Component
+```python
+# Concrete Component
+class SimpleCoffee(Coffee):
+    def cost(self) -> float:
+        return 5.0  # Base price of simple coffee
+
+    def description(self) -> str:
+        return "Simple Coffee"
+```
+
+#### Step 3: Create the Base Decorator
+```python
+# Base Decorator
+class CoffeeDecorator(Coffee):
+    def __init__(self, coffee: Coffee):
+        self._coffee = coffee
+
+    def cost(self) -> float:
+        return self._coffee.cost()
+
+    def description(self) -> str:
+        return self._coffee.description()
+```
+
+#### Step 4: Create Concrete Decorators
+```python
+# Concrete Decorators
+class MilkDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 2.0  # Adding cost of milk
+
+    def description(self) -> str:
+        return self._coffee.description() + ", Milk"
+
+
+class SugarDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 1.0  # Adding cost of sugar
+
+    def description(self) -> str:
+        return self._coffee.description() + ", Sugar"
+
+
+class WhippedCreamDecorator(CoffeeDecorator):
+    def cost(self) -> float:
+        return self._coffee.cost() + 3.0  # Adding cost of whipped cream
+
+    def description(self) -> str:
+        return self._coffee.description() + ", Whipped Cream"
+```
+
+#### Step 5: Use the Decorators
+```python
+# Client Code
+if __name__ == "__main__":
+    coffee: Coffee = SimpleCoffee()
+    print(f"{coffee.description()} costs ${coffee.cost()}")
+
+    # Add Milk
+    coffee = MilkDecorator(coffee)
+    print(f"{coffee.description()} costs ${coffee.cost()}")
+
+    # Add Sugar
+    coffee = SugarDecorator(coffee)
+    print(f"{coffee.description()} costs ${coffee.cost()}")
+
+    # Add Whipped Cream
+    coffee = WhippedCreamDecorator(coffee)
+    print(f"{coffee.description()} costs ${coffee.cost()}")
+```
+
+### Output:
+```
+Simple Coffee costs $5.0
+Simple Coffee, Milk costs $7.0
+Simple Coffee, Milk, Sugar costs $8.0
+Simple Coffee, Milk, Sugar, Whipped Cream costs $11.0
+```
+
+### Explanation:
+1. The `SimpleCoffee` class is the concrete component representing a basic coffee.
+2. The `CoffeeDecorator` class is the base decorator that wraps a `Coffee` object.
+3. Concrete decorators like `MilkDecorator`, `SugarDecorator`, and `WhippedCreamDecorator` add additional behavior (cost and description) to the coffee.
+4. The client code dynamically adds decorators to the base coffee object, extending its functionality without modifying the original class.
+
+### Advantages of Decorator Pattern:
+- **Flexibility**: You can add or remove responsibilities at runtime.
+- **Open/Closed Principle**: You can extend behavior without modifying existing code.
+- **Avoids Class Explosion**: Instead of creating multiple subclasses for every combination of behaviors, you can use decorators.
+
+### Use Cases:
+- Adding features to UI components (e.g., adding borders, scrollbars).
+- Extending I/O streams (e.g., adding buffering, compression).
+- Customizing objects in a flexible way.
