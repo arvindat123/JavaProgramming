@@ -117,3 +117,156 @@ this.http.get('api/employees').subscribe(response => {...});
 ---
 
 Would you like a **PDF version**, **coding examples**, or questions grouped by **experience level (0-2, 3-5, 6+ years)**?
+
+
+---
+
+Here is a curated list of **advanced Angular interview questions** to help you prepare for senior or architect-level roles:
+
+---
+
+## 🔹 **Advanced Angular Interview Questions**
+
+### ✅ **1. What is the difference between `Renderer2` and direct DOM manipulation?**
+- `Renderer2` is an Angular abstraction for DOM manipulation that ensures **platform-independent rendering** (e.g., for SSR or web workers).
+- Direct DOM (e.g., `document.querySelector`) breaks **Angular's encapsulation** and isn't recommended.
+
+---
+
+### ✅ **2. Explain Angular's Change Detection strategy.**
+- Angular uses **zone.js** and a **unidirectional change detection** mechanism.
+- Two strategies:
+  - `Default`: checks the entire component tree.
+  - `OnPush`: checks only if input bindings change, improving performance.
+
+---
+
+### ✅ **3. How does Angular handle memory leaks?**
+Memory leaks often happen with:
+- Unsubscribed Observables
+- EventListeners not removed
+To avoid:
+- Use `takeUntil()`, `async pipe`, `ngOnDestroy()` for clean-up.
+
+---
+
+### ✅ **4. What is the difference between `ngOnInit()` and `ngAfterViewInit()`?**
+- `ngOnInit()` → called once the component is initialized.
+- `ngAfterViewInit()` → called once the view (and child components) are fully initialized. Best for DOM access.
+
+---
+
+### ✅ **5. How to optimize performance in large Angular apps?**
+- Use `OnPush` change detection
+- Lazy loading modules
+- Avoid memory leaks
+- Use `trackBy` with `*ngFor`
+- Preload strategy
+- Debounce user inputs
+
+---
+
+### ✅ **6. What is the Angular compiler and how does it work?**
+Angular provides two compilers:
+- **JIT (Just-in-Time)**: compiles at runtime.
+- **AOT (Ahead-of-Time)**: compiles during build, faster loading and better security.
+
+---
+
+### ✅ **7. How is dynamic component loading done in Angular?**
+Use `ComponentFactoryResolver` and `ViewContainerRef`:
+```ts
+const factory = this.resolver.resolveComponentFactory(SomeComponent);
+this.container.createComponent(factory);
+```
+
+---
+
+### ✅ **8. How does Angular Universal work (SSR)?**
+- Angular Universal allows **server-side rendering** for Angular apps.
+- It helps with **SEO, faster first load**, and better performance on low-powered devices.
+
+---
+
+### ✅ **9. Explain RxJS operators used in Angular and their use cases.**
+- `switchMap`, `mergeMap`, `concatMap`: control inner subscription.
+- `debounceTime`, `distinctUntilChanged`: used for search bars.
+- `takeUntil`: unsubscribe safely.
+- `combineLatest`, `forkJoin`: combine streams.
+
+---
+
+### ✅ **10. What is NgZone and how does it work?**
+- `NgZone` helps Angular detect async operations.
+- Angular patches all async events (like `setTimeout`, HTTP calls) to trigger change detection automatically.
+
+---
+
+### ✅ **11. What is the purpose of `Injector` and `ReflectiveInjector`?**
+- Angular uses `Injector` to resolve dependencies at runtime.
+- `ReflectiveInjector` (deprecated) was an older DI API for runtime reflection.
+
+---
+
+### ✅ **12. How does Angular handle form validation under the hood?**
+- Template-driven uses `NgModel` and built-in validators.
+- Reactive uses `FormGroup`, `FormControl` with validator functions.
+- Custom validators return `ValidationErrors | null`.
+
+---
+
+### ✅ **13. What are custom structural directives?**
+You can create custom directives using `Directive` and `TemplateRef` to manipulate the DOM, like a custom `*ngIf`.
+
+---
+
+### ✅ **14. What is the difference between `providedIn: 'root'` and in-module providers?**
+- `'root'`: service is singleton app-wide.
+- Module providers: service is scoped to that module and its children only.
+
+---
+
+### ✅ **15. What is `ngTemplateOutlet` and use cases?**
+It allows rendering of templates dynamically.
+```html
+<ng-container *ngTemplateOutlet="templateRef; context: myContext"></ng-container>
+```
+
+---
+
+### ✅ **16. Explain the role of `async` pipe.**
+The `async` pipe subscribes to Observables/Promises and handles unsubscribing automatically.
+
+---
+
+### ✅ **17. What is `Defer` block in Angular 17+?**
+Introduced to **defer rendering** non-critical content using:
+```html
+@defer (when condition) {
+  <expensive-content />
+}
+```
+
+---
+
+### ✅ **18. What are standalone components (Angular 14+)?**
+- Components that don’t need to be declared in a module.
+- Useful for **simplified structure**, especially for libraries and micro frontends.
+
+---
+
+### ✅ **19. Explain `Hydration` in Angular SSR (Angular 16+).**
+Hydration reuses server-rendered HTML and **hydrates** it with client-side interactivity, improving performance.
+
+---
+
+### ✅ **20. What is Signal in Angular (Angular 17+)?**
+A new **reactivity primitive** (like in React):
+```ts
+let count = signal(0);
+```
+Used instead of `BehaviorSubject` or `EventEmitter` for local reactivity.
+
+---
+
+Would you like a **PDF version**, **practice quiz**, or **company-specific question set** for Angular (e.g., TCS, Infosys, etc.)?
