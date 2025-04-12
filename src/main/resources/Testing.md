@@ -71,6 +71,9 @@ Special methods called during the component lifecycle:
 
 ---
 
+![image](https://github.com/user-attachments/assets/38c7c08d-8470-4fe6-8f0e-708965410586)
+
+
 ### 🔹 **Advanced Level**
 
 #### 13. **What is Change Detection?**
