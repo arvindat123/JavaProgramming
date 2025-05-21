@@ -2306,3 +2306,179 @@ Queries for a specific user are routed to the appropriate shard based on the `Us
 - Choose partitioning for single-server optimization and sharding for distributed, large-scale systems.
 
 By understanding these techniques, you can design databases that are scalable, performant, and easy to manage.
+
+---
+
+# **Types of Database Locks (Detailed Explanation)**
+
+Database locks are mechanisms that control concurrent access to data to ensure consistency and prevent conflicts. They can be categorized based on **lock granularity (scope)** and **lock mode (behavior)**.
+
+---
+
+## **1. Based on Lock Granularity (Scope)**
+These locks define how much data is locked at a time.
+
+### **a) Row-Level Locks**
+- **Scope**: Locks a single row in a table.
+- **Use Case**: High-concurrency environments where multiple transactions work on different rows.
+- **Pros**: Minimal blocking, allows concurrent access to other rows.
+- **Cons**: Overhead increases with many locks.
+- **Example**:  
+  ```sql
+  -- In MySQL (InnoDB), row locks are acquired automatically for writes
+  UPDATE accounts SET balance = balance - 100 WHERE account_id = 123;
+  ```
+
+### **b) Page-Level Locks**
+- **Scope**: Locks a fixed-size block (page) of data (e.g., 8KB in SQL Server).
+- **Use Case**: When multiple rows in the same page are frequently accessed.
+- **Pros**: Less overhead than row locks but more granular than table locks.
+- **Cons**: Can block unrelated rows if they reside on the same page.
+- **Example**:  
+  ```sql
+  -- SQL Server may escalate row locks to page locks under high contention
+  ```
+
+### **c) Table-Level Locks**
+- **Scope**: Locks an entire table.
+- **Use Case**: Batch operations (e.g., bulk updates, schema changes).
+- **Pros**: Low overhead, simple to manage.
+- **Cons**: Blocks all other transactions on the table.
+- **Example**:  
+  ```sql
+  -- Explicit table lock in MySQL
+  LOCK TABLES accounts WRITE;
+  -- Perform operations
+  UNLOCK TABLES;
+  ```
+
+### **d) Database-Level Locks**
+- **Scope**: Locks the entire database.
+- **Use Case**: Maintenance tasks (backups, restores, major schema changes).
+- **Pros**: Ensures no concurrent modifications during critical operations.
+- **Cons**: Severely impacts availability.
+- **Example**:  
+  ```sql
+  -- SQL Server may lock the database in single-user mode
+  ALTER DATABASE MyDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+  ```
+
+---
+
+## **2. Based on Lock Mode (Behavior)**
+These locks define what operations are allowed while the lock is held.
+
+### **a) Shared Lock (S Lock)**
+- **Purpose**: Allows concurrent reads but blocks writes.
+- **Behavior**:
+  - Multiple transactions can hold shared locks simultaneously.
+  - Blocks **exclusive locks** but allows other **shared locks**.
+- **Use Case**: `SELECT` operations (read-only).
+- **Example**:  
+  ```sql
+  -- In SQL Server, shared locks are acquired by default for reads
+  BEGIN TRANSACTION;
+  SELECT * FROM employees WHERE department = 'IT'; -- Acquires S lock
+  COMMIT;
+  ```
+
+### **b) Exclusive Lock (X Lock)**
+- **Purpose**: Prevents any other access (read or write).
+- **Behavior**:
+  - Only one transaction can hold an exclusive lock at a time.
+  - Blocks **shared locks**, **update locks**, and other **exclusive locks**.
+- **Use Case**: `INSERT`, `UPDATE`, `DELETE`.
+- **Example**:  
+  ```sql
+  -- InnoDB automatically acquires X locks for writes
+  UPDATE employees SET salary = salary * 1.1 WHERE employee_id = 101;
+  ```
+
+### **c) Update Lock (U Lock)**
+- **Purpose**: Prevents deadlocks when a transaction intends to modify data.
+- **Behavior**:
+  - Acts like a **shared lock** initially but can upgrade to an **exclusive lock**.
+  - Prevents multiple transactions from acquiring update locks simultaneously.
+- **Use Case**: `SELECT ... FOR UPDATE` (pessimistic locking).
+- **Example**:  
+  ```sql
+  -- SQL Server uses U locks to avoid deadlocks
+  BEGIN TRANSACTION;
+  SELECT * FROM orders WITH (UPDLOCK) WHERE order_id = 1001;
+  -- Later upgrades to X lock for update
+  UPDATE orders SET status = 'Shipped' WHERE order_id = 1001;
+  COMMIT;
+  ```
+
+### **d) Intent Locks (IS, IX, IU)**
+- **Purpose**: Signal intention to lock at a finer granularity (row/page).
+- **Types**:
+  - **Intent Shared (IS)**: Indicates a transaction may acquire **S locks** on lower-level objects.
+  - **Intent Exclusive (IX)**: Indicates a transaction may acquire **X locks** on lower-level objects.
+  - **Intent Update (IU)**: Used in some databases to signal future **U locks**.
+- **Example**:  
+  ```sql
+  -- SQL Server uses intent locks for hierarchy management
+  -- A transaction locking a row will first acquire an IX lock on the table
+  ```
+
+### **e) Schema Locks**
+- **Purpose**: Prevent schema modifications while queries are running.
+- **Types**:
+  - **Schema Modification (Sch-M)**: Used for DDL operations (e.g., `ALTER TABLE`).
+  - **Schema Stability (Sch-S)**: Allows queries but blocks schema changes.
+- **Example**:  
+  ```sql
+  -- SQL Server acquires Sch-M lock during ALTER TABLE
+  ALTER TABLE employees ADD COLUMN bonus DECIMAL(10,2);
+  ```
+
+### **f) Bulk Update Lock (BU Lock)**
+- **Purpose**: Optimize bulk inserts (minimize lock overhead).
+- **Behavior**:
+  - Allows parallel bulk inserts but blocks other operations.
+- **Example**:  
+  ```sql
+  -- SQL Server uses BU locks for BULK INSERT
+  BULK INSERT employees FROM 'data.csv' WITH (TABLOCK);
+  ```
+
+---
+
+## **3. Special Lock Types**
+### **a) Optimistic Locks (No Physical Lock)**
+- **Mechanism**: Uses version checks (e.g., timestamps or counters).
+- **Example**:  
+  ```sql
+  -- Check version before update (optimistic concurrency control)
+  UPDATE products 
+  SET stock = stock - 1, version = version + 1 
+  WHERE product_id = 5 AND version = 2;
+  ```
+
+### **b) Deadlock Detection & Resolution**
+- Databases automatically detect deadlocks (cycle in wait-for graph) and abort one transaction.
+
+---
+
+## **Summary Table**
+| **Lock Type**       | **Scope**       | **Behavior**                          | **Use Case**                  |
+|---------------------|----------------|---------------------------------------|-------------------------------|
+| **Row-Level**       | Single row     | High concurrency, minimal blocking    | `UPDATE`, `DELETE`            |
+| **Page-Level**      | Data page      | Balances granularity & overhead       | Index scans                   |
+| **Table-Level**     | Entire table   | Simple, but blocks all operations     | Schema changes, bulk updates  |
+| **Database-Level**  | Entire DB      | Blocks all access                     | Maintenance tasks             |
+| **Shared (S)**      | Read-only      | Allows concurrent reads               | `SELECT`                      |
+| **Exclusive (X)**   | Read/Write     | Blocks all other locks                | `INSERT`, `UPDATE`, `DELETE`  |
+| **Update (U)**      | Future update  | Prevents deadlocks                    | `SELECT FOR UPDATE`           |
+| **Intent (IS/IX)**  | Hierarchy      | Signals future row/page locks         | Lock escalation prevention    |
+
+---
+
+### **Key Takeaways**
+- **Row-level locks** are best for high concurrency.
+- **Exclusive locks (X)** block all other operations.
+- **Intent locks** help manage lock hierarchies efficiently.
+- **Optimistic locking** avoids locks but requires version checks.
+
+Different databases (SQL Server, Oracle, MySQL, PostgreSQL) implement these locks differently, but the core concepts remain similar.
