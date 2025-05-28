@@ -2482,3 +2482,47 @@ These locks define what operations are allowed while the lock is held.
 - **Optimistic locking** avoids locks but requires version checks.
 
 Different databases (SQL Server, Oracle, MySQL, PostgreSQL) implement these locks differently, but the core concepts remain similar.
+
+---
+# Finding the Second Highest Marks Using the RANK Function
+
+To find the second highest marks using the RANK function in SQL, you can use one of these approaches:
+
+## Method 1: Using RANK() in a subquery
+
+```sql
+SELECT marks
+FROM (
+    SELECT marks, RANK() OVER (ORDER BY marks DESC) as rank_num
+    FROM students
+) ranked_students
+WHERE rank_num = 2;
+```
+
+## Method 2: Using DENSE_RANK() if you want to handle ties differently
+
+```sql
+SELECT marks
+FROM (
+    SELECT marks, DENSE_RANK() OVER (ORDER BY marks DESC) as dense_rank_num
+    FROM students
+) ranked_students
+WHERE dense_rank_num = 2;
+```
+
+## Method 3: If you want all students with second highest marks (handles ties)
+
+```sql
+SELECT student_name, marks
+FROM (
+    SELECT student_name, marks, RANK() OVER (ORDER BY marks DESC) as rank_num
+    FROM students
+) ranked_data
+WHERE rank_num = 2;
+```
+
+### Key Differences:
+- `RANK()` will skip numbers when there are ties (e.g., 1, 2, 2, 4)
+- `DENSE_RANK()` will not skip numbers (e.g., 1, 2, 2, 3)
+
+Choose the appropriate function based on how you want to handle students with identical marks.
