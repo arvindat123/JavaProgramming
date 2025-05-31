@@ -8546,3 +8546,105 @@ public class OrderProcessor {
 | **Monitoring**             | MicroProfile Metrics, OpenTelemetry              | Prometheus, Grafana                  |
 
 By combining these technologies with cloud-native practices, you can build **highly scalable** Jakarta EE applications. For greenfield projects, consider **Quarkus** or **MicroProfile** for better startup performance.
+
+---
+
+# Creating an Immutable POJO Class in Java
+
+An immutable class is one whose state cannot be modified after it's created. Here's how to create an immutable POJO class in Java with an example:
+
+## Key Characteristics of an Immutable Class:
+1. Make the class `final` to prevent extension
+2. Make all fields `private` and `final`
+3. Don't provide setter methods
+4. Initialize all fields via constructor
+5. Perform deep copy for mutable objects
+6. Return defensive copies of mutable objects from getters
+
+## Example: Immutable `Student` POJO
+
+```java
+import java.util.Date;
+import java.util.List;
+import java.util.Collections;
+
+public final class Student {
+    // All fields are private and final
+    private final String name;
+    private final int rollNumber;
+    private final Date dateOfBirth; // Date is mutable
+    private final List<String> courses; // List is mutable
+    
+    // Constructor initializes all fields
+    public Student(String name, int rollNumber, Date dateOfBirth, List<String> courses) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        
+        // Defensive copy for mutable Date
+        this.dateOfBirth = new Date(dateOfBirth.getTime());
+        
+        // Defensive copy for mutable List
+        this.courses = Collections.unmodifiableList(new ArrayList<>(courses));
+    }
+    
+    // Only getters, no setters
+    public String getName() {
+        return name;
+    }
+    
+    public int getRollNumber() {
+        return rollNumber;
+    }
+    
+    /**
+     * Returns a defensive copy of the mutable Date field
+     */
+    public Date getDateOfBirth() {
+        return new Date(dateOfBirth.getTime());
+    }
+    
+    /**
+     * Returns an unmodifiable view of the courses list
+     */
+    public List<String> getCourses() {
+        return courses;
+    }
+    
+    @Override
+    public String toString() {
+        return "Student [name=" + name + ", rollNumber=" + rollNumber 
+             + ", dateOfBirth=" + dateOfBirth + ", courses=" + courses + "]";
+    }
+}
+```
+
+## Usage Example:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Date dob = new Date();
+        List<String> courses = new ArrayList<>();
+        courses.add("Math");
+        courses.add("Science");
+        
+        Student student = new Student("Alice", 101, dob, courses);
+        
+        System.out.println(student);
+        
+        // Attempting to modify won't affect the original object
+        dob.setTime(0); // Won't affect student's dateOfBirth
+        courses.add("History"); // Won't affect student's courses
+        
+        System.out.println(student);
+    }
+}
+```
+
+## Important Notes:
+1. For Java 8+, consider using `java.time.LocalDate` instead of `java.util.Date` as it's immutable
+2. For collections, return unmodifiable views or copies
+3. If your class contains references to other custom mutable objects, you need to create defensive copies of those as well
+4. For complex objects, you might want to implement `clone()` properly
+
+This implementation ensures that once a `Student` object is created, its state cannot be modified by any external code.
