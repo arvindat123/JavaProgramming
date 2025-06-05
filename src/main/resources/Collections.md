@@ -1,3 +1,152 @@
+---
+# Encapsulation in Java: A Detailed Explanation with Example
+
+## What is Encapsulation?
+
+Encapsulation is one of the four fundamental OOP concepts (along with inheritance, polymorphism, and abstraction). It refers to the bundling of data (variables) and methods (functions) that operate on the data into a single unit called a class. More importantly, encapsulation is about restricting direct access to some of an object's components, which is a way of preventing accidental modification of data.
+
+## Key Principles of Encapsulation
+
+1. **Data Hiding**: Making fields private to prevent direct access
+2. **Controlled Access**: Providing public getter and setter methods to access and modify private fields
+3. **Bundling**: Combining data and methods that operate on that data within one unit (class)
+
+## Detailed Example
+
+Let's look at a complete example demonstrating encapsulation:
+
+```java
+public class BankAccount {
+    // Private fields (data hiding)
+    private String accountNumber;
+    private String accountHolder;
+    private double balance;
+    
+    // Constructor
+    public BankAccount(String accountNumber, String accountHolder, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        if(initialBalance >= 0) {  // Validation
+            this.balance = initialBalance;
+        } else {
+            this.balance = 0;
+            System.out.println("Initial balance cannot be negative. Set to 0.");
+        }
+    }
+    
+    // Public getter methods (controlled access)
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    public String getAccountHolder() {
+        return accountHolder;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    // Public setter methods with validation (controlled access)
+    public void setAccountHolder(String accountHolder) {
+        if(accountHolder != null && !accountHolder.isEmpty()) {
+            this.accountHolder = accountHolder;
+        } else {
+            System.out.println("Account holder name cannot be empty.");
+        }
+    }
+    
+    // Methods to perform operations (bundled with data)
+    public void deposit(double amount) {
+        if(amount > 0) {
+            balance += amount;
+            System.out.println("Deposited: " + amount);
+        } else {
+            System.out.println("Deposit amount must be positive.");
+        }
+    }
+    
+    public void withdraw(double amount) {
+        if(amount > 0) {
+            if(balance >= amount) {
+                balance -= amount;
+                System.out.println("Withdrawn: " + amount);
+            } else {
+                System.out.println("Insufficient funds.");
+            }
+        } else {
+            System.out.println("Withdrawal amount must be positive.");
+        }
+    }
+    
+    public void displayAccountInfo() {
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolder);
+        System.out.println("Balance: $" + balance);
+    }
+}
+
+// Main class to test our encapsulated BankAccount
+public class Main {
+    public static void main(String[] args) {
+        // Create a new bank account
+        BankAccount account = new BankAccount("123456789", "John Doe", 1000.0);
+        
+        // Access fields through methods (not directly)
+        System.out.println("Initial balance: " + account.getBalance());
+        
+        // Perform operations
+        account.deposit(500.0);
+        account.withdraw(200.0);
+        
+        // Try to withdraw more than balance
+        account.withdraw(2000.0);
+        
+        // Try to set invalid account holder name
+        account.setAccountHolder("");
+        
+        // Try to deposit negative amount
+        account.deposit(-100.0);
+        
+        // Display account info
+        account.displayAccountInfo();
+    }
+}
+```
+
+## Importance of Encapsulation
+
+1. **Data Protection**: Prevents unauthorized access and modification of data
+   - Example: In our BankAccount, balance can't be directly set to a negative value
+
+2. **Increased Flexibility**: Allows you to change internal implementation without affecting other code
+   - Example: You could change how balance is stored (maybe to use BigDecimal for precision) without changing how other classes interact with it
+
+3. **Better Control**: You can add validation logic in setter methods
+   - Example: We validate that deposit amounts must be positive
+
+4. **Maintainability**: Makes code easier to maintain and modify
+   - All related data and operations are in one place
+
+5. **Reusability**: Encapsulated classes can be easily reused in other programs
+
+6. **Hiding Implementation Details**: Users of the class don't need to know how it works internally
+   - They just need to know what methods to call
+
+7. **Reduced Complexity**: By hiding internal details, encapsulation reduces complexity for users of the class
+
+## Best Practices for Encapsulation
+
+1. Make fields private by default
+2. Provide public getter methods only when necessary
+3. Make setter methods private or protected when possible
+4. Always validate data in setter methods
+5. Keep methods that operate on the data in the same class as the data
+
+Encapsulation is a powerful concept that helps create more robust, maintainable, and secure Java applications. By properly encapsulating your classes, you create clear boundaries between different components of your system, making your code more modular and easier to work with.
+
+---
+
 Here are some advanced Java collections interview questions along with answers that would be helpful for experienced professionals:
 
 In Java, `HashMap`, `SynchronizedMap`, and `ConcurrentHashMap` are part of the Java Collections Framework, and they serve different purposes depending on the need for thread safety and performance. Here's how you can create and use each:
