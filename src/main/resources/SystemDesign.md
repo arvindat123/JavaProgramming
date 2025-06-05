@@ -1,5 +1,7 @@
 ---
 
+---
+
 # **PACELC Theorem in System Design (Detailed Explanation with Example)**
 
 ## **What is the PACELC Theorem?**
