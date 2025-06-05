@@ -75,6 +75,7 @@ Else (E) → Choose between (L)atency and (C)onsistency
 Would you like a **deep dive into how DynamoDB applies PACELC**? 😊
 
 ---
+---
 
 ### **CAP Theorem Overview**
 
