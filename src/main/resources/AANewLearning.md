@@ -57,4 +57,42 @@ Use tools like:
 
 ---
 
-Would you like to share a specific query or performance issue you're facing? I can help you analyze and optimize it directly.
+Here’s a curated list of **advanced practical questions related to concurrency in Java**, ideal for interviews or deep learning:
+
+---
+
+### 🔁 **Advanced Concurrency Questions in Java**
+
+#### 1. **Thread Safety in Collections**
+**Q:** How would you make a non-thread-safe collection like `ArrayList` thread-safe? What are the trade-offs between using `Collections.synchronizedList()` vs `CopyOnWriteArrayList`?
+
+#### 2. **Deadlock Detection and Prevention**
+**Q:** Write a Java program that simulates a deadlock scenario. Then, modify it to prevent deadlock using lock ordering or `tryLock()`.
+
+#### 3. **Executor Framework**
+**Q:** Design a task scheduler using `ScheduledExecutorService` that runs periodic tasks and handles exceptions gracefully.
+
+#### 4. **Producer-Consumer Problem**
+**Q:** Implement a thread-safe producer-consumer system using `BlockingQueue`. How would you handle backpressure?
+
+#### 5. **Custom Thread Pool**
+**Q:** Create a custom thread pool using `ThreadPoolExecutor`. How would you tune its parameters for high throughput and low latency?
+
+#### 6. **Atomic Variables vs Synchronization**
+**Q:** Compare `AtomicInteger` with `synchronized` blocks for incrementing a shared counter. Which is better and why?
+
+#### 7. **CompletableFuture**
+**Q:** Use `CompletableFuture` to run multiple asynchronous tasks and combine their results. How would you handle exceptions in the pipeline?
+
+#### 8. **Fork/Join Framework**
+**Q:** Implement a parallel sum of a large array using the `ForkJoinPool`. How does it differ from traditional thread pools?
+
+#### 9. **ThreadLocal Usage**
+**Q:** Demonstrate a use case for `ThreadLocal` in a multi-threaded web application. What are the risks of memory leaks?
+
+#### 10. **Concurrency with Streams**
+**Q:** How can you parallelize stream operations in Java? What are the caveats of using `parallelStream()`?
+
+---
+
+Would you like code examples for any of these, or a mock interview-style walkthrough for one?
