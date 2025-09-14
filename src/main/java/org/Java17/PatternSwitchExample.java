@@ -1,4 +1,4 @@
-package org.Java21;
+package org.Java17;
 
 public class PatternSwitchExample {
     public static void main(String[] args) {

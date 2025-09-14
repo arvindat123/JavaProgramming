@@ -22,6 +22,9 @@ public class AnonymousClass {
 
 		};
 
+		Comparator<String> comparator = (s1, s2) -> s1.compareToIgnoreCase(s2);
+		Arrays.sort(array, comparator);
+
 		Arrays.sort(array, reverseComparator);
 
 		return array;

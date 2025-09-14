@@ -58,6 +58,9 @@ public class GroupingByAndCounting {
         Map<Integer, Map<Character, List<String>>> nestedGrouping = words.stream().collect(Collectors.groupingBy(String::length, Collectors.groupingBy(s -> s.charAt(0))));
         System.out.println(nestedGrouping);
 
+        Map<Integer, List<String>> collect1 = words.stream().collect(Collectors.groupingBy(String::length));
+        System.out.println(collect1); // {5=[apple], 6=[banana, orange], 7=[avocado], 9=[blueberry]}
+
         //Counting occurrences:
         List<String> words2 = Arrays.asList("apple", "banana", "avocado", "orange", "blueberry");
         // Counting occurrences of words by their length
@@ -101,8 +104,8 @@ that the function returns either a ConcurrentHashMap or a subclass of it
         System.out.println(collect); //{p=[p], a=[a, a, a], r=[r, r], e=[e], v=[v, v], g=[g, g], i=[i, i], j=[j], l=[l], m=[m, m], n=[n], o=[o, o]}
 
         //Map<String, Long> collect1 = Arrays.asList(strArray).stream().collect(Collectors.groupingBy(s->s, Collectors.counting()));
-        Map<String, Long> collect1 = Arrays.asList(strArray).stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        System.out.println(collect1); //{p=1, a=3, r=2, e=1, v=2, g=2, i=2, j=1, l=1, m=2, n=1, o=2}
+        Map<String, Long> collect11 = Arrays.asList(strArray).stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        System.out.println(collect11); //{p=1, a=3, r=2, e=1, v=2, g=2, i=2, j=1, l=1, m=2, n=1, o=2}
 
         //Get duplicate letter
         String collect2 = Arrays.asList(strArray).stream().collect(Collectors.groupingBy(s -> s, Collectors.counting())).entrySet().stream().filter(m -> m.getValue() > 1).map(n -> n.getKey()).collect(Collectors.joining(""));

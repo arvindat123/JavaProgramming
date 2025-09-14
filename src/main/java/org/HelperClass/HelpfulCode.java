@@ -9,6 +9,12 @@ import java.util.stream.IntStream;
 public class HelpfulCode {
     public static void main(String[] args) {
 
+        //To join a string array with specified space
+        String ss = " the sky  is blue ";
+        String str10 = ss.trim(); // remove pre and postfix space from string
+        String[] strArray = str10.split("\\s+"); //split based in space (any number of space, with regular expression)
+        String temp = String.join(" ", strArray); // output : "the sky is blue"
+
         //Count of unique character and their count without stream and HashMap
         String paragraph1 = "I am not going to market.";
         int[] arrOfAllCharacter = new int[256];
@@ -132,6 +138,18 @@ public class HelpfulCode {
         jaggedArray[0] = new int[]{1, 2};
         jaggedArray[1] = new int[]{3, 4, 5};
         jaggedArray[2] = new int[]{6, 7, 8, 9};
+
+
+        //reverse an array using two pointer
+        int[] arr8 = {1,2,3,4,5,5};
+        int i=0,j=arr8.length-1;
+        while(i<j) {
+            int t = arr8[i];
+            arr8[i] = arr8[j];
+            arr8[j] = t;
+            i++;
+            j--;
+        }
 
     }
 }

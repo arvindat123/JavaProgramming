@@ -1,51 +1,72 @@
 package org.designpattern.strategy;
 
-interface PaymentStrategy {
-    void pay(int amount);
-}
-
-//Implement specific payment method
-//Credit card payment
-class CreditCardPayment implements PaymentStrategy {
-    private String cardNumber;
-    CreditCardPayment(String cardNumber){
-        this.cardNumber = cardNumber;
-    }
-    @Override
-    public void pay(int amount){
-        System.out.println("Paid "+ amount + " using Credit Card "+ cardNumber);
-    }
-}
-
-//Paypal payment
-class PayPalPaymentMethod implements PaymentStrategy {
-    private String email;
-
-    PayPalPaymentMethod(String email){
-        this.email = email;
-    }
-    @Override
-    public void pay(int amount){
-        System.out.println("Paid "+ amount + " using pay pal "+ email);
-    }
-}
-
-//Using Google Pay
-class GooglePay implements PaymentStrategy {
-    private String phoneNumber;
-    GooglePay(String phoneNumber){
-        this.phoneNumber = phoneNumber;
-    }
-    @Override
-    public void pay(int amount) {
-        System.out.println("Paid "+ amount + " using google pay" + phoneNumber);
-    }
-}
-
 
 public class StrategyPatternExample {
     public static void main(String[] args) {
-        PaymentStrategy strategy = new CreditCardPayment("1234545");
-        strategy.pay(50);
+        PaymentContext paymentContext = new PaymentContext();
+
+        paymentContext.setPaymentStrategy(new CreditCardPayment("1234"));
+        paymentContext.pay(1000);
     }
+}
+
+class PaymentContext {
+
+    private PaymentStrategy paymentStrategy;
+
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy){
+        this.paymentStrategy = paymentStrategy;
+
+    }
+
+    public void pay(int amount){
+        if(paymentStrategy == null){
+            System.out.println("no payment");
+        }
+        else {
+            paymentStrategy.pay(amount);
+        }
+    }
+}
+
+class GooglePayPayment implements PaymentStrategy {
+    private String phoneNumber;
+
+    public GooglePayPayment(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public void pay(int amount) {
+        System.out.println("Paid " + amount + " using Google Pay linked to phone number: " + phoneNumber);
+    }
+}
+
+class PayPalPayment implements PaymentStrategy {
+    private String email;
+
+    public PayPalPayment(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public void pay(int amount) {
+        System.out.println("Paid " + amount + " using PayPal account: " + email);
+    }
+}
+
+class CreditCardPayment implements PaymentStrategy {
+    private String cardNumber;
+    public CreditCardPayment(String cardNumber){
+        this.cardNumber = cardNumber;
+    }
+
+    @Override
+    public void pay(int amount){
+        System.out.println("Credit card ="+ amount);
+    }
+}
+
+interface PaymentStrategy{
+    void pay(int amount);
 }
