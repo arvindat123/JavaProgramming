@@ -1,3 +1,17 @@
+```java
+public static void main(String[] args) {
+        Integer a = 1000;
+        Integer b = 1000;
+        System.out.println(a == b); // false
+        Integer c = 100;
+        Integer d = 100;
+        System.out.println(c == d); // true
+        // Integer values between -128 and 127 are cached by the JVM
+        // So, when you compare two Integer objects with values in this range using '==',
+        // it returns true because they reference the same cached object.
+        // For values outside this range, '==' returns false because they reference different objects.  
+    }
+```
 ---
 https://docs.oracle.com/en/java/javase/11/language/java-language-changes-release.html#GUID-6459681C-6881-45D8-B0DB-395D1BD6DB9B
 ---
