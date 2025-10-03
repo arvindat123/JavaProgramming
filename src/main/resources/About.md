@@ -19,3 +19,17 @@ The provided ARN (Amazon Resource Name) identifies a specific ECS (Elastic Conta
   - **`silo-2-product-api`**: The name of the ECS service, likely representing a specific application or workload (e.g., the `product-api` for `silo-2`).
 
 This ARN uniquely identifies the ECS service `silo-2-product-api` running in the `swm-staging-us-west-2-alm-silo-2` cluster within the `us-west-2` region.
+
+---
+
+Kong API Gateway is an open-source, scalable, and high-performance API gateway and microservices management layer. It acts as an intermediary between clients and backend services, handling API traffic, authentication, rate limiting, logging, and other cross-cutting concerns. 
+
+Key features include:
+- **Routing**: Directs API requests to the appropriate backend services.
+- **Authentication**: Supports various authentication methods like OAuth2, JWT, and API keys.
+- **Rate Limiting**: Controls the number of requests a client can make within a specific time frame.
+- **Load Balancing**: Distributes traffic across multiple backend instances.
+- **Plugins**: Extensible with plugins for logging, monitoring, and security.
+- **Service Discovery**: Dynamically discovers services in a microservices architecture.
+
+Kong is often used in cloud-native environments and integrates well with Kubernetes and other modern infrastructure.
