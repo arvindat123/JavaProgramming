@@ -91,3 +91,33 @@ Here’s a **CIDR subnet size table** showing how many IP addresses each CIDR bl
 - Smaller CIDR blocks (like `/30`, `/31`) are used in routing and telecom setups
 
 ---
+**DHCP** stands for **Dynamic Host Configuration Protocol**. It’s a network management protocol used to **automatically assign IP addresses** and other network configuration parameters (like subnet mask, gateway, DNS) to devices on a network.
+
+---
+
+### 🔧 How DHCP Works:
+
+1. **Device connects to network** (e.g., laptop joins Wi-Fi).
+2. It sends a **DHCP Discover** message to find a DHCP server.
+3. The DHCP server responds with an **Offer** (IP address + config).
+4. The device sends a **Request** to accept the offer.
+5. The server sends an **Acknowledgment**, and the device gets its IP.
+
+---
+
+### 📦 What DHCP Provides:
+- **IP Address**
+- **Subnet Mask**
+- **Default Gateway**
+- **DNS Server**
+- **Lease Time** (how long the IP is valid)
+
+---
+
+### 🧠 Why DHCP Is Useful:
+- **No manual IP configuration** needed
+- Prevents **IP conflicts**
+- Makes network management **scalable and efficient**
+
+---
+
