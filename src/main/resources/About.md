@@ -38,3 +38,56 @@ Kong is often used in cloud-native environments and integrates well with Kuberne
 
 <img width="1536" height="1024" alt="jpeg" src="https://github.com/user-attachments/assets/ba3eb2a0-8a89-49de-a595-b77238c13cac" />
 
+---
+
+**CIDR** stands for **Classless Inter-Domain Routing**. It’s a method used to allocate IP addresses and route IP packets more efficiently than the older class-based system.
+
+---
+
+### 📘 What CIDR Does:
+CIDR allows IP addresses to be grouped into **blocks** or **ranges**, rather than being restricted to fixed classes (A, B, C). This helps in:
+
+- **Efficient IP address allocation**
+- **Reducing routing table size**
+- **Improving internet scalability**
+
+---
+
+### 🧮 CIDR Notation:
+CIDR uses a format like:  
+**`192.168.1.0/24`**
+
+- `192.168.1.0` is the **network address**
+- `/24` means the **first 24 bits** are the network part
+- The remaining **8 bits** are for host addresses
+
+This gives **256 IPs** in total (from `192.168.1.0` to `192.168.1.255`), with **254 usable** for devices.
+
+---
+
+### 🧠 Why CIDR Is Useful:
+Before CIDR, IPs were grouped into classes:
+- Class A: `/8` (16 million IPs)
+- Class B: `/16` (65,000 IPs)
+- Class C: `/24` (256 IPs)
+
+CIDR allows **flexible subnetting**, like `/22`, `/27`, etc., which helps avoid wasting IPs.
+
+---
+
+Here’s a **CIDR subnet size table** showing how many IP addresses each CIDR block provides:
+
+| **CIDR Notation** | **Subnet Mask**     | **# of IP Addresses** | **Usable Hosts** | **Typical Use**              |
+|-------------------|---------------------|------------------------|------------------|------------------------------|
+| `/8`              | 255.0.0.0           | 16,777,216             | 16,777,214       | Very large networks          |
+| `/16`             | 255.255.0.0         | 65,536                 | 65,534           | Large organizations          |
+| `/24`             | 255.255.255.0       | 256                    | 254              | Small office/home networks   |
+| `/30`             | 255.255.255.252     | 4                      | 2                | Point-to-point links         |
+| `/32`             | 255.255.255.255     | 1                      | 0                | Single host (e.g., loopback) |
+
+### 🧠 Notes:
+- **Usable Hosts** = Total IPs minus 2 (network + broadcast addresses)
+- CIDR allows flexible subnetting, helping avoid IP wastage
+- Smaller CIDR blocks (like `/30`, `/31`) are used in routing and telecom setups
+
+---
