@@ -33,3 +33,8 @@ Key features include:
 - **Service Discovery**: Dynamically discovers services in a microservices architecture.
 
 Kong is often used in cloud-native environments and integrates well with Kubernetes and other modern infrastructure.
+
+---
+
+<img width="1536" height="1024" alt="jpeg" src="https://github.com/user-attachments/assets/ba3eb2a0-8a89-49de-a595-b77238c13cac" />
+
