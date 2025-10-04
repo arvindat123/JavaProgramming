@@ -160,3 +160,34 @@ You can tag most AWS resources, including:
 
 ---
 
+**AWS Transit Gateway** is a **network transit hub** that enables you to **connect multiple VPCs (Virtual Private Clouds)** and **on-premises networks** through a **centralized gateway**.
+
+---
+
+### 🚏 What It Does:
+Instead of creating **point-to-point peering connections** between VPCs (which gets complex as the number grows), Transit Gateway acts as a **hub-and-spoke model**, simplifying network architecture.
+
+---
+
+### 🔗 Key Features:
+
+| Feature | Description |
+|--------|-------------|
+| **Centralized Routing** | Connects VPCs and VPNs through a single gateway |
+| **Scalable** | Supports thousands of VPCs and connections |
+| **Simplified Management** | Reduces the need for complex peering relationships |
+| **High Performance** | Uses AWS backbone for fast, secure data transfer |
+| **Supports Multicast** | Useful for media and real-time applications |
+| **Inter-Region Peering** | Connects Transit Gateways across AWS regions |
+
+---
+
+### 🧠 Use Cases:
+- Large enterprises with multiple VPCs across accounts
+- Hybrid cloud setups (on-premises + AWS)
+- Centralized security and inspection
+- Simplified connectivity for SaaS platforms
+
+---
+
+
