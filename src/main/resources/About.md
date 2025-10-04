@@ -120,4 +120,43 @@ Here’s a **CIDR subnet size table** showing how many IP addresses each CIDR bl
 - Makes network management **scalable and efficient**
 
 ---
+In **AWS (Amazon Web Services)**, **tags** are key-value pairs that you can assign to AWS resources to help organize, manage, and identify them.
+
+---
+
+### 🏷️ What Are Tags?
+
+A **tag** consists of:
+- **Key**: A label or category (e.g., `Environment`, `Project`, `Owner`)
+- **Value**: A specific identifier (e.g., `Production`, `WebsiteRedesign`, `Arvind`)
+
+Example:
+```plaintext
+Key: Environment   | Value: Production
+Key: Owner         | Value: Arvind
+Key: Project       | Value: CRM-Migration
+```
+
+---
+
+### 📦 Why Use Tags?
+
+Tags help you:
+- **Organize resources** (group by project, team, environment)
+- **Track costs** (via AWS Cost Explorer)
+- **Automate management** (with scripts or policies)
+- **Control access** (using IAM policies based on tags)
+
+---
+
+### 🧠 Where Can You Use Tags?
+
+You can tag most AWS resources, including:
+- EC2 instances
+- S3 buckets
+- RDS databases
+- Lambda functions
+- VPCs, subnets, and more
+
+---
 
