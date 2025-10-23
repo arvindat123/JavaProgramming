@@ -13,3 +13,11 @@ Apollo is a popular ecosystem of tools and libraries for building, managing, and
 - Developer-friendly tools like Apollo DevTools for debugging.
 
 Apollo is widely used for its flexibility, scalability, and ease of integration with modern web and mobile applications.
+
+---
+
+The selected line `policyTermUnit: PolicyTermUnit!` refers to the `PolicyTermUnit` enum, which is defined in the `enums.graphqls` file. This linkage is established because GraphQL schemas treat all `.graphqls` files in the same project as part of a unified schema. 
+
+When the GraphQL schema is processed, all types, enums, inputs, and other definitions across `.graphqls` files are merged into a single schema. The `PolicyTermUnit` enum is resolved by its name, and since it is defined in `enums.graphqls`, the GraphQL engine automatically associates the reference in `policyTermUnit` with the corresponding enum definition. 
+
+This behavior relies on the GraphQL schema loader or parser used in the project, which scans and combines all `.graphqls` files.
