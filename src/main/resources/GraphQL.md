@@ -35,3 +35,21 @@ For example, in a federated setup:
 - `http://users-service/graphql` handles user-related queries.
 - `http://products-service/graphql` handles product-related queries.
 - The gateway combines these into a single schema.
+
+
+---
+
+`@shareable` is a directive used in **Apollo Federation** to indicate that a type or field can be shared across multiple federated GraphQL services. It allows the same type to exist in multiple services without causing conflicts in the unified schema.
+
+### Purpose:
+In a federated GraphQL architecture, some types or fields may need to be defined in more than one service. The `@shareable` directive ensures that these overlapping definitions are allowed and treated as part of the same type in the combined schema.
+
+### Example:
+```graphql
+type Account @shareable {
+    accountId: String!
+    accountName: String
+}
+```
+
+Here, the `Account` type is marked as `@shareable`, meaning it can be defined in multiple services without causing schema conflicts.
