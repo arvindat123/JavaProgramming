@@ -53,3 +53,10 @@ type Account @shareable {
 ```
 
 Here, the `Account` type is marked as `@shareable`, meaning it can be defined in multiple services without causing schema conflicts.
+
+---
+The selected line `type Product @key(fields: "productName version") @shareable{` defines a GraphQL type `Product` with two Apollo Federation directives:
+
+1. **`@key(fields: "productName version")`**: This directive specifies the fields that uniquely identify the `Product` type across federated services. Here, `productName` and `version` together form the unique identifier.
+
+2. **`@shareable`**: This directive allows the `Product` type to be defined in multiple services without causing conflicts in the unified schema. It ensures that the type can be shared across services in a federated GraphQL setup.
