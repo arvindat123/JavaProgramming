@@ -21,3 +21,17 @@ The selected line `policyTermUnit: PolicyTermUnit!` refers to the `PolicyTermUni
 When the GraphQL schema is processed, all types, enums, inputs, and other definitions across `.graphqls` files are merged into a single schema. The `PolicyTermUnit` enum is resolved by its name, and since it is defined in `enums.graphqls`, the GraphQL engine automatically associates the reference in `policyTermUnit` with the corresponding enum definition. 
 
 This behavior relies on the GraphQL schema loader or parser used in the project, which scans and combines all `.graphqls` files.
+
+---
+
+In GraphQL, a **federated URL** typically refers to the URL of a service in a **federated GraphQL architecture**. Federation is a way to compose multiple GraphQL services into a single unified graph. Each service is responsible for a specific part of the schema, and the federated gateway combines these services into one API.
+
+### Key Points:
+1. **Federated Service**: A GraphQL service that defines part of the schema and resolves queries for its portion.
+2. **Federated URL**: The endpoint (URL) where a federated service is hosted. The gateway uses this URL to route queries to the appropriate service.
+3. **Apollo Federation**: A common implementation of GraphQL federation, where the gateway communicates with federated services using their URLs.
+
+For example, in a federated setup:
+- `http://users-service/graphql` handles user-related queries.
+- `http://products-service/graphql` handles product-related queries.
+- The gateway combines these into a single schema.
