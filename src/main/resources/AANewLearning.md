@@ -1,3 +1,45 @@
+In Java, a **preview feature** is a new language or JVM feature that is **fully specified and implemented**, but **not yet permanent**. It’s included in a JDK release to gather feedback from developers before finalizing it in a future release.
+
+---
+
+### 🔍 **Key Characteristics of Preview Features**
+
+- **Opt-in**: You must explicitly enable them using compiler and runtime flags.
+- **Stable but not final**: They are tested and usable, but may change or be removed in future versions.
+- **Feedback-driven**: Oracle uses developer feedback to refine or finalize the feature.
+
+---
+
+### ✅ **How to Use Preview Features**
+
+To **compile** and **run** Java code using preview features:
+
+```bash
+javac --enable-preview --release <version> MyClass.java
+java --enable-preview MyClass
+```
+
+For example, with Java 25:
+
+```bash
+javac --enable-preview --release 25 Tier.java
+java --enable-preview Tier
+```
+
+---
+
+### 🧪 Examples of Preview Features in Recent Java Versions
+
+- **Pattern Matching for `switch`** (JEP 406)
+- **Record Patterns** (JEP 405)
+- **String Templates** (JEP 430)
+- **Primitive Types in Patterns** (JEP 507)
+
+---
+
+Would you like a list of all preview features in Java 25 or help setting up a project that uses them?
+
+---
 To approach performance tuning for a **legacy Spring Boot service** that takes **20 seconds to respond under load**, here’s a structured and practical strategy:
 
 ---
