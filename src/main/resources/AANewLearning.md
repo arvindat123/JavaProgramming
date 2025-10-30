@@ -1,3 +1,36 @@
+Here’s a comprehensive list of **preview features in Java 25**, based on the latest official and community sources[1](https://developer.ibm.com/articles/java-whats-new-java25/)[2](https://javatechonline.com/java-25-new-features-with-examples/)[3](https://www.happycoders.eu/java/java-25-features/):
+
+---
+
+### 🔍 **Preview Features in Java 25**
+
+| **JEP** | **Feature Name** | **Description** |
+|--------|------------------|------------------|
+| **JEP 507** | **Primitive Types in Patterns (Third Preview)** | Enables pattern matching with primitive types (`int`, `double`, etc.) in `instanceof` and `switch`. |
+| **JEP 511** | **Module Import Declarations** | Allows importing entire modules directly in source files, improving modular readability. |
+| **JEP 512** | **Compact Source Files and Instance Main Methods** | Lets you write Java programs without class declarations and simplifies the `main()` method. |
+| **JEP 513** | **Flexible Constructor Bodies** | Removes the restriction that `super()` or `this()` must be the first statement in a constructor. |
+| **JEP 502** | **Stable Values** | Introduces a way to define values that are initialized once and treated as constants, improving performance and thread safety. |
+| **JEP 470** | **PEM Encodings for Cryptographic Objects** | Adds support for encoding/decoding cryptographic keys and certificates in PEM format. |
+| **JEP 505** | **Structured Concurrency (Fifth Preview)** | Simplifies concurrent programming by treating multiple tasks running in parallel as a single unit of work. |
+
+---
+
+### 🧪 How to Use Preview Features
+
+To compile and run code using preview features:
+
+```bash
+javac --enable-preview --release 25 MyApp.java
+java --enable-preview MyApp
+```
+
+---
+
+Would you like example code for any of these preview features or help deciding which ones are most relevant for your projects?
+
+---
+
 In Java, a **preview feature** is a new language or JVM feature that is **fully specified and implemented**, but **not yet permanent**. It’s included in a JDK release to gather feedback from developers before finalizing it in a future release.
 
 ---
