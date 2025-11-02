@@ -7,7 +7,20 @@
 - Sealed class or interface: A sealed class or interface restricts which classes or interfaces can extend or implement it.
 - Record Classes: A record is a class that acts as transparent carrier for immutable data. (Java 16)
 - Pattern Matching for instanceof (Java 16)
+- Text Blocks: A text block is a multiline string literal that avoids the need for most escape sequences, automatically formats the string in a predictable way, and gives the developer control over the format when desired. (Java 15)
+- Switch Expressions: This feature extends switch so it can be used as either a statement or an expression, and so that both forms can use either traditional case ... : labels (with fall through) or new case ... -> labels (with no fall through), with a further new statement for yielding a value from a switch expression. (Java 14)
 
+### Java 21 [https://docs.oracle.com/en/java/javase/21/language/java-language-changes-release.html]
+- Record Patterns: In this release, support for record patterns appearing in the header of an enhanced for statement has been removed.
+- Pattern Matching for switch Expressions and Statements: Parenthesized patterns have been removed, Qualified enum constants as case constants in switch expressions and statements are allowed.
+
+### Java 25 [https://docs.oracle.com/en/java/javase/25/language/java-language-changes-release.html]
+- Module Import Statements
+- Compact Source Files and Instance Main Methods
+  - The new IO class for basic console I/O is now in the java.lang package rather than the java.io package. Thus, it is implicitly imported by every source file.
+  -  The static methods of the IO class are no longer implicitly imported into compact source files. Thus invocations of these methods must name the class, for example, IO.println("Hello, world!"), unless the methods are explicitly imported.
+  -  The implementation of the IO class is now based upon System.out and System.in rather than the java.io.Console class.
+- Flexible Constructor Bodies
 
 
 Here’s a comprehensive list of **preview features in Java 25**, based on the latest official and community sources[1](https://developer.ibm.com/articles/java-whats-new-java25/)[2](https://javatechonline.com/java-25-new-features-with-examples/)[3](https://www.happycoders.eu/java/java-25-features/):
