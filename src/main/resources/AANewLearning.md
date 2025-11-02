@@ -1,7 +1,12 @@
 ## Java version and feature
-### Java 11
+### Java 11 [https://docs.oracle.com/en/java/javase/11/language/java-language-changes-release.html]
 - Local-Variable Syntax for Lambda Parameters
 - Local Variable Type Inference (Java 10)
+
+### Java 17 [https://docs.oracle.com/en/java/javase/17/language/java-language-changes-release.html]
+- Sealed class or interface: A sealed class or interface restricts which classes or interfaces can extend or implement it.
+- Record Classes: A record is a class that acts as transparent carrier for immutable data. (Java 16)
+- Pattern Matching for instanceof (Java 16)
 
 
 
