@@ -22,6 +22,7 @@
   -  The implementation of the IO class is now based upon System.out and System.in rather than the java.io.Console class.
 - Flexible Constructor Bodies
 
+---
 
 Here’s a comprehensive list of **preview features in Java 25**, based on the latest official and community sources[1](https://developer.ibm.com/articles/java-whats-new-java25/)[2](https://javatechonline.com/java-25-new-features-with-examples/)[3](https://www.happycoders.eu/java/java-25-features/):
 
