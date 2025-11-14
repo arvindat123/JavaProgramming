@@ -320,3 +320,93 @@ Here’s a curated list of **advanced practical questions related to concurrency
 ---
 
 Would you like code examples for any of these, or a mock interview-style walkthrough for one?
+
+---
+Detecting performance issues in a Java program typically involves a combination of **monitoring, profiling, and analyzing code behavior**. Here’s a structured approach:
+
+***
+
+### ✅ **1. Identify Symptoms**
+
+*   **Slow response times** (e.g., API calls taking too long).
+*   **High CPU or memory usage**.
+*   **Frequent Garbage Collection (GC) pauses**.
+*   **Thread contention or deadlocks**.
+
+***
+
+### ✅ **2. Use Profiling Tools**
+
+Profilers help you pinpoint bottlenecks:
+
+*   **VisualVM** (free, comes with JDK): Monitors CPU, memory, threads, GC.
+*   **JProfiler** or **YourKit**: Advanced commercial tools for deep analysis.
+*   **Java Flight Recorder (JFR)** + **Mission Control**: Built into modern JDKs for low-overhead profiling.
+
+***
+
+### ✅ **3. Enable JVM Monitoring**
+
+*   Use **JConsole** or **JVisualVM** for real-time monitoring.
+*   Check:
+    *   Heap usage
+    *   GC activity
+    *   Thread states
+    *   CPU load
+
+***
+
+### ✅ **4. Add Logging & Metrics**
+
+*   Use **SLF4J + Logback** for structured logs.
+*   Integrate **Micrometer** or **Prometheus** for metrics.
+*   Track:
+    *   Execution time of critical methods
+    *   Database query times
+    *   External API latency
+
+***
+
+### ✅ **5. Analyze Garbage Collection**
+
+*   Enable GC logs:
+    ```bash
+    -Xlog:gc*:file=gc.log
+    ```
+*   Look for:
+    *   Frequent **Full GC**
+    *   Long GC pauses
+*   Consider tuning:
+    *   Heap size (`-Xmx`, `-Xms`)
+    *   GC algorithm (G1, ZGC, Shenandoah)
+
+***
+
+### ✅ **6. Thread Dump Analysis**
+
+*   Generate thread dumps during high CPU usage:
+    ```bash
+    jstack <pid>
+    ```
+*   Look for:
+    *   Deadlocks
+    *   Threads stuck in `BLOCKED` or `WAITING`
+
+***
+
+### ✅ **7. Code-Level Checks**
+
+*   **Inefficient loops** or **nested iterations**.
+*   **Unnecessary object creation**.
+*   **Blocking I/O** instead of async.
+*   **Database queries** without indexes or using N+1 patterns.
+
+***
+
+### ✅ **8. Load Testing**
+
+*   Use **JMeter** or **Gatling** to simulate real-world load.
+*   Identify performance degradation under stress.
+
+
+---
