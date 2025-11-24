@@ -1,3 +1,14 @@
+
+### Need to explore
+* https://livekit.io/
+* https://www.sarvam.ai/
+* https://bhashini.gov.in/
+* Rack based approach
+* AI City [https://www.aicitychallenge.org/]
+* AI Voice Agent
+* 
+
+
 In **machine learning**, **classification** is a type of **supervised learning** where the goal is to predict a **categorical label** (class) for given input data.
 
 ***
