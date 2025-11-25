@@ -6,6 +6,7 @@
 * Rack based approach
 * AI City [https://www.aicitychallenge.org/]
 * AI Voice Agent
+* https://platform.openai.com/docs/guides/audio
 * 
 
 
