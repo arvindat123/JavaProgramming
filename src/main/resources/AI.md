@@ -9,6 +9,10 @@
 * https://platform.openai.com/docs/guides/audio
 * 
 
+---
+<img width="887" height="517" alt="image" src="https://github.com/user-attachments/assets/7b74cdb4-07ba-47e2-9f41-a91cd0bcbf52" />
+
+---
 
 In **machine learning**, **classification** is a type of **supervised learning** where the goal is to predict a **categorical label** (class) for given input data.
 
