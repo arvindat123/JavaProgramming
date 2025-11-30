@@ -7,7 +7,19 @@
 * AI City [https://www.aicitychallenge.org/]
 * AI Voice Agent
 * https://platform.openai.com/docs/guides/audio
-* 
+
+*
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/04587c2a-90f4-42a1-82ea-d47808e498a8" />
+
+---
+<img width="1903" height="1047" alt="image" src="https://github.com/user-attachments/assets/cb0ad97b-3f4c-4c63-9229-1e5d8613ea2d" />
+
+---
+<img width="1914" height="1067" alt="image" src="https://github.com/user-attachments/assets/d78f76d2-c5ce-4ff1-84fa-4e61e9e7f4e3" />
+
+---
+<img width="1055" height="587" alt="image" src="https://github.com/user-attachments/assets/fe283d7b-6e2f-4982-bd58-23e2f098edc8" />
 
 ---
 <img width="887" height="517" alt="image" src="https://github.com/user-attachments/assets/7b74cdb4-07ba-47e2-9f41-a91cd0bcbf52" />
