@@ -1,5 +1,124 @@
 ---
 ---
+For a Java architect, implementing OAuth in Spring Security means choosing between two fundamentally different patterns: **2-legged OAuth** for trusted server-to-server communication, and **3-legged OAuth** for user-centric delegated authorization. These are not different versions of the protocol but represent distinct authorization scenarios.
+
+### 2-Legged OAuth: Server-to-Server Trust
+
+Think of this as a "machine-to-machine" handshake. The client application is trusted by the server, and no end-user is involved in the authorization process. This is the scenario for internal microservices or backend APIs that need to authenticate with each other.
+
+In Spring Security, this is implemented via the **`client_credentials` grant type**. The client uses its own credentials (Client ID and Secret) to obtain an access token directly from the authorization server.
+
+#### Implementation Summary
+
+*   **The Flow**: The client sends its credentials to the `/token` endpoint and receives an access token, which is then used for API calls.
+*   **Configuration**: The core of the configuration is defining a `ClientRegistration` with `client_credentials` as the `authorizationGrantType`.
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client: (1)
+            provider: my-auth-server
+            client-id: trusted-client
+            client-secret: client-secret
+            authorization-grant-type: client_credentials (2)
+            scope: read, write
+        provider:
+          my-auth-server:
+            token-uri: https://my-auth-server.com/oauth2/token
+```
+1.  **`registration`**: A unique identifier for this OAuth 2.0 client registration.
+2.  **`authorization-grant-type`**: Setting this to `client_credentials` defines it as a 2-legged flow.
+
+For a service that runs in the background, you can use an `AuthorizedClientServiceOAuth2AuthorizedClientManager` to manage and refresh the token automatically.
+
+```java
+@Bean
+public OAuth2AuthorizedClientManager authorizedClientManager(
+        ClientRegistrationRepository clientRegistrationRepository,
+        OAuth2AuthorizedClientService authorizedClientService) {
+
+    OAuth2AuthorizedClientProvider authorizedClientProvider =
+            OAuth2AuthorizedClientProviderBuilder.builder()
+                    .clientCredentials() // Enables client_credentials grant
+                    .build();
+
+    AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientManager =
+            new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                    clientRegistrationRepository, authorizedClientService);
+    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+    return authorizedClientManager;
+}
+```
+*This snippet shows how to configure the `AuthorizedClientServiceOAuth2AuthorizedClientManager` to support the `client_credentials` grant type, which is the core of a 2-legged OAuth implementation in Spring Security.*
+
+### 3-Legged OAuth: User-Centric Delegation
+
+This is the classic scenario you see with "Login with Google" or "Login with GitHub". It involves three parties: the user (resource owner), the client application, and the authorization server. The user must explicitly grant permission for the client to access their data.
+
+#### Implementation Summary
+
+*   **The Flow**: The user is redirected to the authorization server, logs in, and consents to the requested scopes. The server redirects back to the client with an authorization code, which is then exchanged for an access token.
+*   **Configuration**: This flow is supported by the `authorization_code` grant type. Spring Security simplifies this with its `oauth2Login()` feature, which handles the entire redirect and token exchange process.
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google: (1)
+            client-id: google-client-id
+            client-secret: google-client-secret
+            scope: profile, email
+            authorization-grant-type: authorization_code (2)
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+```
+1.  **`registration`**: Defines the OAuth 2.0 client registration for "Google".
+2.  **`authorization-grant-type`**: Setting this to `authorization_code` initiates the 3-legged flow.
+
+The security configuration is equally straightforward. You just need to enable OAuth2 login and define which endpoints are public.
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/", "/login", "/public/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2Login(Customizer.withDefaults()); // Enables the 3-legged flow
+        return http.build();
+    }
+}
+```
+*This configuration enables the 3-legged OAuth flow. `oauth2Login()` automatically sets up the necessary filters to redirect users to the OAuth provider and handle the callback.*
+
+### Choosing the Right Leg
+
+| Feature | 2-Legged OAuth (Client Credentials) | 3-Legged OAuth (Authorization Code) |
+| :--- | :--- | :--- |
+| **Primary Use Case** | Machine-to-machine communication | User authentication and authorization |
+| **User Involvement** | None | User logs in and consents |
+| **Spring Grant Type** | `client_credentials` | `authorization_code` |
+| **Key Config Class** | `OAuth2AuthorizedClientManager` | `SecurityFilterChain` with `oauth2Login()` |
+
+As an architect, your choice should be driven by the user's role. If the user is completely outside the transaction, **2-legged** is the correct path. If the user is central to the transaction and needs to authorize access to their own resources, you must implement the **3-legged** flow.
+
+---
 
 ### **Difference Between Authentication and Authorization**
 
