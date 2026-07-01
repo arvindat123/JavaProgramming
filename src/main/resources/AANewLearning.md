@@ -1,3 +1,104 @@
+## Java version and feature
+### Java 11 [https://docs.oracle.com/en/java/javase/11/language/java-language-changes-release.html]
+- Local-Variable Syntax for Lambda Parameters
+- Local Variable Type Inference (Java 10)
+
+### Java 17 [https://docs.oracle.com/en/java/javase/17/language/java-language-changes-release.html]
+- Sealed class or interface: A sealed class or interface restricts which classes or interfaces can extend or implement it.
+- Record Classes: A record is a class that acts as transparent carrier for immutable data. (Java 16)
+- Pattern Matching for instanceof (Java 16)
+- Text Blocks: A text block is a multiline string literal that avoids the need for most escape sequences, automatically formats the string in a predictable way, and gives the developer control over the format when desired. (Java 15)
+- Switch Expressions: This feature extends switch so it can be used as either a statement or an expression, and so that both forms can use either traditional case ... : labels (with fall through) or new case ... -> labels (with no fall through), with a further new statement for yielding a value from a switch expression. (Java 14)
+
+### Java 21 [https://docs.oracle.com/en/java/javase/21/language/java-language-changes-release.html]
+- Record Patterns: In this release, support for record patterns appearing in the header of an enhanced for statement has been removed.
+- Pattern Matching for switch Expressions and Statements: Parenthesized patterns have been removed, Qualified enum constants as case constants in switch expressions and statements are allowed.
+
+### Java 25 [https://docs.oracle.com/en/java/javase/25/language/java-language-changes-release.html]
+- Module Import Statements
+- Compact Source Files and Instance Main Methods
+  - The new IO class for basic console I/O is now in the java.lang package rather than the java.io package. Thus, it is implicitly imported by every source file.
+  -  The static methods of the IO class are no longer implicitly imported into compact source files. Thus invocations of these methods must name the class, for example, IO.println("Hello, world!"), unless the methods are explicitly imported.
+  -  The implementation of the IO class is now based upon System.out and System.in rather than the java.io.Console class.
+- Flexible Constructor Bodies
+
+---
+
+Here’s a comprehensive list of **preview features in Java 25**, based on the latest official and community sources[1](https://developer.ibm.com/articles/java-whats-new-java25/)[2](https://javatechonline.com/java-25-new-features-with-examples/)[3](https://www.happycoders.eu/java/java-25-features/):
+
+---
+
+### 🔍 **Preview Features in Java 25**
+
+| **JEP** | **Feature Name** | **Description** |
+|--------|------------------|------------------|
+| **JEP 507** | **Primitive Types in Patterns (Third Preview)** | Enables pattern matching with primitive types (`int`, `double`, etc.) in `instanceof` and `switch`. |
+| **JEP 511** | **Module Import Declarations** | Allows importing entire modules directly in source files, improving modular readability. |
+| **JEP 512** | **Compact Source Files and Instance Main Methods** | Lets you write Java programs without class declarations and simplifies the `main()` method. |
+| **JEP 513** | **Flexible Constructor Bodies** | Removes the restriction that `super()` or `this()` must be the first statement in a constructor. |
+| **JEP 502** | **Stable Values** | Introduces a way to define values that are initialized once and treated as constants, improving performance and thread safety. |
+| **JEP 470** | **PEM Encodings for Cryptographic Objects** | Adds support for encoding/decoding cryptographic keys and certificates in PEM format. |
+| **JEP 505** | **Structured Concurrency (Fifth Preview)** | Simplifies concurrent programming by treating multiple tasks running in parallel as a single unit of work. |
+
+---
+
+### 🧪 How to Use Preview Features
+
+To compile and run code using preview features:
+
+```bash
+javac --enable-preview --release 25 MyApp.java
+java --enable-preview MyApp
+```
+
+---
+
+Would you like example code for any of these preview features or help deciding which ones are most relevant for your projects?
+
+---
+
+In Java, a **preview feature** is a new language or JVM feature that is **fully specified and implemented**, but **not yet permanent**. It’s included in a JDK release to gather feedback from developers before finalizing it in a future release.
+
+---
+
+### 🔍 **Key Characteristics of Preview Features**
+
+- **Opt-in**: You must explicitly enable them using compiler and runtime flags.
+- **Stable but not final**: They are tested and usable, but may change or be removed in future versions.
+- **Feedback-driven**: Oracle uses developer feedback to refine or finalize the feature.
+
+---
+
+### ✅ **How to Use Preview Features**
+
+To **compile** and **run** Java code using preview features:
+
+```bash
+javac --enable-preview --release <version> MyClass.java
+java --enable-preview MyClass
+```
+
+For example, with Java 25:
+
+```bash
+javac --enable-preview --release 25 Tier.java
+java --enable-preview Tier
+```
+
+---
+
+### 🧪 Examples of Preview Features in Recent Java Versions
+
+- **Pattern Matching for `switch`** (JEP 406)
+- **Record Patterns** (JEP 405)
+- **String Templates** (JEP 430)
+- **Primitive Types in Patterns** (JEP 507)
+
+---
+
+Would you like a list of all preview features in Java 25 or help setting up a project that uses them?
+
+---
 To approach performance tuning for a **legacy Spring Boot service** that takes **20 seconds to respond under load**, here’s a structured and practical strategy:
 
 ---
@@ -219,3 +320,93 @@ Here’s a curated list of **advanced practical questions related to concurrency
 ---
 
 Would you like code examples for any of these, or a mock interview-style walkthrough for one?
+
+---
+Detecting performance issues in a Java program typically involves a combination of **monitoring, profiling, and analyzing code behavior**. Here’s a structured approach:
+
+***
+
+### ✅ **1. Identify Symptoms**
+
+*   **Slow response times** (e.g., API calls taking too long).
+*   **High CPU or memory usage**.
+*   **Frequent Garbage Collection (GC) pauses**.
+*   **Thread contention or deadlocks**.
+
+***
+
+### ✅ **2. Use Profiling Tools**
+
+Profilers help you pinpoint bottlenecks:
+
+*   **VisualVM** (free, comes with JDK): Monitors CPU, memory, threads, GC.
+*   **JProfiler** or **YourKit**: Advanced commercial tools for deep analysis.
+*   **Java Flight Recorder (JFR)** + **Mission Control**: Built into modern JDKs for low-overhead profiling.
+
+***
+
+### ✅ **3. Enable JVM Monitoring**
+
+*   Use **JConsole** or **JVisualVM** for real-time monitoring.
+*   Check:
+    *   Heap usage
+    *   GC activity
+    *   Thread states
+    *   CPU load
+
+***
+
+### ✅ **4. Add Logging & Metrics**
+
+*   Use **SLF4J + Logback** for structured logs.
+*   Integrate **Micrometer** or **Prometheus** for metrics.
+*   Track:
+    *   Execution time of critical methods
+    *   Database query times
+    *   External API latency
+
+***
+
+### ✅ **5. Analyze Garbage Collection**
+
+*   Enable GC logs:
+    ```bash
+    -Xlog:gc*:file=gc.log
+    ```
+*   Look for:
+    *   Frequent **Full GC**
+    *   Long GC pauses
+*   Consider tuning:
+    *   Heap size (`-Xmx`, `-Xms`)
+    *   GC algorithm (G1, ZGC, Shenandoah)
+
+***
+
+### ✅ **6. Thread Dump Analysis**
+
+*   Generate thread dumps during high CPU usage:
+    ```bash
+    jstack <pid>
+    ```
+*   Look for:
+    *   Deadlocks
+    *   Threads stuck in `BLOCKED` or `WAITING`
+
+***
+
+### ✅ **7. Code-Level Checks**
+
+*   **Inefficient loops** or **nested iterations**.
+*   **Unnecessary object creation**.
+*   **Blocking I/O** instead of async.
+*   **Database queries** without indexes or using N+1 patterns.
+
+***
+
+### ✅ **8. Load Testing**
+
+*   Use **JMeter** or **Gatling** to simulate real-world load.
+*   Identify performance degradation under stress.
+
+
+---
