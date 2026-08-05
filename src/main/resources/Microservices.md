@@ -1,3 +1,720 @@
+# How do you scale a service from 1K to 1M TPS?
+
+Scaling a service from **1,000 TPS (Transactions Per Second)** to **1,000,000 TPS** is not a matter of simply adding more servers. At that scale, every layer—application, database, networking, caching, storage, and observability—must be designed for horizontal scalability, fault tolerance, and low latency.
+
+---
+
+# Scaling Journey
+
+```
+1K TPS
+   │
+   ├── Optimize application
+   │
+10K TPS
+   │
+   ├── Load balancing
+   ├── Caching
+   ├── Read replicas
+   │
+100K TPS
+   │
+   ├── Database sharding
+   ├── Async processing
+   ├── Message queues
+   │
+500K TPS
+   │
+   ├── Microservices
+   ├── Distributed cache
+   ├── CDN
+   │
+1M TPS
+   │
+   ├── Multi-region deployment
+   ├── Event-driven architecture
+   ├── Auto scaling
+   ├── Observability
+   └── Fault tolerance
+```
+
+---
+
+# Step 1: Identify the Bottleneck
+
+Measure before scaling.
+
+Typical bottlenecks:
+
+* CPU
+* Memory
+* Database
+* Network
+* Disk I/O
+* Lock contention
+* Garbage Collection
+* External APIs
+
+Example:
+
+```
+Request
+
+↓
+
+Application
+
+↓
+
+Database (90% time spent here)
+```
+
+Adding more application servers won't help if the database is the bottleneck.
+
+---
+
+# Step 2: Horizontal Scaling
+
+Instead of buying larger machines:
+
+❌ Vertical Scaling
+
+```
+8 CPU
+
+↓
+
+32 CPU
+
+↓
+
+64 CPU
+```
+
+Eventually hits hardware limits.
+
+Instead:
+
+✅ Horizontal Scaling
+
+```
+LB
+
+↓
+
+App1
+App2
+App3
+App4
+App5
+```
+
+Benefits:
+
+* Better fault tolerance
+* Elastic scaling
+* Lower cost
+* No single huge server
+
+---
+
+# Step 3: Make Services Stateless
+
+Never store user session inside application memory.
+
+Bad:
+
+```
+User
+
+↓
+
+Server 1 (Session stored)
+```
+
+If request goes to Server 2, session is lost.
+
+Good:
+
+```
+JWT
+
+or
+
+Redis Session
+
+↓
+
+Any server can process request
+```
+
+---
+
+# Step 4: Load Balancing
+
+Use multiple load balancers.
+
+```
+Internet
+
+↓
+
+Global Load Balancer
+
+↓
+
+Regional LB
+
+↓
+
+Application Servers
+```
+
+Algorithms:
+
+* Round Robin
+* Least Connections
+* Weighted
+* Consistent Hashing
+
+---
+
+# Step 5: Introduce Caching
+
+Database is usually the biggest bottleneck.
+
+Without cache:
+
+```
+User
+
+↓
+
+DB
+```
+
+With cache:
+
+```
+User
+
+↓
+
+Redis
+
+↓
+
+DB (only on cache miss)
+```
+
+Example:
+
+Without cache:
+
+```
+100K DB queries/sec
+```
+
+With 95% cache hit:
+
+```
+5K DB queries/sec
+```
+
+Huge reduction.
+
+Cache:
+
+* User profiles
+* Product catalog
+* Configurations
+* Authentication tokens
+* Frequently read data
+
+---
+
+# Step 6: Database Scaling
+
+Single database cannot sustain millions of TPS.
+
+### Read Replicas
+
+```
+Master
+
+↓
+
+Replica1
+Replica2
+Replica3
+```
+
+Reads go to replicas.
+
+Writes go to master.
+
+---
+
+### Sharding
+
+Instead of
+
+```
+One DB
+
+1 Billion rows
+```
+
+Split
+
+```
+Shard1
+
+Users A-F
+
+Shard2
+
+Users G-M
+
+Shard3
+
+Users N-Z
+```
+
+Now traffic is distributed.
+
+---
+
+### Partitioning
+
+Split tables
+
+```
+Orders_2025
+
+Orders_2026
+```
+
+instead of one massive table.
+
+---
+
+# Step 7: Asynchronous Processing
+
+Never do expensive work during user request.
+
+Bad:
+
+```
+Request
+
+↓
+
+Payment
+
+↓
+
+Inventory
+
+↓
+
+Email
+
+↓
+
+Analytics
+
+↓
+
+Response
+```
+
+Good:
+
+```
+Request
+
+↓
+
+Payment
+
+↓
+
+Queue
+
+↓
+
+Response (Fast)
+
+↓
+
+Workers
+
+↓
+
+Email
+
+Analytics
+
+Inventory
+```
+
+Queues:
+
+* Kafka
+* RabbitMQ
+* Pulsar
+* SQS
+
+---
+
+# Step 8: Event-Driven Architecture
+
+Instead of tight coupling:
+
+```
+Order Service
+
+↓
+
+Email Service
+```
+
+Publish event:
+
+```
+Order Created
+
+↓
+
+Kafka
+
+↓
+
+Email
+
+Inventory
+
+Analytics
+
+Notification
+```
+
+Advantages:
+
+* Loose coupling
+* Better scalability
+* Independent deployments
+
+---
+
+# Step 9: Database Optimization
+
+Avoid
+
+```
+SELECT *
+```
+
+Use
+
+```
+SELECT id,name
+```
+
+Add:
+
+* Indexes
+* Covering indexes
+* Query optimization
+* Connection pooling
+* Batch writes
+
+---
+
+# Step 10: Reduce Latency
+
+Latency kills throughput.
+
+Techniques:
+
+* Compression
+* HTTP/2
+* HTTP/3
+* gRPC
+* Keep-alive connections
+* Connection pooling
+
+---
+
+# Step 11: CDN
+
+Static content should never hit application servers.
+
+```
+Browser
+
+↓
+
+CDN
+
+↓
+
+Images
+
+CSS
+
+JS
+```
+
+Reduces application traffic significantly.
+
+---
+
+# Step 12: Auto Scaling
+
+Automatically scale based on:
+
+* CPU
+* Memory
+* Queue length
+* Request rate
+* Latency
+
+Example:
+
+```
+100 TPS
+
+↓
+
+5 Pods
+
+1000 TPS
+
+↓
+
+50 Pods
+
+10000 TPS
+
+↓
+
+500 Pods
+```
+
+---
+
+# Step 13: Distributed Cache
+
+One Redis instance won't handle 1M TPS.
+
+```
+Redis Cluster
+
+Node1
+
+Node2
+
+Node3
+
+Node4
+```
+
+Partition keys across nodes.
+
+---
+
+# Step 14: Avoid Distributed Transactions
+
+Don't use
+
+```
+Service A
+
+↓
+
+Service B
+
+↓
+
+Service C
+
+↓
+
+Two-Phase Commit
+```
+
+Instead:
+
+* Saga Pattern
+* Outbox Pattern
+* Event sourcing (when appropriate)
+
+---
+
+# Step 15: Idempotency
+
+At high TPS:
+
+Retries are inevitable.
+
+```
+Payment
+
+↓
+
+Timeout
+
+↓
+
+Retry
+```
+
+Without idempotency:
+
+Money deducted twice.
+
+Use:
+
+```
+Idempotency-Key
+```
+
+---
+
+# Step 16: Rate Limiting
+
+Protect backend.
+
+Algorithms:
+
+* Token Bucket
+* Leaky Bucket
+* Fixed Window
+* Sliding Window
+
+---
+
+# Step 17: Observability
+
+At 1M TPS, debugging via logs alone is impossible.
+
+Need:
+
+* Metrics
+* Distributed tracing
+* Centralized logging
+* Dashboards
+* Alerts
+
+Track:
+
+* p50 latency
+* p95 latency
+* p99 latency
+* Error rate
+* Queue depth
+* Cache hit ratio
+* CPU/Memory
+* DB latency
+
+---
+
+# Step 18: Multi-Region Deployment
+
+```
+Global DNS
+
+↓
+
+US
+
+EU
+
+India
+
+Japan
+```
+
+Benefits:
+
+* Lower latency
+* Disaster recovery
+* Higher availability
+
+Handle cross-region data consistency based on business requirements.
+
+---
+
+# Step 19: Fault Tolerance
+
+Implement:
+
+* Circuit breakers
+* Retries with exponential backoff
+* Timeouts
+* Bulkheads
+* Graceful degradation
+
+This prevents failures in one dependency from cascading across the system.
+
+---
+
+# End-to-End Architecture
+
+```text
+                   Users
+                     │
+             Global Load Balancer
+                     │
+        ┌────────────┴────────────┐
+        │                         │
+    Region A                 Region B
+        │                         │
+   Regional LB              Regional LB
+        │                         │
+   Stateless App Pods      Stateless App Pods
+        │                         │
+        ├──────────────┬──────────┤
+        │              │
+     Redis Cluster   Message Queue
+        │              │
+        │          Worker Services
+        │              │
+        └──────┬───────┘
+               │
+        Sharded Databases
+          │            │
+     Read Replicas  Analytics Store
+```
+
+## Example: Scaling an E-commerce Platform
+
+* **1K TPS:** A single application cluster with one primary database is sufficient.
+* **10K TPS:** Add a load balancer, Redis cache, connection pooling, and read replicas.
+* **100K TPS:** Introduce database sharding, asynchronous order processing, and a message queue.
+* **500K TPS:** Split into microservices (catalog, cart, orders, payments), use a distributed cache, and autoscale services independently.
+* **1M TPS:** Deploy across multiple regions, stream events through Kafka, partition data by customer or region, optimize hot paths with gRPC where appropriate, and implement comprehensive monitoring, tracing, and automated recovery.
+
+## Common Interview Discussion
+
+If asked, "How would you scale from 1K to 1M TPS?", interviewers usually want to hear a progression rather than a single solution:
+
+1. Measure and identify bottlenecks.
+2. Scale the application horizontally.
+3. Introduce caching.
+4. Optimize and scale the database (replicas, then sharding).
+5. Decouple work with asynchronous messaging.
+6. Make services stateless and independently scalable.
+7. Add observability and fault tolerance.
+8. Expand to multi-region deployment when required.
+
+This demonstrates an understanding that scaling is an incremental process driven by measured bottlenecks, not by prematurely adopting the most complex architecture.
+
+
+
+---
 
 ## How do you secure microservices?
 
