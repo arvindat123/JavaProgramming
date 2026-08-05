@@ -1,4 +1,270 @@
+Securing microservices is about applying multiple layers of protection rather than relying on a single security control. Because each service communicates over a network, the attack surface is much larger than in a monolithic application.
 
+Here are the key practices:
+
+### 1. Authenticate every request
+
+Never assume that requests inside your network are trustworthy.
+
+* Use strong identity providers (OIDC/OAuth 2.0)
+* Authenticate users and services separately
+* Use short-lived access tokens (such as JWTs)
+* Rotate credentials regularly
+
+Example flow:
+
+```
+User
+  ↓
+Identity Provider
+  ↓
+API Gateway
+  ↓
+Microservices
+```
+
+---
+
+### 2. Authorize using least privilege
+
+Authentication answers *who are you?* Authorization answers *what can you do?*
+
+Implement:
+
+* Role-Based Access Control (RBAC)
+* Attribute-Based Access Control (ABAC) when needed
+* Fine-grained permissions per endpoint
+
+For service-to-service communication:
+
+* Each service gets its own identity.
+* Avoid sharing credentials across services.
+
+---
+
+### 3. Encrypt traffic
+
+Use encryption everywhere.
+
+* HTTPS/TLS for external traffic
+* Mutual TLS (mTLS) between services
+* Encrypt sensitive data at rest
+
+mTLS allows both the client and server to verify each other's identity.
+
+---
+
+### 4. Use an API Gateway
+
+An API gateway provides a central security layer.
+
+Responsibilities include:
+
+* Authentication
+* Rate limiting
+* Request validation
+* Logging
+* CORS enforcement
+* DDoS protection
+
+Clients should generally not call internal services directly.
+
+---
+
+### 5. Secure service-to-service communication
+
+Instead of trusting internal networks:
+
+* Use mTLS
+* Use service identities
+* Validate tokens
+* Rotate certificates
+
+A service mesh (such as Istio or Linkerd) can automate many of these tasks.
+
+---
+
+### 6. Follow Zero Trust principles
+
+Assume no network segment is inherently trusted.
+
+Verify every request by checking:
+
+* Identity
+* Authorization
+* Device or workload identity
+* Request context
+
+---
+
+### 7. Protect secrets
+
+Never hardcode secrets.
+
+Store them in a secrets manager such as:
+
+* HashiCorp Vault
+* AWS Secrets Manager
+* Azure Key Vault
+* Google Secret Manager
+
+Rotate secrets automatically where possible.
+
+---
+
+### 8. Validate all input
+
+Every service should validate incoming data.
+
+Prevent:
+
+* SQL injection
+* NoSQL injection
+* Command injection
+* Cross-site scripting (where applicable)
+* Deserialization attacks
+
+Never assume upstream services have already validated input.
+
+---
+
+### 9. Limit network access
+
+Apply network segmentation.
+
+Examples:
+
+* Kubernetes Network Policies
+* Security Groups
+* Firewalls
+* Private subnets
+
+Only allow the minimum required communication paths.
+
+---
+
+### 10. Rate limit and throttle
+
+Protect services against abuse.
+
+Apply:
+
+* Per-user limits
+* Per-IP limits
+* Burst limits
+* Request quotas
+
+This reduces the impact of brute-force and denial-of-service attacks.
+
+---
+
+### 11. Log and monitor
+
+Centralize logs and metrics.
+
+Track:
+
+* Authentication failures
+* Authorization failures
+* Unusual traffic patterns
+* Unexpected service calls
+* Privilege escalations
+
+Use distributed tracing to investigate incidents across services.
+
+---
+
+### 12. Secure containers
+
+If deploying with containers:
+
+* Use minimal base images
+* Scan images for vulnerabilities
+* Avoid running as root
+* Keep images updated
+* Sign and verify container images
+
+---
+
+### 13. Keep dependencies updated
+
+Regularly:
+
+* Scan for known vulnerabilities
+* Update libraries
+* Remove unused dependencies
+* Generate a Software Bill of Materials (SBOM)
+
+Automate dependency scanning in CI/CD.
+
+---
+
+### 14. Secure CI/CD pipelines
+
+Protect your software supply chain.
+
+Best practices:
+
+* Require code reviews
+* Sign build artifacts
+* Scan dependencies
+* Scan container images
+* Store secrets securely
+* Enforce least-privilege access for pipelines
+
+---
+
+### 15. Implement resilience against attacks
+
+Use defensive controls such as:
+
+* Circuit breakers
+* Timeouts
+* Retries with exponential backoff
+* Resource quotas
+* Bulkheads
+
+These help prevent one compromised or overloaded service from affecting others.
+
+---
+
+## Example Secure Architecture
+
+```text
+                  Internet
+                      │
+               API Gateway (TLS)
+                      │
+         OAuth2 / OIDC Authentication
+                      │
+        ┌─────────────┴─────────────┐
+        │                           │
+    Service A ⇄ mTLS ⇄ Service B ⇄ mTLS ⇄ Service C
+        │              │                 │
+   Secret Store    Monitoring       Database (Encrypted)
+        │
+     Audit Logs
+```
+
+## Security Checklist
+
+* ✅ OAuth 2.0/OIDC authentication
+* ✅ Fine-grained authorization (RBAC/ABAC)
+* ✅ TLS and mTLS encryption
+* ✅ API gateway for centralized controls
+* ✅ Secrets management
+* ✅ Input validation
+* ✅ Network segmentation
+* ✅ Rate limiting
+* ✅ Centralized logging and monitoring
+* ✅ Vulnerability and dependency scanning
+* ✅ Secure CI/CD pipeline
+* ✅ Zero Trust architecture
+* ✅ Principle of least privilege
+
+A strong microservices security strategy combines **identity (authentication and authorization)**, **secure communication (TLS/mTLS)**, **network isolation**, **observability**, and **secure software delivery**. These layers work together to reduce the risk of unauthorized access, lateral movement, data exposure, and supply-chain attacks.
+
+---
 
 The 12-Factor App methodology is a set of principles that provide best practices for building modern, scalable, and maintainable software applications, especially suitable for cloud-native microservices. Below are the 12 factors with a brief explanation of how they apply to microservices:
 
