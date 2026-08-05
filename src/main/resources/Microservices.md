@@ -1,3 +1,6 @@
+
+## How do you secure microservices?
+
 Securing microservices is about applying multiple layers of protection rather than relying on a single security control. Because each service communicates over a network, the attack surface is much larger than in a monolithic application.
 
 Here are the key practices:
